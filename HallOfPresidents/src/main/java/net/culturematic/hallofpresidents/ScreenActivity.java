@@ -32,7 +32,8 @@ public class ScreenActivity extends Activity {
         super.onResume();
 
         final Point gameDimensions = getBitmapDimensions();
-        mGameLoop = new GameLoop(mSurfaceView.getHolder(), gameDimensions, null);
+        RoomLoader roomLoader = new RoomLoader(getAssets());
+        mGameLoop = new GameLoop(mSurfaceView.getHolder(), gameDimensions, roomLoader, null);
         mGameLoop.start();
     }
 
@@ -54,11 +55,15 @@ public class ScreenActivity extends Activity {
     }
 
     private class GameLoop extends Thread {
-        public GameLoop(SurfaceHolder holder, Point gameDimensions, Game.GameState gameState) {
+        public GameLoop(SurfaceHolder holder,
+                        Point gameDimensions,
+                        RoomLoader roomLoader,
+                        Game.GameState gameState) {
             mRunning = true;
             mDimensions = gameDimensions;
             mGameState = gameState;
             mHolder = holder;
+            mRoomLoader = roomLoader;
         }
 
         public Game.GameState pause() {
@@ -84,12 +89,15 @@ public class ScreenActivity extends Activity {
 
         @Override
         public void run() {
-            int frameCount = 0;
-            final Rect boundsRect = new Rect();
-            Bitmap screen = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
             Game.GameState gameState = getGameState();
             setGameState(null);
-            Game game = new Game(screen, gameState);
+
+            int frameCount = 0;
+            final Rect boundsRect = new Rect();
+            final Bitmap screen = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
+
+            final Rect gameDimensions = new Rect(0, 0, mDimensions.x, mDimensions.y);
+            final Game game = new Game(screen, gameState, mRoomLoader, gameDimensions);
 
             while (mRunning) {
                 if (! mHolder.getSurface().isValid()) {
@@ -101,7 +109,7 @@ public class ScreenActivity extends Activity {
                 try {
                     canvas = mHolder.lockCanvas();
                     canvas.getClipBounds(boundsRect);
-                    canvas.drawBitmap(screen, (Rect) null, boundsRect, (Paint) null);
+                    canvas.drawBitmap(screen, null, boundsRect, null);
                 } finally {
                     if (null != canvas) {
                         mHolder.unlockCanvasAndPost(canvas);
@@ -115,9 +123,10 @@ public class ScreenActivity extends Activity {
             setGameState(new Game.GameState());
         } // run()
 
+        private final Point mDimensions;
+        private final SurfaceHolder mHolder;
+        private final RoomLoader mRoomLoader;
         private Game.GameState mGameState;
-        private Point mDimensions;
-        private SurfaceHolder mHolder;
         private volatile boolean mRunning;
     } // class
 

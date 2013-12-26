@@ -2,27 +2,26 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.Rect;
 
 public class Game {
-    public Game(Bitmap screen, GameState savedState) {
+    public Game(Bitmap screen,
+                GameState savedState,
+                RoomLoader roomLoader,
+                Rect viewBounds) {
         if (null != savedState) {
             throw new RuntimeException("Restoring game state is unimplemented.");
         }
-        mScreen = screen;
-        mCanvas = new Canvas(mScreen);
-        mPaint = new Paint();
-        mPaint.setStrokeWidth(2); // TODO REMOVE
-        mPaint.setColor(0x00FF00);
+        mViewBounds = viewBounds;
+        mRoomLoader = roomLoader;
+        mRoom = mRoomLoader.load("intro.js");
+        mCanvas = new Canvas(screen);
     }
 
     public void update(final long nanoTime) {
-        int millis = (int) (nanoTime / 1000000);
-        int red = millis & 0xff;
-        int green = (millis >> 8) & 0xff;
-        int blue = (millis >> 16) & 0xff;
-        mCanvas.drawRGB(red, green, blue);
-        mCanvas.drawCircle(10, 10, 10, mPaint);
+        Rect viewOffset = mViewBounds; // TODO this is the OFFSET into the world
+        mRoom.drawBackground(mCanvas, viewOffset, mViewBounds);
+        mRoom.drawFurniture(mCanvas, viewOffset, mViewBounds);
     }
 
     public GameState getState() {
@@ -33,7 +32,8 @@ public class Game {
         // TODO
     }
 
-    private final Bitmap mScreen;
     private final Canvas mCanvas;
-    private final Paint mPaint;
+    private final RoomLoader mRoomLoader;
+    private final Rect mViewBounds; // Area of screen for us to draw on
+    private Room mRoom;
 }
