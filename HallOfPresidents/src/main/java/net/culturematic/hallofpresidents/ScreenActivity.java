@@ -100,9 +100,8 @@ public class ScreenActivity extends Activity {
                 Canvas canvas = null;
                 try {
                     canvas = mHolder.lockCanvas();
-                    canvas.drawBitmap(screen, 0, 0, null);
-                    // canvas.getClipBounds(boundsRect);
-                    // canvas.drawBitmap(bitmap, (Rect) null, boundsRect, (Paint) null);
+                    canvas.getClipBounds(boundsRect);
+                    canvas.drawBitmap(screen, (Rect) null, boundsRect, (Paint) null);
                 } finally {
                     if (null != canvas) {
                         mHolder.unlockCanvasAndPost(canvas);
