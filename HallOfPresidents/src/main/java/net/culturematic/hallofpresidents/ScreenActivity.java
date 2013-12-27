@@ -32,8 +32,14 @@ public class ScreenActivity extends Activity {
         super.onResume();
 
         final Point gameDimensions = getBitmapDimensions();
-        RoomLoader roomLoader = new RoomLoader(getAssets());
-        mGameLoop = new GameLoop(mSurfaceView.getHolder(), gameDimensions, roomLoader, null);
+        AssetLoader assetLoader = new AssetLoader(getAssets());
+        RoomLoader roomLoader = new RoomLoader(assetLoader);
+
+        // TODO refactor
+        final Bitmap heroSprites = assetLoader.loadBitmap("hero_sprites_128x128.png");
+        final Character hero = new Character(heroSprites);
+
+        mGameLoop = new GameLoop(mSurfaceView.getHolder(), gameDimensions, hero, roomLoader, null);
         mGameLoop.start();
     }
 
@@ -57,12 +63,14 @@ public class ScreenActivity extends Activity {
     private class GameLoop extends Thread {
         public GameLoop(SurfaceHolder holder,
                         Point gameDimensions,
+                        Character hero,
                         RoomLoader roomLoader,
                         Game.GameState gameState) {
             mRunning = true;
             mDimensions = gameDimensions;
             mGameState = gameState;
             mHolder = holder;
+            mHero = hero;
             mRoomLoader = roomLoader;
         }
 
@@ -97,7 +105,7 @@ public class ScreenActivity extends Activity {
             final Bitmap screen = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
 
             final Rect gameDimensions = new Rect(0, 0, mDimensions.x, mDimensions.y);
-            final Game game = new Game(screen, gameState, mRoomLoader, gameDimensions);
+            final Game game = new Game(screen, gameState, mRoomLoader, mHero, gameDimensions);
 
             while (mRunning) {
                 if (! mHolder.getSurface().isValid()) {
@@ -125,6 +133,7 @@ public class ScreenActivity extends Activity {
 
         private final Point mDimensions;
         private final SurfaceHolder mHolder;
+        private final Character mHero;
         private final RoomLoader mRoomLoader;
         private Game.GameState mGameState;
         private volatile boolean mRunning;
