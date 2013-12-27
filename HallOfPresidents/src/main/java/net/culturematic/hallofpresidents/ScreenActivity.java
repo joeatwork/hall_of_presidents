@@ -24,6 +24,8 @@ public class ScreenActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         mSurfaceView = new SurfaceView(this);
+        mInputEvents = new InputEvents();
+        mSurfaceView.setOnTouchListener(mInputEvents);
         setContentView(mSurfaceView);
     }
 
@@ -120,13 +122,15 @@ public class ScreenActivity extends Activity {
 
             final Rect gameDimensions = new Rect(0, 0, mDimensions.x, mDimensions.y);
             final Game game = new Game(screen, gameState, mRoomLoader, mHero, mControls, gameDimensions);
+            final InputEvents.TouchSpot[] touchSpots = new InputEvents.TouchSpot[InputEvents.MAX_TOUCH_SPOTS];
 
             while (mRunning) {
                 if (! mHolder.getSurface().isValid()) {
                     continue;
                 }
                 long time = System.nanoTime();
-                game.update(time);
+                mInputEvents.getPointsDown(touchSpots);
+                game.update(time, touchSpots);
                 Canvas canvas = null;
                 try {
                     canvas = mHolder.lockCanvas();
@@ -154,6 +158,7 @@ public class ScreenActivity extends Activity {
         private volatile boolean mRunning;
     } // class
 
+    private InputEvents mInputEvents;
     private SurfaceView mSurfaceView;
     private GameLoop mGameLoop;
 }

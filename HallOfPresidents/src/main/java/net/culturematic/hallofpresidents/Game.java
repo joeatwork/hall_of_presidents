@@ -2,6 +2,8 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 
 public class Game {
@@ -20,15 +22,27 @@ public class Game {
         mCanvas = new Canvas(screen);
         mHero = hero;
         mControls = controls;
+
+        mRedPaint = new Paint();
+        mRedPaint.setColor(Color.RED);
     }
 
-    public void update(final long nanoTime) {
+    public void update(final long nanoTime, InputEvents.TouchSpot[] touchSpots) {
         assert(nanoTime >= 0);
+        mCanvas.drawColor(Color.BLACK);
+
         Rect viewOffset = mViewBounds; // TODO this is the OFFSET into the world
         mRoom.drawBackground(mCanvas, viewOffset, mViewBounds);
         mHero.drawCharacter(mCanvas);
         mRoom.drawFurniture(mCanvas, viewOffset, mViewBounds);
         mControls.drawControls(mCanvas, mViewBounds);
+
+        for (int i = 0; i < touchSpots.length; i++) {
+            InputEvents.TouchSpot next = touchSpots[i];
+            if (null == next) break;
+
+            mCanvas.drawCircle(next.x, next.y, 20, mRedPaint);
+        }
     }
 
     public GameState getState() {
@@ -44,5 +58,7 @@ public class Game {
     private final Rect mViewBounds; // Area of screen for us to draw on
     private final Character mHero;
     private final UIControls mControls;
+
+    private final Paint mRedPaint;
     private Room mRoom;
 }
