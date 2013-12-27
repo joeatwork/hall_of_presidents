@@ -35,11 +35,22 @@ public class ScreenActivity extends Activity {
         AssetLoader assetLoader = new AssetLoader(getAssets());
         RoomLoader roomLoader = new RoomLoader(assetLoader);
 
-        // TODO refactor- All loading should come from the same place.
+        // TODO refactor- All loading should come from the same place, which isn't here.
         final Bitmap heroSprites = assetLoader.loadBitmap("hero_sprites_128x128.png");
         final Character hero = new Character(heroSprites, assetLoader);
 
-        mGameLoop = new GameLoop(mSurfaceView.getHolder(), gameDimensions, hero, roomLoader, null);
+        final Bitmap dpad = assetLoader.loadBitmap("widget_dpad.png");
+        final Bitmap button = assetLoader.loadBitmap("widget_button.png");
+        final UIControls controls = new UIControls(dpad, button);
+
+        mGameLoop = new GameLoop(
+            mSurfaceView.getHolder(),
+            gameDimensions,
+            hero,
+            controls,
+            roomLoader,
+            null
+        );
         mGameLoop.start();
     }
 
@@ -61,9 +72,11 @@ public class ScreenActivity extends Activity {
     }
 
     private class GameLoop extends Thread {
+        // TODO this unwieldy constructor is a smell.
         public GameLoop(SurfaceHolder holder,
                         Point gameDimensions,
                         Character hero,
+                        UIControls controls,
                         RoomLoader roomLoader,
                         Game.GameState gameState) {
             mRunning = true;
@@ -71,6 +84,7 @@ public class ScreenActivity extends Activity {
             mGameState = gameState;
             mHolder = holder;
             mHero = hero;
+            mControls = controls;
             mRoomLoader = roomLoader;
         }
 
@@ -105,7 +119,7 @@ public class ScreenActivity extends Activity {
             final Bitmap screen = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
 
             final Rect gameDimensions = new Rect(0, 0, mDimensions.x, mDimensions.y);
-            final Game game = new Game(screen, gameState, mRoomLoader, mHero, gameDimensions);
+            final Game game = new Game(screen, gameState, mRoomLoader, mHero, mControls, gameDimensions);
 
             while (mRunning) {
                 if (! mHolder.getSurface().isValid()) {
@@ -134,6 +148,7 @@ public class ScreenActivity extends Activity {
         private final Point mDimensions;
         private final SurfaceHolder mHolder;
         private final Character mHero;
+        private final UIControls mControls;
         private final RoomLoader mRoomLoader;
         private Game.GameState mGameState;
         private volatile boolean mRunning;

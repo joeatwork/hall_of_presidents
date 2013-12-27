@@ -9,6 +9,7 @@ public class Game {
                 GameState savedState,
                 RoomLoader roomLoader,
                 Character hero,
+                UIControls controls,
                 Rect viewBounds) {
         if (null != savedState) {
             throw new RuntimeException("Restoring game state is unimplemented.");
@@ -18,6 +19,7 @@ public class Game {
         mRoom = mRoomLoader.load("intro.js");
         mCanvas = new Canvas(screen);
         mHero = hero;
+        mControls = controls;
     }
 
     public void update(final long nanoTime) {
@@ -26,6 +28,7 @@ public class Game {
         mRoom.drawBackground(mCanvas, viewOffset, mViewBounds);
         mHero.drawCharacter(mCanvas);
         mRoom.drawFurniture(mCanvas, viewOffset, mViewBounds);
+        mControls.drawControls(mCanvas, mViewBounds);
     }
 
     public GameState getState() {
@@ -40,5 +43,6 @@ public class Game {
     private final RoomLoader mRoomLoader;
     private final Rect mViewBounds; // Area of screen for us to draw on
     private final Character mHero;
+    private final UIControls mControls;
     private Room mRoom;
 }
