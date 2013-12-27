@@ -10,16 +10,17 @@ public class Character {
     // ( 1, 0) -> Standing facing up
     // ( 2, 0) -> Standing facing left
     // ( x, 1), (x, 2), (x, 3) -> Walk cycles for facing X
-    public Character(Bitmap spritesheet) {
+    public Character(Bitmap spritesheet, AssetLoader loader) {
         mSpriteSheet = spritesheet;
+        int spriteSize = loader.scaleInt(128);
 
         // TODO this rect needs to be sensitive to bitmap scale,
         // and to be chosen based on motion direction.
-        mSourceRect = new Rect(0, 0, 128, 128);
+        mSourceRect = new Rect(0, 0, spriteSize, spriteSize);
 
         // TODO this rect needs to be centered almost all of the time.
         // There should probably be a viewport abstraction that deals with this position.
-        mDestRect = new Rect(0, 0, 128, 128);
+        mDestRect = new Rect(0, 0, spriteSize, spriteSize);
     }
 
     public void drawCharacter(Canvas canvas) {

@@ -35,9 +35,9 @@ public class ScreenActivity extends Activity {
         AssetLoader assetLoader = new AssetLoader(getAssets());
         RoomLoader roomLoader = new RoomLoader(assetLoader);
 
-        // TODO refactor
+        // TODO refactor- All loading should come from the same place.
         final Bitmap heroSprites = assetLoader.loadBitmap("hero_sprites_128x128.png");
-        final Character hero = new Character(heroSprites);
+        final Character hero = new Character(heroSprites, assetLoader);
 
         mGameLoop = new GameLoop(mSurfaceView.getHolder(), gameDimensions, hero, roomLoader, null);
         mGameLoop.start();

@@ -16,6 +16,12 @@ public class AssetLoader {
         mAssetManager = assetManager;
     }
 
+    public int scaleInt(int original) {
+        long scaleUp = (long) original * SCALE_NUMERATOR;
+        long scaleDown = scaleUp / SCALE_DENOMINATOR;
+        return (int) scaleDown;
+    }
+
     public JSONObject loadJSON(String path) {
         InputStream in = null;
 
@@ -43,8 +49,8 @@ public class AssetLoader {
         // REQUIRED But probably overkill- the raw bitmaps are too big to fit into
         // graphics memory without some love. In the future, this should be aware
         // of the density of the screen.
-        bitmapOptions.inDensity = 20;
-        bitmapOptions.inTargetDensity = 9;
+        bitmapOptions.inDensity = SCALE_DENOMINATOR;
+        bitmapOptions.inTargetDensity = SCALE_NUMERATOR;
 
         try {
             in = mAssetManager.open(path);
@@ -73,6 +79,13 @@ public class AssetLoader {
         }
         return retBuffer.toString();
     }
+
+    // TODO this is probably a bug, at the very least we should
+    // pre-scale the images appropriately. Leaving it here for now
+    // on the off chance we'll be sensitive to the display density
+    // of the device at some point in the future.
+    private static final int SCALE_NUMERATOR = 9;
+    private static final int SCALE_DENOMINATOR = 20;
 
     private AssetManager mAssetManager;
     private static final String LOGTAG = "hallofpresidents.AssetLoader";
