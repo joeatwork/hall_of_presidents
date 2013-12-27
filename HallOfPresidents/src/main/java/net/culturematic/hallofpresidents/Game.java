@@ -29,6 +29,9 @@ public class Game {
 
     public void update(final long nanoTime, InputEvents.TouchSpot[] touchSpots) {
         assert(nanoTime >= 0);
+
+        mControls.intepretInteractions(touchSpots);
+
         mCanvas.drawColor(Color.BLACK);
 
         Rect viewOffset = mViewBounds; // TODO this is the OFFSET into the world
