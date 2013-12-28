@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Log;
 
 public class Game {
     public Game(Bitmap screen,
@@ -34,15 +35,24 @@ public class Game {
         assert(nanoTime >= 0);
 
         mControls.intepretInteractions(touchSpots);
+        mHero.setRoom(mRoom);
         mHero.directionCommand(nanoTime, mControls.currentDirection());
 
         PointF heroOffset = mHero.getPosition();
-        mWorldBounds.offsetTo((int) heroOffset.x, (int) heroOffset.y);
+        WorldEvent worldEvent = mRoom.checkForEvent(heroOffset);
+        if (null != worldEvent) {
+            Log.d(LOGTAG, "Found Event " + worldEvent.getName());
+        }
+        // We want the hero at the center of the Viewport
+        int worldOffsetX = (int) heroOffset.x - mViewBounds.centerX();
+        int worldOffsetY = (int) heroOffset.y - mViewBounds.centerY();
+
+        mWorldBounds.offsetTo(worldOffsetX, worldOffsetY);
 
         mCanvas.drawColor(Color.BLACK);
-
         mRoom.drawBackground(mCanvas, mWorldBounds, mViewBounds);
-        mHero.drawCharacter(mCanvas, mViewBounds);
+        mHero.drawCharacter(mCanvas, worldOffsetX, worldOffsetY);
+
         mRoom.drawFurniture(mCanvas, mWorldBounds, mViewBounds);
         mControls.drawControls(mCanvas, mViewBounds);
 
@@ -62,6 +72,8 @@ public class Game {
         // TODO
     }
 
+    private Room mRoom;
+
     private final Canvas mCanvas;
     private final RoomLoader mRoomLoader;
     private final Rect mViewBounds; // Area of screen for us to draw on
@@ -70,5 +82,6 @@ public class Game {
     private final UIControls mControls;
 
     private final Paint mRedPaint;
-    private Room mRoom;
+
+    private static final String LOGTAG = "hallofpresidents.Game";
 }

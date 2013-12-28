@@ -2,6 +2,7 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.Log;
@@ -42,16 +43,28 @@ public class Character {
 
         switch (direction) {
             case DIRECTION_UP:
-                mPosition.y -= distance;
+                float yUp = mPosition.y - distance;
+                if (mCurrentRoom.inBounds((int) mPosition.x, (int) yUp)) {
+                    mPosition.y = yUp;
+                }
                 break;
             case DIRECTION_DOWN:
-                mPosition.y += distance;
+                float yDown = mPosition.y + distance;
+                if (mCurrentRoom.inBounds((int) mPosition.x, (int) yDown)) {
+                    mPosition.y = yDown;
+                }
                 break;
             case DIRECTION_RIGHT:
-                mPosition.x += distance;
+                float xRight = mPosition.x + distance;
+                if (mCurrentRoom.inBounds((int) xRight, (int) mPosition.y)) {
+                    mPosition.x = xRight;
+                }
                 break;
             case DIRECTION_LEFT:
-                mPosition.x -= distance;
+                float xLeft = mPosition.x - distance;
+                if (mCurrentRoom.inBounds((int) xLeft, (int) mPosition.y)) {
+                    mPosition.x = xLeft;
+                }
                 break;
             case DIRECTION_NONE:
                 break;
@@ -67,44 +80,50 @@ public class Character {
         } else {
             mAnimationDistance =
                     (mAnimationDistance + distance) % (mAnimationFrameDistance * ANIMATION_LENGTH_IN_FRAMES);
-
         }
+    }
+
+    public void setRoom(Room room) {
+        mCurrentRoom = room;
     }
 
     public PointF getPosition() {
         return mPosition;
     }
 
-    public void drawCharacter(Canvas canvas, Rect viewport) {
+    public void drawCharacter(Canvas canvas, int viewportOffsetX, int viewportOffsetY) {
         int frame = (int) mAnimationDistance / mAnimationFrameDistance;
         int frameOffset = frame * mSpriteSize;
-        int xOffset = 0;
+        int spritesheetXOffset = 0;
         switch (mAnimationDirection) {
             case DIRECTION_NONE:
                 throw new RuntimeException("Animation direction should never be NONE");
             case DIRECTION_DOWN:
-                xOffset = 0;
+                spritesheetXOffset = 0;
                 break;
             case DIRECTION_UP:
-                xOffset = mSpriteSize;
+                spritesheetXOffset = mSpriteSize;
                 break;
             case DIRECTION_LEFT:
-                xOffset = mSpriteSize * 2;
+                spritesheetXOffset = mSpriteSize * 2;
                 break;
             case DIRECTION_RIGHT:
-                xOffset = mSpriteSize * 3;
+                spritesheetXOffset = mSpriteSize * 3;
                 break;
         }
-        mSourceRect.set(xOffset, frameOffset, xOffset + mSpriteSize, frameOffset + mSpriteSize);
+        mSourceRect.set(spritesheetXOffset, frameOffset, spritesheetXOffset + mSpriteSize, frameOffset + mSpriteSize);
 
         int halfSize = mSpriteSize / 2;
-        mDestRect.offsetTo(viewport.centerX() - halfSize, viewport.centerY() - halfSize);
+        int xDestOffset = ((int) mPosition.x) - (halfSize + viewportOffsetX);
+        int yDestOffset = ((int) mPosition.y) - (halfSize + viewportOffsetY);
+        mDestRect.offsetTo(xDestOffset, yDestOffset);
         canvas.drawBitmap(mSpriteSheet, mSourceRect, mDestRect, null);
     }
 
     private long mLastTime;
     private UIControls.Direction mAnimationDirection;
     private float mAnimationDistance;
+    private Room mCurrentRoom;
 
     private final int mSpriteSize;
     private final int mAnimationFrameDistance;
