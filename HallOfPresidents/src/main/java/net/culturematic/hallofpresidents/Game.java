@@ -31,6 +31,7 @@ public class Game {
         assert(nanoTime >= 0);
 
         mControls.intepretInteractions(touchSpots);
+        mHero.directionCommand(nanoTime, mControls.currentDirection());
 
         mCanvas.drawColor(Color.BLACK);
 

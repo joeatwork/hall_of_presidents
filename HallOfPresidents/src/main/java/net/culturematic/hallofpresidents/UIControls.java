@@ -6,6 +6,15 @@ import android.graphics.Rect;
 import android.util.Log;
 
 public class UIControls {
+
+    public enum Direction {
+        DIRECTION_NONE,
+        DIRECTION_UP,
+        DIRECTION_RIGHT,
+        DIRECTION_DOWN,
+        DIRECTION_LEFT
+    }
+
     public UIControls(Bitmap dpad, Bitmap button) {
         mDpadBitmap = dpad;
         mButtonBitmap = button;
@@ -15,6 +24,8 @@ public class UIControls {
     }
 
     public void intepretInteractions(InputEvents.TouchSpot[] spots) {
+        mCurrentDirection = Direction.DIRECTION_NONE;
+        mButtonIsPressed = false;
         for (int i = 0; i < spots.length; i++) {
             InputEvents.TouchSpot spot = spots[i];
             if (null == spot) break;
@@ -26,22 +37,30 @@ public class UIControls {
                 int yOffset = y - mDpadDestRect.centerY();
                 if (Math.abs(xOffset) > Math.abs(yOffset)) { // Left or Right
                     if (xOffset > 0) {
-                        Log.d(LOGTAG, "RIGHT");
+                        mCurrentDirection = Direction.DIRECTION_RIGHT;
                     } else {
-                        Log.d(LOGTAG, "LEFT");
+                        mCurrentDirection = Direction.DIRECTION_LEFT;
                     }
                 } else { // Up or down
                     if (yOffset > 0) {
-                        Log.d(LOGTAG, "DOWN");
+                        mCurrentDirection = Direction.DIRECTION_DOWN;
                     } else {
-                        Log.d(LOGTAG, "UP");
+                        mCurrentDirection = Direction.DIRECTION_UP;
                     }
                 }
             }
             if (mButtonDestRect.contains(x, y)) {
-                Log.d(LOGTAG, "Button");
+                mButtonIsPressed = true;
             }
         }
+    }
+
+    public Direction currentDirection() {
+        return mCurrentDirection;
+    }
+
+    public boolean currentButtonIsPressed() {
+        return mButtonIsPressed;
     }
 
     public void drawControls(Canvas canvas, Rect viewBounds) {
@@ -53,6 +72,9 @@ public class UIControls {
                                 viewBounds.height() - mButtonDestRect.height());
         canvas.drawBitmap(mButtonBitmap, null, mButtonDestRect, null);
     }
+
+    private Direction mCurrentDirection;
+    private boolean mButtonIsPressed;
 
     private final Bitmap mDpadBitmap;
     private final Bitmap mButtonBitmap;

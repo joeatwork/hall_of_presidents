@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Display;
@@ -39,7 +40,7 @@ public class ScreenActivity extends Activity {
 
         // TODO refactor- All loading should come from the same place, which isn't here.
         final Bitmap heroSprites = assetLoader.loadBitmap("hero_sprites_128x128.png");
-        final Character hero = new Character(heroSprites, assetLoader);
+        final Character hero = new Character(heroSprites, assetLoader, new PointF(0, 0));
 
         final Bitmap dpad = assetLoader.loadBitmap("widget_dpad.png");
         final Bitmap button = assetLoader.loadBitmap("widget_button.png");
