@@ -71,7 +71,11 @@ public class Character {
         }
     }
 
-    public void drawCharacter(Canvas canvas) {
+    public PointF getPosition() {
+        return mPosition;
+    }
+
+    public void drawCharacter(Canvas canvas, Rect viewport) {
         int frame = (int) mAnimationDistance / mAnimationFrameDistance;
         int frameOffset = frame * mSpriteSize;
         int xOffset = 0;
@@ -93,7 +97,8 @@ public class Character {
         }
         mSourceRect.set(xOffset, frameOffset, xOffset + mSpriteSize, frameOffset + mSpriteSize);
 
-        mDestRect.offsetTo((int) mPosition.x, (int) mPosition.y);
+        int halfSize = mSpriteSize / 2;
+        mDestRect.offsetTo(viewport.centerX() - halfSize, viewport.centerY() - halfSize);
         canvas.drawBitmap(mSpriteSheet, mSourceRect, mDestRect, null);
     }
 

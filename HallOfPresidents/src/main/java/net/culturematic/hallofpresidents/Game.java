@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 
 public class Game {
@@ -17,6 +19,7 @@ public class Game {
             throw new RuntimeException("Restoring game state is unimplemented.");
         }
         mViewBounds = viewBounds;
+        mWorldBounds = new Rect(viewBounds);
         mRoomLoader = roomLoader;
         mRoom = mRoomLoader.load("intro.js");
         mCanvas = new Canvas(screen);
@@ -33,12 +36,14 @@ public class Game {
         mControls.intepretInteractions(touchSpots);
         mHero.directionCommand(nanoTime, mControls.currentDirection());
 
+        PointF heroOffset = mHero.getPosition();
+        mWorldBounds.offsetTo((int) heroOffset.x, (int) heroOffset.y);
+
         mCanvas.drawColor(Color.BLACK);
 
-        Rect viewOffset = mViewBounds; // TODO this is the OFFSET into the world
-        mRoom.drawBackground(mCanvas, viewOffset, mViewBounds);
-        mHero.drawCharacter(mCanvas);
-        mRoom.drawFurniture(mCanvas, viewOffset, mViewBounds);
+        mRoom.drawBackground(mCanvas, mWorldBounds, mViewBounds);
+        mHero.drawCharacter(mCanvas, mViewBounds);
+        mRoom.drawFurniture(mCanvas, mWorldBounds, mViewBounds);
         mControls.drawControls(mCanvas, mViewBounds);
 
         for (int i = 0; i < touchSpots.length; i++) {
@@ -60,6 +65,7 @@ public class Game {
     private final Canvas mCanvas;
     private final RoomLoader mRoomLoader;
     private final Rect mViewBounds; // Area of screen for us to draw on
+    private final Rect mWorldBounds; // Area of the world to show on the screen
     private final Character mHero;
     private final UIControls mControls;
 
