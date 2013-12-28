@@ -2,38 +2,20 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.provider.CalendarContract;
-import android.util.Log;
-import android.util.SparseArray;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class Room {
-    public Room(Bitmap background, Bitmap furniture, Bitmap terrain, JSONObject roomDescription) {
+    public Room(Bitmap background, Bitmap furniture, Bitmap terrain, WorldEvent[] events) {
         mBackground = background;
         mFurniture = furniture;
         mTerrain = terrain;
-        mDescription = roomDescription;
+        mEvents = events;
 
-        try {
-            JSONArray events = mDescription.getJSONArray("events");
-            mEvents = new WorldEvent[events.length()];
-            for (int i = 0; i < events.length(); i++) {
-                WorldEvent event = new WorldEvent(events.getJSONObject(i));
-                mEvents[i] = event;
-            }
-        } catch (JSONException e) {
-            throw new RuntimeException("Can't find events in room JSON", e);
-        }
+        mRedPaint = new Paint();
+        mRedPaint.setColor(Color.RED);
     }
 
     /**
@@ -44,6 +26,18 @@ public class Room {
      */
     public void drawBackground(Canvas canvas, Rect worldRect, Rect viewport) {
         canvas.drawBitmap(mBackground, worldRect, viewport, null);
+
+        /*
+         * For debugging- the code below will draw a rectangle for each event in the room.
+         *
+        for (int i = 0; i < mEvents.length; i++) {
+            final Rect bounds = new Rect(mEvents[i].getBounds()); // Bounds in WORLD COORDS.
+            bounds.offset(- worldRect.left, - worldRect.top);
+            canvas.drawRect(bounds, mRedPaint);
+        }
+        *
+        *
+        */
     }
 
     public void drawFurniture(Canvas canvas, Rect worldRect, Rect viewport) {
@@ -76,11 +70,13 @@ public class Room {
         return null;
     }
 
-    private final JSONObject mDescription;
+    private final Paint mRedPaint;
+
     private final Bitmap mBackground;
     private final Bitmap mFurniture;
     private final Bitmap mTerrain;
     private final WorldEvent[] mEvents;
 
+    @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.Room";
 }

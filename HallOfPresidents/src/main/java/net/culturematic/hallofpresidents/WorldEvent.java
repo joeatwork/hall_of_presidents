@@ -6,20 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class WorldEvent {
-    public WorldEvent(final JSONObject eventDescription) {
-        mDescription = eventDescription;
-        try {
-            mName = mDescription.getString("name");
-            JSONObject boundsObj = mDescription.getJSONObject("bounds");
-            mBounds = new Rect(
-                boundsObj.getInt("left"),
-                boundsObj.getInt("top"),
-                boundsObj.getInt("right"),
-                boundsObj.getInt("bottom")
-            );
-        } catch (JSONException e) {
-            throw new RuntimeException("Can't parse Event JSON");
-        }
+    public WorldEvent(final Rect bounds, final String name) {
+        mBounds = bounds;
+        mName = name;
     }
 
     public Rect getBounds() {
@@ -32,5 +21,4 @@ public class WorldEvent {
 
     private final Rect mBounds;
     private final String mName;
-    private final JSONObject mDescription;
 }

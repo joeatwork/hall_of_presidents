@@ -1,7 +1,9 @@
 package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,9 +25,35 @@ public class RoomLoader {
             final String terrainPath = description.getString("terrain");
             final Bitmap terrain = mAssetLoader.loadBitmap(terrainPath);
 
-            return new Room(background, furniture, terrain, description);
+            final JSONArray eventsDescs = description.getJSONArray("events");
+            final WorldEvent[] events = new WorldEvent[eventsDescs.length()];
+            for (int i = 0; i < eventsDescs.length(); i++) {
+                events[i] = readEvent(eventsDescs.getJSONObject(i));
+            }
+
+            return new Room(background, furniture, terrain, events);
         } catch (JSONException e) {
             throw new RuntimeException("Malformed or missing room description JSON for " + roomPath, e);
+        }
+    }
+
+    private WorldEvent readEvent(JSONObject eventDescription) {
+        try {
+            String name = eventDescription.getString("name");
+            JSONObject boundsObj = eventDescription.getJSONObject("bounds");
+            final int unscaledTop = boundsObj.getInt("top");
+            final int unscaledRight = boundsObj.getInt("right");
+            final int unscaledLeft = boundsObj.getInt("left");
+            final int unscaledBottom = boundsObj.getInt("bottom");
+            Rect bounds = new Rect(
+                mAssetLoader.scaleInt(unscaledLeft),
+                mAssetLoader.scaleInt(unscaledTop),
+                mAssetLoader.scaleInt(unscaledRight),
+                mAssetLoader.scaleInt(unscaledBottom)
+            );
+            return new WorldEvent(bounds, name);
+        } catch (JSONException e) {
+            throw new RuntimeException("Can't parse Event JSON");
         }
     }
 
