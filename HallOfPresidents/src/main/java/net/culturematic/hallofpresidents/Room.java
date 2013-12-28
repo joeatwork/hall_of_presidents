@@ -54,13 +54,12 @@ public class Room {
         if ((x < 0) || (y < 0) ||
             (x >= mTerrain.getWidth()) ||
             (y >= mTerrain.getHeight())) {
-            Log.d(LOGTAG, "OUT OF BOUNDS (Beyond terrain border) " + x + ", " + y);
             return false;
         }
 
         int color = mTerrain.getPixel(x, y);
         if (0 == (color & 0xff000000)) {
-            Log.d(LOGTAG, String.format("FOUND ALPHA 0 IN %x", color));
+            return false;
         }
         return true;
     }
