@@ -24,7 +24,9 @@ public class UIControls {
 
     public static class CancelCommand {}
 
-    public UIControls(Bitmap dpad, Bitmap button, Drawable dialogboxBackground, Typeface dialogFont) {
+    public UIControls(Bitmap dpad, Bitmap button,
+                      Drawable dialogboxBackground, Typeface dialogFont,
+                      float fontSize) {
         mDpadBitmap = dpad;
         mButtonBitmap = button;
         mDialogboxBackground = dialogboxBackground;
@@ -35,9 +37,9 @@ public class UIControls {
         mSemiTransparentPaint.setAlpha(128);
 
         mDialogPaint = new TextPaint();
-        mDialogPaint.setTypeface(dialogFont); // TODO get rid of font?
+        mDialogPaint.setTypeface(dialogFont);
         mDialogPaint.setColor(Color.BLACK);
-        mDialogPaint.setTextSize(24f);
+        mDialogPaint.setTextSize(fontSize);
 
         mDpadDestRect = new Rect(0, 0, mDpadBitmap.getWidth(), mDpadBitmap.getHeight());
         mAButtonDestRect = new Rect(0, 0, mButtonBitmap.getWidth(), mButtonBitmap.getHeight());
