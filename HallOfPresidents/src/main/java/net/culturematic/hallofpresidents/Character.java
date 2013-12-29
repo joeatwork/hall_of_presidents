@@ -13,7 +13,7 @@ public class Character {
     // ( 1, 0) -> Standing facing up
     // ( 2, 0) -> Standing facing left
     // ( x, 1), (x, 2), (x, 3) -> Walk cycles for facing X
-    public Character(Bitmap spritesheet, AssetLoader loader, PointF startPosition) {
+    public Character(Bitmap spritesheet, AssetLoader loader) {
         mSpriteSheet = spritesheet;
         mSpriteSize = loader.scaleInt(128);
         mHalfSpriteSize = mSpriteSize / 2;
@@ -27,7 +27,7 @@ public class Character {
         // There should probably be a viewport abstraction that deals with this position.
         mDestRect = new Rect(0, 0, mSpriteSize, mSpriteSize);
 
-        mPosition = startPosition; // TODO This should be in GameState.
+        mPosition = new PointF(0, 0);
         mAnimationDirection = UIControls.Direction.DIRECTION_DOWN;
         mAnimationDistance = 0;
         mLastTime = -1;
@@ -86,8 +86,9 @@ public class Character {
         }
     }
 
-    public void setRoom(Room room) {
+    public void setRoom(Room room, PointF startPoint) {
         mCurrentRoom = room;
+        mPosition.set(startPoint);
     }
 
     public PointF getPosition() {

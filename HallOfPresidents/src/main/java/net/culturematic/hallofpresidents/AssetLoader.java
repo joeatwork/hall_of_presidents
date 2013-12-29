@@ -1,8 +1,10 @@
 package net.culturematic.hallofpresidents;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -12,13 +14,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class AssetLoader {
-    public AssetLoader(AssetManager assetManager) {
-        mAssetManager = assetManager;
+    public AssetLoader(Context context) {
+        mAssetManager = context.getAssets();
+        mDisplayDensity = context.getResources().getDisplayMetrics().densityDpi;
     }
 
     public int scaleInt(int original) {
-        long scaleUp = (long) original * SCALE_NUMERATOR;
-        long scaleDown = scaleUp / SCALE_DENOMINATOR;
+        long scaleUp = (long) original * mDisplayDensity;
+        long scaleDown = scaleUp / DisplayMetrics.DENSITY_XXHIGH;
         return (int) scaleDown;
     }
 
@@ -42,34 +45,15 @@ public class AssetLoader {
         }
     }
 
-    // Can't scale a NinePatch the same way as a standard bitmap.
-    public Bitmap loadNinePatchBitmap(String path) {
-        InputStream in = null;
-        try {
-            in = mAssetManager.open(path);
-            return BitmapFactory.decodeStream(in);
-        } catch (IOException e) {
-            throw new RuntimeException("Couldn't read Ninepatch Bitmap at asset path " + path, e);
-        } finally {
-            if (null != in) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    Log.e(LOGTAG, "Can't close asset " + path, e);
-                }
-            }
-        }
-    }
-
-    public Bitmap loadBitmap(String path) {
+    public Bitmap loadBitmap(String path, Bitmap.Config preferredConfig) {
         InputStream in = null;
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
 
-        // REQUIRED But probably overkill- the raw bitmaps are too big to fit into
-        // graphics memory without some love. In the future, this should be aware
-        // of the density of the screen.
-        bitmapOptions.inDensity = SCALE_DENOMINATOR;
-        bitmapOptions.inTargetDensity = SCALE_NUMERATOR;
+        bitmapOptions.inDensity = DisplayMetrics.DENSITY_XXHIGH;
+        bitmapOptions.inTargetDensity = mDisplayDensity;
+        if (null != preferredConfig) {
+            bitmapOptions.inPreferredConfig = preferredConfig;
+        }
 
         try {
             in = mAssetManager.open(path);
@@ -103,9 +87,7 @@ public class AssetLoader {
     // pre-scale the images appropriately. Leaving it here for now
     // on the off chance we'll be sensitive to the display density
     // of the device at some point in the future.
-    private static final int SCALE_NUMERATOR = 9;
-    private static final int SCALE_DENOMINATOR = 20;
-
-    private AssetManager mAssetManager;
+    private final AssetManager mAssetManager;
+    private final int mDisplayDensity;
     private static final String LOGTAG = "hallofpresidents.AssetLoader";
 }

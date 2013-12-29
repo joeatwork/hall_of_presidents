@@ -39,6 +39,10 @@ public class Room {
         canvas.drawBitmap(mFurniture, worldRect, viewport, null);
     }
 
+    public PointF defaultDoor() {
+        return new PointF(mBackground.getWidth() / 2, mBackground.getHeight() / 2);
+    }
+
     public boolean inBounds(int x, int y) {
         if ((x < 0) || (y < 0) ||
             (x >= mTerrain.getWidth()) ||

@@ -27,6 +27,7 @@ public class Game {
         mHero = hero;
         mControls = controls;
 
+        mHero.setRoom(mRoom, mRoom.defaultDoor());
         mRedPaint = new Paint();
         mRedPaint.setColor(Color.RED);
     }
@@ -46,7 +47,6 @@ public class Game {
 
         mControls.clearCommands();
 
-        mHero.setRoom(mRoom);
         mHero.directionCommand(milliTime, mControls.currentDirection());
 
         PointF heroOffset = mHero.getPosition();

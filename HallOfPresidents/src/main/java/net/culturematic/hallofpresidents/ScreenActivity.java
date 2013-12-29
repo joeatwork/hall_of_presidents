@@ -37,17 +37,16 @@ public class ScreenActivity extends Activity {
         super.onResume();
 
         final Point gameDimensions = getBitmapDimensions();
-        AssetLoader assetLoader = new AssetLoader(getAssets());
+        AssetLoader assetLoader = new AssetLoader(this);
         RoomLoader roomLoader = new RoomLoader(assetLoader);
 
         Typeface dialogFont = Typeface.createFromAsset(getAssets(), "pressstart2p.ttf");
 
-        // TODO refactor- All loading should come from the same place, which isn't here.
-        final Bitmap heroSprites = assetLoader.loadBitmap("hero_sprites_128x128.png");
-        final Character hero = new Character(heroSprites, assetLoader, new PointF(50, 120));
+        final Bitmap heroSprites = assetLoader.loadBitmap("hero_sprites_128x128.png", null);
+        final Character hero = new Character(heroSprites, assetLoader);
 
-        final Bitmap dpad = assetLoader.loadBitmap("widget_dpad.png");
-        final Bitmap button = assetLoader.loadBitmap("widget_button.png");
+        final Bitmap dpad = assetLoader.loadBitmap("widget_dpad.png", null);
+        final Bitmap button = assetLoader.loadBitmap("widget_button.png", null);
 
         Resources res = getResources();
         Drawable dialogboxDrawable = res.getDrawable(R.drawable.dialogbox);

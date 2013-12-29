@@ -17,13 +17,13 @@ public class RoomLoader {
 
         try {
             final String backgroundPath = description.getString("background");
-            final Bitmap background = mAssetLoader.loadBitmap(backgroundPath);
+            final Bitmap background = mAssetLoader.loadBitmap(backgroundPath, Bitmap.Config.RGB_565);
 
             final String furniturePath = description.getString("furniture");
-            final Bitmap furniture = mAssetLoader.loadBitmap(furniturePath);
+            final Bitmap furniture = mAssetLoader.loadBitmap(furniturePath, null);
 
             final String terrainPath = description.getString("terrain");
-            final Bitmap terrain = mAssetLoader.loadBitmap(terrainPath);
+            final Bitmap terrain = mAssetLoader.loadBitmap(terrainPath, Bitmap.Config.ALPHA_8);
 
             final JSONArray eventsDescs = description.getJSONArray("events");
             final WorldEvent[] events = new WorldEvent[eventsDescs.length()];
