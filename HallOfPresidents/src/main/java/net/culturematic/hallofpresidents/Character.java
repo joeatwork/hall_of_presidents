@@ -16,6 +16,7 @@ public class Character {
     public Character(Bitmap spritesheet, AssetLoader loader, PointF startPosition) {
         mSpriteSheet = spritesheet;
         mSpriteSize = loader.scaleInt(128);
+        mHalfSpriteSize = mSpriteSize / 2;
         mAnimationFrameDistance = loader.scaleInt(128 / 4);
 
         // TODO this rect needs to be sensitive to bitmap scale,
@@ -30,39 +31,41 @@ public class Character {
         mAnimationDirection = UIControls.Direction.DIRECTION_DOWN;
         mAnimationDistance = 0;
         mLastTime = -1;
-        mSpeed = 1f/10000000f; // pixels per nano?
+
+        long stepsPerSecond = 2;
+        mSpeedPxPerMilli = stepsPerSecond * mSpriteSize / 1000f;
     }
 
-    public void directionCommand(long nanoTime, UIControls.Direction direction) {
+    public void directionCommand(long milliTime, UIControls.Direction direction) {
         if (mLastTime < 0) {
-            mLastTime = nanoTime;
+            mLastTime = milliTime;
         }
 
-        long deltaTime = nanoTime - mLastTime;
-        float distance = mSpeed * deltaTime;
+        long deltaTime = milliTime - mLastTime;
+        float distance = mSpeedPxPerMilli * deltaTime;
 
         switch (direction) {
             case DIRECTION_UP:
                 float yUp = mPosition.y - distance;
-                if (mCurrentRoom.inBounds((int) mPosition.x, (int) yUp)) {
+                if (mCurrentRoom.inBounds((int) mPosition.x, (int) yUp - mHalfSpriteSize)) {
                     mPosition.y = yUp;
                 }
                 break;
             case DIRECTION_DOWN:
                 float yDown = mPosition.y + distance;
-                if (mCurrentRoom.inBounds((int) mPosition.x, (int) yDown)) {
+                if (mCurrentRoom.inBounds((int) mPosition.x, (int) yDown + mHalfSpriteSize)) {
                     mPosition.y = yDown;
                 }
                 break;
             case DIRECTION_RIGHT:
                 float xRight = mPosition.x + distance;
-                if (mCurrentRoom.inBounds((int) xRight, (int) mPosition.y)) {
+                if (mCurrentRoom.inBounds((int) xRight + mHalfSpriteSize, (int) mPosition.y)) {
                     mPosition.x = xRight;
                 }
                 break;
             case DIRECTION_LEFT:
                 float xLeft = mPosition.x - distance;
-                if (mCurrentRoom.inBounds((int) xLeft, (int) mPosition.y)) {
+                if (mCurrentRoom.inBounds((int) xLeft + mHalfSpriteSize, (int) mPosition.y)) {
                     mPosition.x = xLeft;
                 }
                 break;
@@ -70,7 +73,7 @@ public class Character {
                 break;
         }
 
-        mLastTime = nanoTime;
+        mLastTime = milliTime;
 
         if (UIControls.Direction.DIRECTION_NONE == direction) {
             mAnimationDistance = 0;
@@ -113,9 +116,8 @@ public class Character {
         }
         mSourceRect.set(spritesheetXOffset, frameOffset, spritesheetXOffset + mSpriteSize, frameOffset + mSpriteSize);
 
-        int halfSize = mSpriteSize / 2;
-        int xDestOffset = ((int) mPosition.x) - (halfSize + viewportOffsetX);
-        int yDestOffset = ((int) mPosition.y) - (halfSize + viewportOffsetY);
+        int xDestOffset = ((int) mPosition.x) - (mHalfSpriteSize + viewportOffsetX);
+        int yDestOffset = ((int) mPosition.y) - (mHalfSpriteSize + viewportOffsetY);
         mDestRect.offsetTo(xDestOffset, yDestOffset);
         canvas.drawBitmap(mSpriteSheet, mSourceRect, mDestRect, null);
     }
@@ -126,13 +128,16 @@ public class Character {
     private Room mCurrentRoom;
 
     private final int mSpriteSize;
+    private final int mHalfSpriteSize;
     private final int mAnimationFrameDistance;
+    private final float mSpeedPxPerMilli;
     private final PointF mPosition;
-    private final float mSpeed;
     private final Bitmap mSpriteSheet;
     private final Rect mSourceRect;
     private final Rect mDestRect;
 
     private static final int ANIMATION_LENGTH_IN_FRAMES = 4;
+
+    @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.Character";
 }

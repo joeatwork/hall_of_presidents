@@ -31,7 +31,7 @@ public class Game {
         mRedPaint.setColor(Color.RED);
     }
 
-    public void update(final long nanoTime, InputEvents.TouchSpot[] touchSpots) {
+    public void update(final long milliTime, InputEvents.TouchSpot[] touchSpots) {
         mControls.intepretInteractions(touchSpots);
 
         UIControls.CancelCommand cancelCommand = mControls.getCancelCommand();
@@ -47,7 +47,7 @@ public class Game {
         mControls.clearCommands();
 
         mHero.setRoom(mRoom);
-        mHero.directionCommand(nanoTime, mControls.currentDirection());
+        mHero.directionCommand(milliTime, mControls.currentDirection());
 
         PointF heroOffset = mHero.getPosition();
         WorldEvent worldEvent = mRoom.checkForEvent(heroOffset);

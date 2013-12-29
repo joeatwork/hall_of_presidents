@@ -136,9 +136,9 @@ public class ScreenActivity extends Activity {
                 if (! mHolder.getSurface().isValid()) {
                     continue;
                 }
-                long time = System.nanoTime();
+                long timeMillis = System.currentTimeMillis();
                 mInputEvents.getPointsDown(touchSpots);
-                game.update(time, touchSpots);
+                game.update(timeMillis, touchSpots);
                 Canvas canvas = null;
                 try {
                     canvas = mHolder.lockCanvas();
