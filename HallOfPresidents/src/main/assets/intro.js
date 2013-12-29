@@ -13,7 +13,7 @@
             "name": "WEST EVENT",
             "dialog": {
                 "command": "Talk",
-                "dialog": "GODDESS OF THE ORANGE ELEMENT:\nI haven't read Joseph Campbell, but I have seen \"Star Wars\""
+                "dialog": "ORANGE GODDESS:\n\nI haven't read Joseph Campbell, but I have seen \"Star Wars\""
             }
         },
         {
@@ -26,7 +26,7 @@
             "name": "NORTHWEST EVENT",
             "dialog": {
                 "command": "Talk",
-                "dialog": "GODDESS OF THE GREEN ELEMENT:\nI haven't seen the original Star Wars, but I have seen \"The Phantom Menace\""
+                "dialog": "GREEN GODDESS:\n\nI haven't seen the original Star Wars, but I have seen \"The Phantom Menace\""
             }
         },
         {
@@ -39,7 +39,7 @@
             "name": "NORTHEAST EVENT",
             "dialog": {
                 "command": "Talk",
-                "dialog": "GODDESS OF THE BLUE ELEMENT:\nI haven't seen \"The Phantom Menace\", but I did play Final Fantasy VII."
+                "dialog": "BLUE GODDESS:\n\nI haven't seen \"The Phantom Menace\", but I did play Final Fantasy VII."
             }
         },
         {
@@ -52,7 +52,7 @@
             "name": "EAST EVENT",
             "dialog": {
                 "command": "Talk",
-                "dialog": "GODDESS OF THE YELLOW ELEMENT:\nI haven't played any Final Fantasy, but I do read the fan fiction."
+                "dialog": "YELLOW GODDESS:\n\nI haven't played any Final Fantasy, but I do read the fan fiction."
             }
         }
     ]

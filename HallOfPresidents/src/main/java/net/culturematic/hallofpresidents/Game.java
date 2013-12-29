@@ -32,12 +32,10 @@ public class Game {
     }
 
     public void update(final long nanoTime, InputEvents.TouchSpot[] touchSpots) {
-        assert(nanoTime >= 0);
-
         mControls.intepretInteractions(touchSpots);
         Dialog command = mControls.getDialogCommand();
         if (null != command) {
-            Log.d(LOGTAG, "COMMAND GIVEN:\n" + command.getDialog());
+            mControls.displayDialog(command);
         }
 
         mControls.clearCommands();

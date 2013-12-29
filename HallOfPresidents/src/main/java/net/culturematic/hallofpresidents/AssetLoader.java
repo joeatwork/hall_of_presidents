@@ -42,6 +42,25 @@ public class AssetLoader {
         }
     }
 
+    // Can't scale a NinePatch the same way as a standard bitmap.
+    public Bitmap loadNinePatchBitmap(String path) {
+        InputStream in = null;
+        try {
+            in = mAssetManager.open(path);
+            return BitmapFactory.decodeStream(in);
+        } catch (IOException e) {
+            throw new RuntimeException("Couldn't read Ninepatch Bitmap at asset path " + path, e);
+        } finally {
+            if (null != in) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    Log.e(LOGTAG, "Can't close asset " + path, e);
+                }
+            }
+        }
+    }
+
     public Bitmap loadBitmap(String path) {
         InputStream in = null;
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
