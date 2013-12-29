@@ -11,7 +11,10 @@
                 "bottom": 1157
             },
             "name": "WEST EVENT",
-            "action": "talk"
+            "dialog": {
+                "command": "Talk",
+                "dialog": "GODDESS OF THE ORANGE ELEMENT:\nI haven't read Joseph Campbell, but I have seen \"Star Wars\""
+            }
         },
         {
             "bounds": {
@@ -21,7 +24,10 @@
                 "bottom": 808
             },
             "name": "NORTHWEST EVENT",
-            "action": "talk"
+            "dialog": {
+                "command": "Talk",
+                "dialog": "GODDESS OF THE GREEN ELEMENT:\nI haven't seen the original Star Wars, but I have seen \"The Phantom Menace\""
+            }
         },
         {
            "bounds": {
@@ -31,7 +37,10 @@
                 "bottom": 816
            },
             "name": "NORTHEAST EVENT",
-            "action": "talk"
+            "dialog": {
+                "command": "Talk",
+                "dialog": "GODDESS OF THE BLUE ELEMENT:\nI haven't seen \"The Phantom Menace\", but I did play Final Fantasy VII."
+            }
         },
         {
             "bounds": {
@@ -41,7 +50,10 @@
                 "bottom": 1160
             },
             "name": "EAST EVENT",
-            "action": "talk"
+            "dialog": {
+                "command": "Talk",
+                "dialog": "GODDESS OF THE YELLOW ELEMENT:\nI haven't played any Final Fantasy, but I do read the fan fiction."
+            }
         }
     ]
 }

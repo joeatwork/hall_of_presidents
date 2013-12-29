@@ -45,13 +45,23 @@ public class RoomLoader {
             final int unscaledRight = boundsObj.getInt("right");
             final int unscaledLeft = boundsObj.getInt("left");
             final int unscaledBottom = boundsObj.getInt("bottom");
-            Rect bounds = new Rect(
+            final Rect bounds = new Rect(
                 mAssetLoader.scaleInt(unscaledLeft),
                 mAssetLoader.scaleInt(unscaledTop),
                 mAssetLoader.scaleInt(unscaledRight),
                 mAssetLoader.scaleInt(unscaledBottom)
             );
-            return new WorldEvent(bounds, name);
+
+            Dialog dialog = null;
+            if (eventDescription.has("dialog")) {
+                JSONObject dialogDesc = eventDescription.getJSONObject("dialog");
+                dialog = new Dialog(
+                    dialogDesc.getString("command"),
+                    dialogDesc.getString("dialog")
+                );
+            }
+
+            return new WorldEvent(bounds, name, dialog);
         } catch (JSONException e) {
             throw new RuntimeException("Can't parse Event JSON");
         }

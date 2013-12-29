@@ -2,8 +2,6 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
@@ -13,9 +11,6 @@ public class Room {
         mFurniture = furniture;
         mTerrain = terrain;
         mEvents = events;
-
-        mRedPaint = new Paint();
-        mRedPaint.setColor(Color.RED);
     }
 
     /**
@@ -30,13 +25,13 @@ public class Room {
         /*
          * For debugging- the code below will draw a rectangle for each event in the room.
          *
+        Paint redPaint = new Paint();
+        redPaint.setColor(Color.RED);
         for (int i = 0; i < mEvents.length; i++) {
             final Rect bounds = new Rect(mEvents[i].getBounds()); // Bounds in WORLD COORDS.
             bounds.offset(- worldRect.left, - worldRect.top);
-            canvas.drawRect(bounds, mRedPaint);
+            canvas.drawRect(bounds, redPaint);
         }
-        *
-        *
         */
     }
 
@@ -69,8 +64,6 @@ public class Room {
 
         return null;
     }
-
-    private final Paint mRedPaint;
 
     private final Bitmap mBackground;
     private final Bitmap mFurniture;

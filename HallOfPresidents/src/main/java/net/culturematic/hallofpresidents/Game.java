@@ -35,13 +35,21 @@ public class Game {
         assert(nanoTime >= 0);
 
         mControls.intepretInteractions(touchSpots);
+        Dialog command = mControls.getDialogCommand();
+        if (null != command) {
+            Log.d(LOGTAG, "COMMAND GIVEN:\n" + command.getDialog());
+        }
+
+        mControls.clearCommands();
+
         mHero.setRoom(mRoom);
         mHero.directionCommand(nanoTime, mControls.currentDirection());
 
         PointF heroOffset = mHero.getPosition();
         WorldEvent worldEvent = mRoom.checkForEvent(heroOffset);
         if (null != worldEvent) {
-            Log.d(LOGTAG, "Found Event " + worldEvent.getName());
+            Dialog dialog = worldEvent.getDialog();
+            mControls.addDialogCommand(dialog);
         }
         // We want the hero at the center of the Viewport
         int worldOffsetX = (int) heroOffset.x - mViewBounds.centerX();

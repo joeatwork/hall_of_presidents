@@ -59,8 +59,19 @@ public class UIControls {
         return mCurrentDirection;
     }
 
-    public boolean currentButtonIsPressed() {
-        return mButtonIsPressed;
+    public void clearCommands() {
+        mDialog = null;
+    }
+
+    public void addDialogCommand(Dialog dialog) {
+        mDialog = dialog;
+    }
+
+    public Dialog getDialogCommand() {
+        if (mButtonIsPressed) {
+            return mDialog;
+        }
+        return null;
     }
 
     public void drawControls(Canvas canvas, Rect viewBounds) {
@@ -68,12 +79,15 @@ public class UIControls {
         mDpadDestRect.offsetTo(0, viewBounds.height() - mDpadDestRect.height());
         canvas.drawBitmap(mDpadBitmap, null, mDpadDestRect, null);
 
-        mButtonDestRect.offsetTo(viewBounds.width() - mButtonDestRect.width(),
-                                viewBounds.height() - mButtonDestRect.height());
-        canvas.drawBitmap(mButtonBitmap, null, mButtonDestRect, null);
+        if (null != mDialog) {
+            mButtonDestRect.offsetTo(viewBounds.width() - mButtonDestRect.width(),
+                                    viewBounds.height() - mButtonDestRect.height());
+            canvas.drawBitmap(mButtonBitmap, null, mButtonDestRect, null);
+        }
     }
 
     private Direction mCurrentDirection;
+    private Dialog mDialog;
     private boolean mButtonIsPressed;
 
     private final Bitmap mDpadBitmap;
