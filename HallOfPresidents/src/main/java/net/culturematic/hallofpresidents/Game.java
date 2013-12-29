@@ -33,9 +33,15 @@ public class Game {
 
     public void update(final long nanoTime, InputEvents.TouchSpot[] touchSpots) {
         mControls.intepretInteractions(touchSpots);
-        Dialog command = mControls.getDialogCommand();
-        if (null != command) {
-            mControls.displayDialog(command);
+
+        UIControls.CancelCommand cancelCommand = mControls.getCancelCommand();
+        if (null != cancelCommand) {
+            mControls.cancel(cancelCommand);
+        }
+
+        Dialog dialogCommand = mControls.getDialogCommand();
+        if (null != dialogCommand) {
+            mControls.displayDialog(dialogCommand);
         }
 
         mControls.clearCommands();
