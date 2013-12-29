@@ -150,9 +150,6 @@ public class ScreenActivity extends Activity {
                         mHolder.unlockCanvasAndPost(canvas);
                     }
                 }
-                if (0 == frameCount % 100) {
-                    System.out.println("Looped " + frameCount + " times.");
-                }
                 frameCount++;
             }// while
             setGameState(new Game.GameState());

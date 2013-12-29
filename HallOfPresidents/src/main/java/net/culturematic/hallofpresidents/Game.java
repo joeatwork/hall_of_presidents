@@ -95,5 +95,6 @@ public class Game {
 
     private final Paint mRedPaint;
 
+    @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.Game";
 }

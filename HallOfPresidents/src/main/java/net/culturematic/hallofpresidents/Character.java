@@ -65,7 +65,7 @@ public class Character {
                 break;
             case DIRECTION_LEFT:
                 float xLeft = mPosition.x - distance;
-                if (mCurrentRoom.inBounds((int) xLeft + mHalfSpriteSize, (int) mPosition.y)) {
+                if (mCurrentRoom.inBounds((int) xLeft - mHalfSpriteSize, (int) mPosition.y)) {
                     mPosition.x = xLeft;
                 }
                 break;
