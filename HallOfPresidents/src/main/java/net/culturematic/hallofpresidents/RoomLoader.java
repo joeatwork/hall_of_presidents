@@ -55,15 +55,32 @@ public class RoomLoader {
             Dialog dialog = null;
             if (eventDescription.has("dialog")) {
                 JSONObject dialogDesc = eventDescription.getJSONObject("dialog");
+                String facingName = dialogDesc.getString("facing");
+                UIControls.Direction facing;
+                if ("Up".equals(facingName)) {
+                    facing = UIControls.Direction.DIRECTION_UP;
+                } else if ("Down".equals(facingName)) {
+                    facing = UIControls.Direction.DIRECTION_DOWN;
+                } else if ("Left".equals(facingName)) {
+                    facing = UIControls.Direction.DIRECTION_LEFT;
+                } else if ("Right".equals(facingName)) {
+                    facing = UIControls.Direction.DIRECTION_RIGHT;
+                } else {
+                    throw new RuntimeException(
+                        "Can't understand facing " + facingName + " (should be 'Up', 'Down', 'Left' or 'Right'"
+                    );
+                }
+
                 dialog = new Dialog(
                     dialogDesc.getString("command"),
-                    dialogDesc.getString("dialog")
+                    dialogDesc.getString("dialog"),
+                    facing
                 );
             }
 
             return new WorldEvent(bounds, name, dialog);
         } catch (JSONException e) {
-            throw new RuntimeException("Can't parse Event JSON");
+            throw new RuntimeException("Can't parse Event JSON", e);
         }
     }
 

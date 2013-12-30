@@ -43,11 +43,12 @@ public class Game {
         Dialog dialogCommand = mControls.getDialogCommand();
         if (null != dialogCommand) {
             mControls.displayDialog(dialogCommand);
+            mHero.setFacing(dialogCommand.getFacing());
         }
 
         mControls.clearCommands();
 
-        mHero.directionCommand(milliTime, mControls.currentDirection());
+        mHero.directionCommand(milliTime, mControls.currentDirection()); // Does this fuck up setFacing?
 
         PointF heroOffset = mHero.getPosition();
         WorldEvent worldEvent = mRoom.checkForEvent(heroOffset);

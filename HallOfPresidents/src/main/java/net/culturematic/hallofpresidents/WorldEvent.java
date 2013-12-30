@@ -2,9 +2,6 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Rect;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class WorldEvent {
 
 

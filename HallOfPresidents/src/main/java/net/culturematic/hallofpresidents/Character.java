@@ -99,6 +99,10 @@ public class Character {
         mPosition.set(startPoint);
     }
 
+    public void setFacing(UIControls.Direction facing) {
+        mAnimationDirection = facing;
+    }
+
     public PointF getPosition() {
         return mPosition;
     }

@@ -13,6 +13,7 @@
             "name": "WEST EVENT",
             "dialog": {
                 "command": "Talk",
+                "facing": "Up",
                 "dialog": "ORANGE GODDESS:\n\nI haven't read Joseph Campbell, but I have seen \"Star Wars\""
             }
         },
@@ -26,6 +27,7 @@
             "name": "NORTHWEST EVENT",
             "dialog": {
                 "command": "Talk",
+                "facing": "Up",
                 "dialog": "GREEN GODDESS:\n\nI haven't seen the original Star Wars, but I have seen \"The Phantom Menace\""
             }
         },
@@ -39,6 +41,7 @@
             "name": "NORTHEAST EVENT",
             "dialog": {
                 "command": "Talk",
+                "facing": "Up",
                 "dialog": "BLUE GODDESS:\n\nI haven't seen \"The Phantom Menace\", but I did play Final Fantasy VII."
             }
         },
@@ -52,6 +55,7 @@
             "name": "EAST EVENT",
             "dialog": {
                 "command": "Talk",
+                "facing": "Up",
                 "dialog": "YELLOW GODDESS:\n\nI haven't played any Final Fantasy, but I do read the fan fiction."
             }
         }
