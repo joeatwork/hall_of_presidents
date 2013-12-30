@@ -4,16 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.Log;
 
 public class Game {
     public Game(Bitmap screen,
                 GameState savedState,
                 RoomLoader roomLoader,
-                Character hero,
+                GameCharacter hero,
                 UIControls controls,
                 Rect viewBounds) {
         if (null != savedState) {
@@ -91,7 +89,7 @@ public class Game {
     private final RoomLoader mRoomLoader;
     private final Rect mViewBounds; // Area of screen for us to draw on
     private final Rect mWorldBounds; // Area of the world to show on the screen
-    private final Character mHero;
+    private final GameCharacter mHero;
     private final UIControls mControls;
 
     private final Paint mRedPaint;

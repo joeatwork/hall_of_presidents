@@ -7,13 +7,13 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.Log;
 
-public class Character {
+public class GameCharacter {
     // HARDCODED LAYOUT
     // ( 0, 0) -> Standing facing down
     // ( 1, 0) -> Standing facing up
     // ( 2, 0) -> Standing facing left
     // ( x, 1), (x, 2), (x, 3) -> Walk cycles for facing X
-    public Character(AssetLoader loader) {
+    public GameCharacter(AssetLoader loader) {
         mSpriteSheet = loader.loadHeroSpritesBitmap();
         mSpriteSize = loader.scaleInt(128);
         mHalfSpriteSize = mSpriteSize / 2;
@@ -152,5 +152,5 @@ public class Character {
     private static final int ANIMATION_LENGTH_IN_FRAMES = 4;
 
     @SuppressWarnings("unused")
-    private static final String LOGTAG = "hallofpresidents.Character";
+    private static final String LOGTAG = "hallofpresidents.GameCharacter";
 }

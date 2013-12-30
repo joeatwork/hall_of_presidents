@@ -72,7 +72,7 @@ public class ScreenActivity extends Activity {
             mDimensions = gameDimensions;
             mGameState = gameState;
             mHolder = holder;
-            mHero = new Character(assetLoader);
+            mHero = new GameCharacter(assetLoader);
             mControls = new UIControls(assetLoader);
         }
 
@@ -135,7 +135,7 @@ public class ScreenActivity extends Activity {
 
         private final Point mDimensions;
         private final SurfaceHolder mHolder;
-        private final Character mHero;
+        private final GameCharacter mHero;
         private final UIControls mControls;
         private final RoomLoader mRoomLoader;
         private Game.GameState mGameState;
