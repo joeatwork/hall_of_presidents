@@ -4,12 +4,15 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.Log;
 
 // TODO bit of an informal state machine here, should probably be a formal state machine.
 public class UIControls {
@@ -25,11 +28,16 @@ public class UIControls {
     public static class CancelCommand {}
 
     public UIControls(Bitmap dpad, Bitmap button,
-                      Drawable dialogboxBackground, Typeface dialogFont,
-                      float fontSize) {
+                      Drawable dialogboxBackground,
+                      Typeface dialogFont,
+                      float fontSize,
+                      float buttonPadding) {
+        Log.d(LOGTAG, "BUTTON PADDING " + buttonPadding);
+
         mDpadBitmap = dpad;
         mButtonBitmap = button;
         mDialogboxBackground = dialogboxBackground;
+        mButtonPadding = buttonPadding;
 
         mDefaultPaint = new Paint();
 
@@ -54,7 +62,6 @@ public class UIControls {
 
     public void intepretInteractions(InputEvents.TouchSpot[] spots) {
         mCurrentDirection = Direction.DIRECTION_NONE;
-        boolean buttonWasPressed = mAButtonIsPressed;
         mAButtonIsPressed = false;
         mBButtonIsPressed = false;
         for (int i = 0; i < spots.length; i++) {
@@ -127,6 +134,13 @@ public class UIControls {
         mBButtonDestRect.offsetTo(viewBounds.width() - mBButtonDestRect.width(),
                 viewBounds.height() - mBButtonDestRect.height());
         canvas.drawBitmap(mButtonBitmap, null, mBButtonDestRect, bButtonPaint);
+        if (null != mCancelAvailable) {
+
+            canvas.drawText("Cancel",
+                    mBButtonDestRect.left + mButtonPadding,
+                    mBButtonDestRect.bottom - mButtonPadding,
+                    mDialogPaint);
+        }
 
         Paint aButtonPaint = mDefaultPaint;
         if (null == mDialogAvailable) {
@@ -135,6 +149,12 @@ public class UIControls {
         mAButtonDestRect.set(mBButtonDestRect);
         mAButtonDestRect.offset(0, - mBButtonDestRect.height());
         canvas.drawBitmap(mButtonBitmap, null, mAButtonDestRect, aButtonPaint);
+        if (null != mDialogAvailable) {
+            canvas.drawText("Talk",
+                    mAButtonDestRect.left + mButtonPadding,
+                    mAButtonDestRect.bottom - mButtonPadding,
+                    mDialogPaint);
+        }
 
         if (null != mDialogShowing) {
             mDialogDestRect.set(viewBounds.top, viewBounds.left, viewBounds.right, viewBounds.centerY());
@@ -188,6 +208,7 @@ public class UIControls {
     private boolean mAButtonIsPressed;
     private boolean mBButtonIsPressed;
 
+    private final float mButtonPadding;
     private final Paint mSemiTransparentPaint;
     private final Paint mDefaultPaint;
     private final TextPaint mDialogPaint;

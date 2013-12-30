@@ -51,7 +51,8 @@ public class ScreenActivity extends Activity {
         Drawable dialogboxDrawable = res.getDrawable(R.drawable.dialogbox);
 
         float fontSize = this.getResources().getDisplayMetrics().scaledDensity * 14f;
-        final UIControls controls = new UIControls(dpad, button, dialogboxDrawable, dialogFont, fontSize);
+        float buttonPadding = assetLoader.scaleInt(64);
+        final UIControls controls = new UIControls(dpad, button, dialogboxDrawable, dialogFont, fontSize, buttonPadding);
 
         mGameLoop = new GameLoop(
             mSurfaceView.getHolder(),
