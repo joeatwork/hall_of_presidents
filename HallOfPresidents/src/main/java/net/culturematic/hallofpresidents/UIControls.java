@@ -27,17 +27,11 @@ public class UIControls {
 
     public static class CancelCommand {}
 
-    public UIControls(Bitmap dpad, Bitmap button,
-                      Drawable dialogboxBackground,
-                      Typeface dialogFont,
-                      float fontSize,
-                      float buttonPadding) {
-        Log.d(LOGTAG, "BUTTON PADDING " + buttonPadding);
-
-        mDpadBitmap = dpad;
-        mButtonBitmap = button;
-        mDialogboxBackground = dialogboxBackground;
-        mButtonPadding = buttonPadding;
+    public UIControls(AssetLoader assetLoader) {
+        mDpadBitmap = assetLoader.loadDpadBitmap();
+        mButtonBitmap = assetLoader.loadButtonBitmap();
+        mDialogboxBackground = assetLoader.loadDialogBackground();
+        mButtonPadding = assetLoader.getButtonPadding();
 
         mDefaultPaint = new Paint();
 
@@ -45,9 +39,9 @@ public class UIControls {
         mSemiTransparentPaint.setAlpha(128);
 
         mDialogPaint = new TextPaint();
-        mDialogPaint.setTypeface(dialogFont);
+        mDialogPaint.setTypeface(assetLoader.loadDialogTypeface());
         mDialogPaint.setColor(Color.BLACK);
-        mDialogPaint.setTextSize(fontSize);
+        mDialogPaint.setTextSize(assetLoader.getDialogFontSize());
 
         mDpadDestRect = new Rect(0, 0, mDpadBitmap.getWidth(), mDpadBitmap.getHeight());
         mAButtonDestRect = new Rect(0, 0, mButtonBitmap.getWidth(), mButtonBitmap.getHeight());

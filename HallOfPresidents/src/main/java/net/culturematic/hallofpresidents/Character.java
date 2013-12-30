@@ -13,8 +13,8 @@ public class Character {
     // ( 1, 0) -> Standing facing up
     // ( 2, 0) -> Standing facing left
     // ( x, 1), (x, 2), (x, 3) -> Walk cycles for facing X
-    public Character(Bitmap spritesheet, AssetLoader loader) {
-        mSpriteSheet = spritesheet;
+    public Character(AssetLoader loader) {
+        mSpriteSheet = loader.loadHeroSpritesBitmap();
         mSpriteSize = loader.scaleInt(128);
         mHalfSpriteSize = mSpriteSize / 2;
         mAnimationFrameDistance = loader.scaleInt(128 / 4);

@@ -1,7 +1,6 @@
 package net.culturematic.hallofpresidents;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -38,19 +37,8 @@ public class ScreenActivity extends Activity {
         final Point gameDimensions = getBitmapDimensions();
         AssetLoader assetLoader = new AssetLoader(this);
         RoomLoader roomLoader = new RoomLoader(assetLoader);
-
-        Typeface dialogFont = assetLoader.loadDialogTypeface();
-        final Bitmap heroSprites = assetLoader.loadHeroSpritesBitmap();
-        final Character hero = new Character(heroSprites, assetLoader);
-
-        final Bitmap dpad = assetLoader.loadDpadBitmap();
-        final Bitmap button = assetLoader.loadButtonBitmap();
-
-        Drawable dialogboxDrawable = assetLoader.loadDialogBackground();
-        float fontSize = assetLoader.getDialogFontSize();
-        float buttonPadding = assetLoader.getButtonPadding();
-
-        final UIControls controls = new UIControls(dpad, button, dialogboxDrawable, dialogFont, fontSize, buttonPadding);
+        final Character hero = new Character(assetLoader);
+        final UIControls controls = new UIControls(assetLoader);
 
         mGameLoop = new GameLoop(
             mSurfaceView.getHolder(),
@@ -123,7 +111,6 @@ public class ScreenActivity extends Activity {
             Game.GameState gameState = getGameState();
             setGameState(null);
 
-            int frameCount = 0;
             final Rect boundsRect = new Rect();
             final Bitmap screen = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
 
@@ -141,14 +128,16 @@ public class ScreenActivity extends Activity {
                 Canvas canvas = null;
                 try {
                     canvas = mHolder.lockCanvas();
+
+                    assert canvas != null;
                     canvas.getClipBounds(boundsRect);
+
                     canvas.drawBitmap(screen, null, boundsRect, null);
                 } finally {
                     if (null != canvas) {
                         mHolder.unlockCanvasAndPost(canvas);
                     }
                 }
-                frameCount++;
             }// while
             setGameState(new Game.GameState());
         } // run()
