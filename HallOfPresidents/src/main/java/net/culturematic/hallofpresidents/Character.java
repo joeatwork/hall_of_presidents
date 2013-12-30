@@ -47,25 +47,33 @@ public class Character {
         switch (direction) {
             case DIRECTION_UP:
                 float yUp = mPosition.y - distance;
-                if (mCurrentRoom.inBounds((int) mPosition.x, (int) yUp - mHalfSpriteSize)) {
+                int yCheckUp = (int) yUp - mHalfSpriteSize;
+                if (mCurrentRoom.inBounds((int) mPosition.x + mHalfSpriteSize, yCheckUp) &&
+                        mCurrentRoom.inBounds((int) mPosition.x - mHalfSpriteSize, yCheckUp)) {
                     mPosition.y = yUp;
                 }
                 break;
             case DIRECTION_DOWN:
                 float yDown = mPosition.y + distance;
-                if (mCurrentRoom.inBounds((int) mPosition.x, (int) yDown + mHalfSpriteSize)) {
+                int yCheckDown = (int) yDown + mHalfSpriteSize;
+                if (mCurrentRoom.inBounds((int) mPosition.x + mHalfSpriteSize, yCheckDown) &&
+                        mCurrentRoom.inBounds((int) mPosition.x - mHalfSpriteSize, yCheckDown)) {
                     mPosition.y = yDown;
                 }
                 break;
             case DIRECTION_RIGHT:
                 float xRight = mPosition.x + distance;
-                if (mCurrentRoom.inBounds((int) xRight + mHalfSpriteSize, (int) mPosition.y)) {
+                int xCheckRight = (int) xRight + mHalfSpriteSize;
+                if (mCurrentRoom.inBounds(xCheckRight, (int) mPosition.y + mHalfSpriteSize) &&
+                        mCurrentRoom.inBounds(xCheckRight, (int) mPosition.y - mHalfSpriteSize)) {
                     mPosition.x = xRight;
                 }
                 break;
             case DIRECTION_LEFT:
                 float xLeft = mPosition.x - distance;
-                if (mCurrentRoom.inBounds((int) xLeft - mHalfSpriteSize, (int) mPosition.y)) {
+                int xCheckLeft = (int) xLeft - mHalfSpriteSize;
+                if (mCurrentRoom.inBounds(xCheckLeft, (int) mPosition.y + mHalfSpriteSize) &&
+                        mCurrentRoom.inBounds(xCheckLeft, (int) mPosition.y - mHalfSpriteSize)) {
                     mPosition.x = xLeft;
                 }
                 break;
