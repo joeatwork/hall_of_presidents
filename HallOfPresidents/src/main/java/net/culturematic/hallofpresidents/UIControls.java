@@ -161,11 +161,12 @@ public class UIControls {
             mDialogboxBackground.setBounds(mDialogDestRect);
             mDialogboxBackground.draw(canvas);
             mDialogboxBackground.getPadding(mDialogTextDestRect);
+            int dialogWidth = mDialogDestRect.width() - (mDialogTextDestRect.left + mDialogTextDestRect.right);
 
             StaticLayout dialogLayout = new StaticLayout(
                 mDialogShowing.getDialog(),
                 mDialogPaint,
-                mDialogDestRect.width(),
+                dialogWidth,
                 Layout.Alignment.ALIGN_NORMAL,
                 1.4f, // SpacingMult (Multiply line height)
                 0.0f, // SpacingAdd (add to line height)
