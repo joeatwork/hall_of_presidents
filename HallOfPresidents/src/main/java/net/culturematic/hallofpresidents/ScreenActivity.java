@@ -66,14 +66,11 @@ public class ScreenActivity extends Activity {
                         Point gameDimensions,
                         AssetLoader assetLoader,
                         Game.GameState gameState) {
-
-            mRoomLoader = new RoomLoader(assetLoader);
             mRunning = true;
             mDimensions = gameDimensions;
+            mAssetLoader = assetLoader;
             mGameState = gameState;
             mHolder = holder;
-            mHero = new GameCharacter(assetLoader);
-            mControls = new UIControls(assetLoader);
         }
 
         public Game.GameState pause() {
@@ -103,10 +100,10 @@ public class ScreenActivity extends Activity {
             setGameState(null);
 
             final Rect boundsRect = new Rect();
-            final Bitmap screen = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
+            final Bitmap displayBitmap = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
 
             final Rect gameDimensions = new Rect(0, 0, mDimensions.x, mDimensions.y);
-            final Game game = new Game(screen, gameState, mRoomLoader, mHero, mControls, gameDimensions);
+            final Game game = new Game(displayBitmap, gameDimensions, gameState, mAssetLoader);
             final InputEvents.TouchSpot[] touchSpots = new InputEvents.TouchSpot[InputEvents.MAX_TOUCH_SPOTS];
 
             while (mRunning) {
@@ -123,7 +120,7 @@ public class ScreenActivity extends Activity {
                     assert canvas != null;
                     canvas.getClipBounds(boundsRect);
 
-                    canvas.drawBitmap(screen, null, boundsRect, null);
+                    canvas.drawBitmap(displayBitmap, null, boundsRect, null);
                 } finally {
                     if (null != canvas) {
                         mHolder.unlockCanvasAndPost(canvas);
@@ -135,9 +132,7 @@ public class ScreenActivity extends Activity {
 
         private final Point mDimensions;
         private final SurfaceHolder mHolder;
-        private final GameCharacter mHero;
-        private final UIControls mControls;
-        private final RoomLoader mRoomLoader;
+        private final AssetLoader mAssetLoader;
         private Game.GameState mGameState;
         private volatile boolean mRunning;
     } // class
