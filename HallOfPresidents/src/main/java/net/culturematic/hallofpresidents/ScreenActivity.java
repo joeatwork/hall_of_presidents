@@ -39,19 +39,17 @@ public class ScreenActivity extends Activity {
         AssetLoader assetLoader = new AssetLoader(this);
         RoomLoader roomLoader = new RoomLoader(assetLoader);
 
-        Typeface dialogFont = Typeface.createFromAsset(getAssets(), "pressstart2p.ttf");
-
-        final Bitmap heroSprites = assetLoader.loadBitmap("hero_sprites_128x128.png", null);
+        Typeface dialogFont = assetLoader.loadDialogTypeface();
+        final Bitmap heroSprites = assetLoader.loadHeroSpritesBitmap();
         final Character hero = new Character(heroSprites, assetLoader);
 
-        final Bitmap dpad = assetLoader.loadBitmap("widget_dpad.png", null);
-        final Bitmap button = assetLoader.loadBitmap("widget_button.png", null);
+        final Bitmap dpad = assetLoader.loadDpadBitmap();
+        final Bitmap button = assetLoader.loadButtonBitmap();
 
-        Resources res = getResources();
-        Drawable dialogboxDrawable = res.getDrawable(R.drawable.dialogbox);
+        Drawable dialogboxDrawable = assetLoader.loadDialogBackground();
+        float fontSize = assetLoader.getDialogFontSize();
+        float buttonPadding = assetLoader.getButtonPadding();
 
-        float fontSize = this.getResources().getDisplayMetrics().scaledDensity * 14f;
-        float buttonPadding = assetLoader.scaleInt(64);
         final UIControls controls = new UIControls(dpad, button, dialogboxDrawable, dialogFont, fontSize, buttonPadding);
 
         mGameLoop = new GameLoop(
