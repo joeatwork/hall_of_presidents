@@ -69,6 +69,16 @@ public class WorldScreen implements Screen {
         mControls.drawControls(mCanvas, mViewBounds);
     }
 
+    @Override
+    public Screen nextScreen() {
+        return null;
+    }
+
+    @Override
+    public void recycle() {
+        // TODO- recycle mHero, mRoom, mControls here
+    }
+
     private Room mRoom;
     private final Canvas mCanvas;
     private final Rect mViewBounds; // Area of screen for us to draw on

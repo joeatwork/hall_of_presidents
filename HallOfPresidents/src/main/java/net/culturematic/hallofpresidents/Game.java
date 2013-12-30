@@ -12,19 +12,16 @@ public class Game {
         if (null != savedState) {
             throw new RuntimeException("Restoring game state is unimplemented.");
         }
-        mAssetLoader = assetLoader;
-
-        // TODO Temporary
-        RoomLoader roomLoader = new RoomLoader(assetLoader);
-        GameCharacter hero = new GameCharacter(assetLoader);
-        UIControls controls = new UIControls(assetLoader);
-        Room room = roomLoader.load("intro.js");
-
-        mScreen = new WorldScreen(display, viewBounds, savedState, room, hero, controls);
+        mScreen = new LoadingScreen(display, viewBounds, savedState, assetLoader);
     }
 
     public void update(final long milliTime, InputEvents.TouchSpot[] touchSpots) {
         mScreen.update(milliTime, touchSpots);
+        Screen nextScreen = mScreen.nextScreen();
+        if (null != nextScreen) {
+            mScreen.recycle();
+            mScreen = nextScreen;
+        }
     }
 
     public GameState getState() {
@@ -36,7 +33,6 @@ public class Game {
     }
 
     private Screen mScreen;
-    private final AssetLoader mAssetLoader;
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.Game";

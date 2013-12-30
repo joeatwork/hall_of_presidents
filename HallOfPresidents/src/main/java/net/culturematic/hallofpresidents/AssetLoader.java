@@ -29,6 +29,10 @@ public class AssetLoader {
         return (int) scaleDown;
     }
 
+    public Drawable loadLoadingScreen() {
+        return mResources.getDrawable(R.drawable.mug_of_adventure);
+    }
+
     public Typeface loadDialogTypeface() {
         return Typeface.createFromAsset(mAssetManager, TYPEFACE_ASSET_PATH);
     }
