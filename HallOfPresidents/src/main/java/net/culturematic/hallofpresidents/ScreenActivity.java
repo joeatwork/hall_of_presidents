@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -51,7 +50,7 @@ public class ScreenActivity extends Activity {
         Resources res = getResources();
         Drawable dialogboxDrawable = res.getDrawable(R.drawable.dialogbox);
 
-        float fontSize = this.getResources().getDisplayMetrics().scaledDensity * 18f;
+        float fontSize = this.getResources().getDisplayMetrics().scaledDensity * 14f;
         final UIControls controls = new UIControls(dpad, button, dialogboxDrawable, dialogFont, fontSize);
 
         mGameLoop = new GameLoop(
