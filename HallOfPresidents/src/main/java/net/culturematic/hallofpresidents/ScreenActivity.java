@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.SurfaceHolder;
@@ -35,17 +33,12 @@ public class ScreenActivity extends Activity {
         super.onResume();
 
         final Point gameDimensions = getBitmapDimensions();
-        AssetLoader assetLoader = new AssetLoader(this);
-        RoomLoader roomLoader = new RoomLoader(assetLoader);
-        final Character hero = new Character(assetLoader);
-        final UIControls controls = new UIControls(assetLoader);
+        final AssetLoader assetLoader = new AssetLoader(this);
 
         mGameLoop = new GameLoop(
             mSurfaceView.getHolder(),
             gameDimensions,
-            hero,
-            controls,
-            roomLoader,
+            assetLoader,
             null
         );
         mGameLoop.start();
@@ -69,20 +62,18 @@ public class ScreenActivity extends Activity {
     }
 
     private class GameLoop extends Thread {
-        // TODO this unwieldy constructor is a smell.
         public GameLoop(SurfaceHolder holder,
                         Point gameDimensions,
-                        Character hero,
-                        UIControls controls,
-                        RoomLoader roomLoader,
+                        AssetLoader assetLoader,
                         Game.GameState gameState) {
+
+            mRoomLoader = new RoomLoader(assetLoader);
             mRunning = true;
             mDimensions = gameDimensions;
             mGameState = gameState;
             mHolder = holder;
-            mHero = hero;
-            mControls = controls;
-            mRoomLoader = roomLoader;
+            mHero = new Character(assetLoader);
+            mControls = new UIControls(assetLoader);
         }
 
         public Game.GameState pause() {
