@@ -151,12 +151,9 @@ public class UIControls {
         }
 
         if (null != mDialogShowing) {
-            mDialogDestRect.set(viewBounds.top, viewBounds.left, viewBounds.right, viewBounds.centerY());
-            mDialogboxBackground.setBounds(mDialogDestRect);
-            mDialogboxBackground.draw(canvas);
-            mDialogboxBackground.getPadding(mDialogTextDestRect);
-            int dialogWidth = mDialogDestRect.width() - (mDialogTextDestRect.left + mDialogTextDestRect.right);
 
+            mDialogboxBackground.getPadding(mDialogTextDestRect);
+            int dialogWidth = viewBounds.width() - (mDialogTextDestRect.left + mDialogTextDestRect.right);
             StaticLayout dialogLayout = new StaticLayout(
                 mDialogShowing.getDialog(),
                 mDialogPaint,
@@ -166,6 +163,11 @@ public class UIControls {
                 0.0f, // SpacingAdd (add to line height)
                 false // IncludePad (no idea what this does)
             );
+
+            int dialogBottom = mDialogTextDestRect.top + dialogLayout.getHeight() + mDialogTextDestRect.bottom;
+            mDialogDestRect.set(viewBounds.top, viewBounds.left, viewBounds.right, dialogBottom);
+            mDialogboxBackground.setBounds(mDialogDestRect);
+            mDialogboxBackground.draw(canvas);
 
             canvas.save();
             canvas.translate(mDialogTextDestRect.left, mDialogTextDestRect.top);
