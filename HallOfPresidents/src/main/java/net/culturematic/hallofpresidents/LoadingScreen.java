@@ -37,7 +37,7 @@ public class LoadingScreen implements Screen {
             mFirstTime = milliTime;
         }
 
-        if (milliTime - mFirstTime > 4000) {
+        if (milliTime - mFirstTime > MINIMUM_LOAD_TIME_MILLIS) {
             mReadyToPlay = true;
         }
     }
@@ -84,7 +84,8 @@ public class LoadingScreen implements Screen {
 
     private Screen mLoadedScreen;
 
-    // TODO temporary
     private long mFirstTime = -1;
     private boolean mReadyToPlay = false;
+
+    private static int MINIMUM_LOAD_TIME_MILLIS = 3000;
 }

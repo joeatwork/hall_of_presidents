@@ -61,7 +61,7 @@ public class AssetLoader {
         return mResources.getDisplayMetrics().scaledDensity * DIALOG_FONT_SIZE_SP;
     }
 
-    public JSONObject loadJSON(String path) {
+    public JSONObject loadJSONObject(String path) {
         InputStream in = null;
 
         try {

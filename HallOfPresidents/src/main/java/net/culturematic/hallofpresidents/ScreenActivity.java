@@ -9,8 +9,15 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ScreenActivity extends Activity {
 
@@ -22,35 +29,53 @@ public class ScreenActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        final AssetLoader assetLoader = new AssetLoader(this);
         mSurfaceView = new SurfaceView(this);
-        mInputEvents = new InputEvents();
-        mSurfaceView.setOnTouchListener(mInputEvents);
-        setContentView(mSurfaceView);
+
+        mRoomPickerView = new ListView(this);
+        mRoomPickerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final Point gameDimensions = getBitmapDimensions();
+
+                mInputEvents = new InputEvents();
+                mSurfaceView.setOnTouchListener(mInputEvents);
+                setContentView(mSurfaceView);
+                mGameLoop = new GameLoop(
+                        mSurfaceView.getHolder(),
+                        gameDimensions,
+                        assetLoader,
+                        null
+                );
+                mGameLoop.start();
+            }
+        });
+
+        try {
+            JSONObject catalogObject = assetLoader.loadJSONObject("catalog.js");
+            JSONArray catalog = catalogObject.getJSONArray("catalog");
+            RoomCatalogAdapter catalogAdapter = new RoomCatalogAdapter(getLayoutInflater(), catalog);
+            mRoomPickerView.setAdapter(catalogAdapter);
+            setContentView(mRoomPickerView);
+        } catch (JSONException e) {
+            throw new RuntimeException("Can't parse catalog", e);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        final Point gameDimensions = getBitmapDimensions();
-        final AssetLoader assetLoader = new AssetLoader(this);
-
-        mGameLoop = new GameLoop(
-            mSurfaceView.getHolder(),
-            gameDimensions,
-            assetLoader,
-            null
-        );
-        mGameLoop.start();
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        @SuppressWarnings("unused")
-        Game.GameState state = mGameLoop.pause(); // At some point, we'll save this jonk.
-        mGameLoop = null;
+        if (null != mGameLoop) {
+            @SuppressWarnings("unused")
+            Game.GameState state = mGameLoop.pause(); // At some point, we'll save this jonk.
+            mGameLoop = null;
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -139,5 +164,6 @@ public class ScreenActivity extends Activity {
 
     private InputEvents mInputEvents;
     private SurfaceView mSurfaceView;
+    private ListView mRoomPickerView;
     private GameLoop mGameLoop;
 }

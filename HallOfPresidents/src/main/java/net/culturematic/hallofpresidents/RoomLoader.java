@@ -13,7 +13,7 @@ public class RoomLoader {
     }
 
     public Room load(String roomPath) {
-        JSONObject description = mAssetLoader.loadJSON(roomPath);
+        JSONObject description = mAssetLoader.loadJSONObject(roomPath);
 
         try {
             final String backgroundPath = description.getString("background");
