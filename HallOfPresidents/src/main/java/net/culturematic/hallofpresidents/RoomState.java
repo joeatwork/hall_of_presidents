@@ -52,16 +52,13 @@ public class RoomState {
     public void showedDialog() {
         assert null != mDialogAvailable;
         addRoomFlags(mDialogAvailable.getRoomFlagsToSet());
+        mFacing = mDialogAvailable.getFacing();
     }
 
     public void requestMovement(Direction direction) {
         mMovement = mControlState.movement(direction);
-        if (mMovement == Direction.DIRECTION_NONE) {
-            if (null != mDialogAvailable) {
-                mFacing = mDialogAvailable.getFacing();
-            } else {
-                mFacing = Direction.DIRECTION_DOWN;
-            }
+        if (mMovement != Direction.DIRECTION_NONE) {
+            mFacing = mMovement;
         }
     }
 
