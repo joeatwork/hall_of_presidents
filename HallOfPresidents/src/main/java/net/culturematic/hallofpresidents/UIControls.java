@@ -4,17 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.util.Log;
 
-// TODO bit of an informal state machine here, should probably be a formal state machine.
+import java.util.Set;
+
 public class UIControls {
 
     public enum Direction {
@@ -129,7 +126,6 @@ public class UIControls {
                 viewBounds.height() - mBButtonDestRect.height());
         canvas.drawBitmap(mButtonBitmap, null, mBButtonDestRect, bButtonPaint);
         if (null != mCancelAvailable) {
-
             canvas.drawText("Cancel",
                     mBButtonDestRect.left + mButtonPadding,
                     mBButtonDestRect.bottom - mButtonPadding,
@@ -151,7 +147,6 @@ public class UIControls {
         }
 
         if (null != mDialogShowing) {
-
             mDialogboxBackground.getPadding(mDialogTextDestRect);
             int dialogWidth = viewBounds.width() - (mDialogTextDestRect.left + mDialogTextDestRect.right);
             StaticLayout dialogLayout = new StaticLayout(

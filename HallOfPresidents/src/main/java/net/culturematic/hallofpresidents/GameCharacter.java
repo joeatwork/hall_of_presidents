@@ -103,6 +103,7 @@ public class GameCharacter {
         mAnimationDirection = facing;
     }
 
+    // TODO REFACTOR eliminate mPosition and use GameState directly
     public PointF getPosition() {
         return mPosition;
     }

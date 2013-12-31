@@ -7,6 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class RoomLoader {
     public RoomLoader(AssetLoader assetLoader) { // TODO remove when we get this from the net
         mAssetLoader = assetLoader;
@@ -55,6 +58,7 @@ public class RoomLoader {
             Dialog dialog = null;
             if (eventDescription.has("dialog")) {
                 JSONObject dialogDesc = eventDescription.getJSONObject("dialog");
+
                 String facingName = dialogDesc.getString("facing");
                 UIControls.Direction facing;
                 if ("Up".equals(facingName)) {
@@ -71,10 +75,18 @@ public class RoomLoader {
                     );
                 }
 
+                Set<String> flagsToSet = new HashSet<String>();
+                if (dialogDesc.has("set_room_flags")) {
+                    JSONArray flagArray = dialogDesc.getJSONArray("set_room_flags");
+                    for (int i = 0; i < flagArray.length(); i++) {
+                        flagsToSet.add(flagArray.getString(i));
+                    }
+                }
+
                 dialog = new Dialog(
-                    dialogDesc.getString("command"),
                     dialogDesc.getString("dialog"),
-                    facing
+                    facing,
+                    flagsToSet
                 );
             }
 

@@ -1,14 +1,13 @@
 package net.culturematic.hallofpresidents;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class Dialog {
-    public Dialog(String commandName, String dialog, UIControls.Direction facing) {
-        mCommandName = commandName;
+    public Dialog(String dialog, UIControls.Direction facing, Set<String> roomFlagsToSet) {
         mDialog = dialog;
         mFacing = facing;
-    }
-
-    public String getCommandName() {
-        return mCommandName;
+        mRoomFlagsToSet = Collections.unmodifiableSet(roomFlagsToSet);
     }
 
     public String getDialog() {
@@ -17,7 +16,11 @@ public class Dialog {
 
     public UIControls.Direction getFacing() { return mFacing; }
 
-    private final String mCommandName;
+    public Set<String> getRoomFlagsToSet() {
+        return mRoomFlagsToSet;
+    }
+
     private final String mDialog;
     private final UIControls.Direction mFacing;
+    private final Set<String> mRoomFlagsToSet;
 }

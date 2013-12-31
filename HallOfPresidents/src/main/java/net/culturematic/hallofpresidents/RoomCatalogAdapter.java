@@ -18,10 +18,10 @@ public class RoomCatalogAdapter extends BaseAdapter {
         super();
         mLayoutInflater = layoutInflater;
         try {
-            mCatalog = new ArrayList<CatalogItem>(catalog.length());
+            mCatalog = new ArrayList<RoomCatalogItem>(catalog.length());
             for (int i = 0; i < catalog.length(); i++) {
-                JSONObject itemDesc = catalog.getJSONObject(i);
-                CatalogItem item = new CatalogItem(
+                final JSONObject itemDesc = catalog.getJSONObject(i);
+                final RoomCatalogItem item = new RoomCatalogItem(
                     itemDesc.getString("name"),
                     itemDesc.getString("path"),
                     itemDesc.getString("storage")
@@ -39,7 +39,7 @@ public class RoomCatalogAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int i) {
+    public RoomCatalogItem getItem(int i) {
         return mCatalog.get(i);
     }
 
@@ -53,23 +53,12 @@ public class RoomCatalogAdapter extends BaseAdapter {
         if (null == convertView) {
             convertView = mLayoutInflater.inflate(R.layout.catalog_entry_view, container, false);
         }
-        CatalogItem item = (CatalogItem) getItem(position);
-        ((TextView) convertView).setText(item.name);
+        RoomCatalogItem item = getItem(position);
+        ((TextView) convertView).setText(item.getName());
         return convertView;
 
     }
 
-    public static class CatalogItem {
-        public CatalogItem(String name, String path, String storage) {
-            this.name = name;
-            this.path = path;
-            this.storage = storage;
-        }
-        public final String name;
-        public final String path;
-        public final String storage;
-    }
-
     private final LayoutInflater mLayoutInflater;
-    private final List<CatalogItem> mCatalog;
+    private final List<RoomCatalogItem> mCatalog;
 }

@@ -25,6 +25,8 @@ public class ScreenActivity extends Activity {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
+        final GameState gameState = new GameState();
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -35,17 +37,21 @@ public class ScreenActivity extends Activity {
         mRoomPickerView = new ListView(this);
         mRoomPickerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int itemIx, long itemId) {
                 final Point gameDimensions = getBitmapDimensions();
+                final RoomCatalogAdapter adapter =
+                        (RoomCatalogAdapter) adapterView.getAdapter();
+                final RoomCatalogItem item = adapter.getItem(itemIx);
+                gameState.setRoomCatalogItem(item);
 
                 mInputEvents = new InputEvents();
                 mSurfaceView.setOnTouchListener(mInputEvents);
                 setContentView(mSurfaceView);
                 mGameLoop = new GameLoop(
-                        mSurfaceView.getHolder(),
-                        gameDimensions,
-                        assetLoader,
-                        null
+                    mSurfaceView.getHolder(),
+                    gameDimensions,
+                    assetLoader,
+                    gameState
                 );
                 mGameLoop.start();
             }
@@ -73,7 +79,7 @@ public class ScreenActivity extends Activity {
 
         if (null != mGameLoop) {
             @SuppressWarnings("unused")
-            Game.GameState state = mGameLoop.pause(); // At some point, we'll save this jonk.
+            GameState state = mGameLoop.pause(); // At some point, we'll save this jonk.
             mGameLoop = null;
         }
     }
@@ -90,7 +96,7 @@ public class ScreenActivity extends Activity {
         public GameLoop(SurfaceHolder holder,
                         Point gameDimensions,
                         AssetLoader assetLoader,
-                        Game.GameState gameState) {
+                        GameState gameState) {
             mRunning = true;
             mDimensions = gameDimensions;
             mAssetLoader = assetLoader;
@@ -98,7 +104,7 @@ public class ScreenActivity extends Activity {
             mHolder = holder;
         }
 
-        public Game.GameState pause() {
+        public GameState pause() {
             mRunning = false;
             while (true) {
                 try {
@@ -111,17 +117,17 @@ public class ScreenActivity extends Activity {
             return getGameState();
         }
 
-        private synchronized Game.GameState getGameState() {
+        private synchronized GameState getGameState() {
             return mGameState;
         }
 
-        private synchronized void setGameState(Game.GameState gameState) {
+        private synchronized void setGameState(GameState gameState) {
             mGameState = gameState;
         }
 
         @Override
         public void run() {
-            Game.GameState gameState = getGameState();
+            GameState gameState = getGameState();
             setGameState(null);
 
             final Rect boundsRect = new Rect();
@@ -152,13 +158,13 @@ public class ScreenActivity extends Activity {
                     }
                 }
             }// while
-            setGameState(new Game.GameState());
+            setGameState(gameState);
         } // run()
 
         private final Point mDimensions;
         private final SurfaceHolder mHolder;
         private final AssetLoader mAssetLoader;
-        private Game.GameState mGameState;
+        private GameState mGameState;
         private volatile boolean mRunning;
     } // class
 
