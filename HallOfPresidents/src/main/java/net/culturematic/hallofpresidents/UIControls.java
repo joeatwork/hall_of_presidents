@@ -36,8 +36,10 @@ public class UIControls {
         mDialogTextDestRect = new Rect(mDialogDestRect);
     }
 
-    public void intepretInteractions(InputEvents.TouchSpot[] spots) {
+    public void intepretInteractions(long milliTime, InputEvents.TouchSpot[] spots) {
         boolean dpadPressed = false;
+        boolean aButtonIsDown = false;
+        boolean bButtonIsDown = false;
         for (int i = 0; i < spots.length && null != spots[i]; i++) {
             InputEvents.TouchSpot spot = spots[i];
             int x = (int) spot.x;
@@ -46,16 +48,28 @@ public class UIControls {
                 readDpad(x, y);
                 dpadPressed = true;
             }
+
             if (mAButtonDestRect.contains(x, y)) {
-                mRoomState.aButton();
+                aButtonIsDown = true;
+                if (! mAButtonWasDown) {
+                    mAButtonWasDown = true;
+                    mRoomState.aButton();
+                }
             }
+
             if (mBButtonDestRect.contains(x, y)) {
-                mRoomState.bButton();
+                bButtonIsDown = true;
+                if (! mBButtonWasDown) {
+                    mBButtonWasDown = true;
+                    mRoomState.bButton();
+                }
             }
         }
         if (!dpadPressed) {
             mRoomState.requestMovement(RoomState.Direction.DIRECTION_NONE);
         }
+        mAButtonWasDown = aButtonIsDown;
+        mBButtonWasDown = bButtonIsDown;
     }
 
     public void drawControls(Canvas canvas, Rect viewBounds) {
@@ -138,6 +152,9 @@ public class UIControls {
             }
         }
     }
+
+    private boolean mAButtonWasDown = false;
+    private boolean mBButtonWasDown = false;
 
     private final RoomState mRoomState;
 

@@ -27,7 +27,7 @@ public class WorldScreen implements Screen {
 
     @Override
     public void update(long milliTime, InputEvents.TouchSpot[] touchSpots) {
-        mControls.intepretInteractions(touchSpots);
+        mControls.intepretInteractions(milliTime, touchSpots);
 
         // TODO should be handled directly by hero
         RoomState.Direction move = mRoomState.getMovement();
