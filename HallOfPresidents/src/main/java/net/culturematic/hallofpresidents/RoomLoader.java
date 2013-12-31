@@ -60,15 +60,15 @@ public class RoomLoader {
                 JSONObject dialogDesc = eventDescription.getJSONObject("dialog");
 
                 String facingName = dialogDesc.getString("facing");
-                UIControls.Direction facing;
+                RoomState.Direction facing;
                 if ("Up".equals(facingName)) {
-                    facing = UIControls.Direction.DIRECTION_UP;
+                    facing = RoomState.Direction.DIRECTION_UP;
                 } else if ("Down".equals(facingName)) {
-                    facing = UIControls.Direction.DIRECTION_DOWN;
+                    facing = RoomState.Direction.DIRECTION_DOWN;
                 } else if ("Left".equals(facingName)) {
-                    facing = UIControls.Direction.DIRECTION_LEFT;
+                    facing = RoomState.Direction.DIRECTION_LEFT;
                 } else if ("Right".equals(facingName)) {
-                    facing = UIControls.Direction.DIRECTION_RIGHT;
+                    facing = RoomState.Direction.DIRECTION_RIGHT;
                 } else {
                     throw new RuntimeException(
                         "Can't understand facing " + facingName + " (should be 'Up', 'Down', 'Left' or 'Right'"

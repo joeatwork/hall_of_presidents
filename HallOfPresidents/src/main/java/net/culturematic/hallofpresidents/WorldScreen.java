@@ -11,7 +11,7 @@ public class WorldScreen implements Screen {
     public WorldScreen(
             Bitmap display,
             Rect viewBounds,
-            GameState savedState,
+            RoomState savedState,
             Room room,
             GameCharacter hero,
             UIControls controls) {
@@ -21,35 +21,26 @@ public class WorldScreen implements Screen {
         mRoom = room;
         mHero = hero;
         mControls = controls;
-        mGameState = savedState;
-        mHero.setRoom(room, mGameState.getPosition());
+        mRoomState = savedState;
+        mHero.setRoom(room, mRoomState.getPosition());
     }
 
     @Override
     public void update(long milliTime, InputEvents.TouchSpot[] touchSpots) {
         mControls.intepretInteractions(touchSpots);
 
-        UIControls.CancelCommand cancelCommand = mControls.getCancelCommand();
-        if (null != cancelCommand) {
-            mControls.cancel(cancelCommand);
-        }
+        // TODO should be handled directly by hero
+        RoomState.Direction move = mRoomState.getMovement();
+        RoomState.Direction facing = mRoomState.getFacing();
+        mHero.directionCommand(milliTime, move, facing);
 
-        Dialog dialogCommand = mControls.getDialogCommand();
-        if (null != dialogCommand) {
-            mGameState.addRoomFlags(dialogCommand.getRoomFlagsToSet());
-            mControls.displayDialog(dialogCommand);
-            mHero.setFacing(dialogCommand.getFacing());
-        }
-
-        mControls.clearCommands();
-
-        mHero.directionCommand(milliTime, mControls.currentDirection());
-
-        PointF heroPosition = mHero.getPosition();
+        PointF heroPosition = mHero.getPosition(); // TODO Refactor to mRoomState
         WorldEvent worldEvent = mRoom.checkForEvent(heroPosition);
         if (null != worldEvent) {
             Dialog dialog = worldEvent.getDialog();
-            mControls.addDialogCommand(dialog);
+            mRoomState.setDialogAvailable(dialog);
+        } else {
+            mRoomState.setDialogAvailable(null);
         }
         // We want the hero at the center of the Viewport
         int worldOffsetX = (int) heroPosition.x - mViewBounds.centerX();
@@ -64,7 +55,7 @@ public class WorldScreen implements Screen {
         mRoom.drawFurniture(mCanvas, mWorldBounds, mViewBounds);
         mControls.drawControls(mCanvas, mViewBounds);
 
-        mGameState.setPosition(heroPosition);
+        mRoomState.setPosition(heroPosition);
     }
 
     @Override
@@ -83,5 +74,5 @@ public class WorldScreen implements Screen {
     private final Rect mWorldBounds; // Area of the world to show on the screen
     private final GameCharacter mHero;
     private final UIControls mControls;
-    private final GameState mGameState;
+    private final RoomState mRoomState;
 }

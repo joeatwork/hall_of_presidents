@@ -25,7 +25,7 @@ public class ScreenActivity extends Activity {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
-        final GameState gameState = new GameState();
+        final RoomState roomState = new RoomState();
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -42,7 +42,7 @@ public class ScreenActivity extends Activity {
                 final RoomCatalogAdapter adapter =
                         (RoomCatalogAdapter) adapterView.getAdapter();
                 final RoomCatalogItem item = adapter.getItem(itemIx);
-                gameState.setRoomCatalogItem(item);
+                roomState.setRoomCatalogItem(item);
 
                 mInputEvents = new InputEvents();
                 mSurfaceView.setOnTouchListener(mInputEvents);
@@ -51,7 +51,7 @@ public class ScreenActivity extends Activity {
                     mSurfaceView.getHolder(),
                     gameDimensions,
                     assetLoader,
-                    gameState
+                        roomState
                 );
                 mGameLoop.start();
             }
@@ -79,7 +79,7 @@ public class ScreenActivity extends Activity {
 
         if (null != mGameLoop) {
             @SuppressWarnings("unused")
-            GameState state = mGameLoop.pause(); // At some point, we'll save this jonk.
+            RoomState state = mGameLoop.pause(); // At some point, we'll save this jonk.
             mGameLoop = null;
         }
     }
@@ -96,15 +96,15 @@ public class ScreenActivity extends Activity {
         public GameLoop(SurfaceHolder holder,
                         Point gameDimensions,
                         AssetLoader assetLoader,
-                        GameState gameState) {
+                        RoomState roomState) {
             mRunning = true;
             mDimensions = gameDimensions;
             mAssetLoader = assetLoader;
-            mGameState = gameState;
+            mRoomState = roomState;
             mHolder = holder;
         }
 
-        public GameState pause() {
+        public RoomState pause() {
             mRunning = false;
             while (true) {
                 try {
@@ -117,24 +117,24 @@ public class ScreenActivity extends Activity {
             return getGameState();
         }
 
-        private synchronized GameState getGameState() {
-            return mGameState;
+        private synchronized RoomState getGameState() {
+            return mRoomState;
         }
 
-        private synchronized void setGameState(GameState gameState) {
-            mGameState = gameState;
+        private synchronized void setGameState(RoomState roomState) {
+            mRoomState = roomState;
         }
 
         @Override
         public void run() {
-            GameState gameState = getGameState();
+            RoomState roomState = getGameState();
             setGameState(null);
 
             final Rect boundsRect = new Rect();
             final Bitmap displayBitmap = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
 
             final Rect gameDimensions = new Rect(0, 0, mDimensions.x, mDimensions.y);
-            final Game game = new Game(displayBitmap, gameDimensions, gameState, mAssetLoader);
+            final Game game = new Game(displayBitmap, gameDimensions, roomState, mAssetLoader);
             final InputEvents.TouchSpot[] touchSpots = new InputEvents.TouchSpot[InputEvents.MAX_TOUCH_SPOTS];
 
             while (mRunning) {
@@ -158,13 +158,13 @@ public class ScreenActivity extends Activity {
                     }
                 }
             }// while
-            setGameState(gameState);
+            setGameState(roomState);
         } // run()
 
         private final Point mDimensions;
         private final SurfaceHolder mHolder;
         private final AssetLoader mAssetLoader;
-        private GameState mGameState;
+        private RoomState mRoomState;
         private volatile boolean mRunning;
     } // class
 

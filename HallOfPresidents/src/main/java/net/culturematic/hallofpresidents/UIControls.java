@@ -10,21 +10,10 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 
-import java.util.Set;
-
 public class UIControls {
 
-    public enum Direction {
-        DIRECTION_NONE,
-        DIRECTION_UP,
-        DIRECTION_RIGHT,
-        DIRECTION_DOWN,
-        DIRECTION_LEFT
-    }
-
-    public static class CancelCommand {}
-
-    public UIControls(AssetLoader assetLoader) {
+    public UIControls(AssetLoader assetLoader, RoomState roomState) {
+        mRoomState = roomState;
         mDpadBitmap = assetLoader.loadDpadBitmap();
         mButtonBitmap = assetLoader.loadButtonBitmap();
         mDialogboxBackground = assetLoader.loadDialogBackground();
@@ -45,112 +34,71 @@ public class UIControls {
         mBButtonDestRect = new Rect(0, 0, mButtonBitmap.getWidth(), mButtonBitmap.getHeight());
         mDialogDestRect = new Rect(0, 0, 500, 500);
         mDialogTextDestRect = new Rect(mDialogDestRect);
-
-        mAButtonIsPressed = false;
-        mBButtonIsPressed = false;
-        mCancelAvailable = null;
     }
 
     public void intepretInteractions(InputEvents.TouchSpot[] spots) {
-        mCurrentDirection = Direction.DIRECTION_NONE;
-        mAButtonIsPressed = false;
-        mBButtonIsPressed = false;
-        for (int i = 0; i < spots.length; i++) {
+        boolean dpadPressed = false;
+        for (int i = 0; i < spots.length && null != spots[i]; i++) {
             InputEvents.TouchSpot spot = spots[i];
-            if (null == spot) break;
-
             int x = (int) spot.x;
             int y = (int) spot.y;
             if (mDpadDestRect.contains(x, y)) {
-                setDpad(x, y);
+                readDpad(x, y);
+                dpadPressed = true;
             }
             if (mAButtonDestRect.contains(x, y)) {
-                mAButtonIsPressed = true;
+                mRoomState.aButton();
             }
             if (mBButtonDestRect.contains(x, y)) {
-                mBButtonIsPressed = true;
+                mRoomState.bButton();
             }
         }
-    }
-
-    public Direction currentDirection() {
-        return mCurrentDirection;
-    }
-
-    public void clearCommands() {
-        mDialogAvailable = null;
-    }
-
-    public void addDialogCommand(Dialog dialog) {
-        if (null == mDialogShowing) {
-            mDialogAvailable = dialog;
+        if (!dpadPressed) {
+            mRoomState.requestMovement(RoomState.Direction.DIRECTION_NONE);
         }
-    }
-
-    public void cancel(CancelCommand command) {
-        mDialogShowing = null;
-        mCancelAvailable = null;
-    }
-
-    public void displayDialog(Dialog dialog) {
-        mDialogShowing = dialog;
-        if (null != mDialogShowing) {
-            mDialogAvailable = null;
-            mCancelAvailable = CANCEL_COMMAND;
-        }
-    }
-
-    public Dialog getDialogCommand() {
-        if (mAButtonIsPressed) {
-            return mDialogAvailable;
-        }
-        return null;
-    }
-
-    public CancelCommand getCancelCommand() {
-        if (mBButtonIsPressed) {
-            return mCancelAvailable;
-        }
-        return null;
     }
 
     public void drawControls(Canvas canvas, Rect viewBounds) {
         mDpadDestRect.offsetTo(0, viewBounds.height() - mDpadDestRect.height());
         canvas.drawBitmap(mDpadBitmap, null, mDpadDestRect, null);
 
+        final String aButtonLabel = mRoomState.getAButtonLabel();
+        final String bButtonLabel = mRoomState.getBButtonLabel();
+
         Paint bButtonPaint = mDefaultPaint;
-        if (null == mCancelAvailable) {
+        if (null == bButtonLabel) {
             bButtonPaint = mSemiTransparentPaint;
         }
         mBButtonDestRect.offsetTo(viewBounds.width() - mBButtonDestRect.width(),
                 viewBounds.height() - mBButtonDestRect.height());
         canvas.drawBitmap(mButtonBitmap, null, mBButtonDestRect, bButtonPaint);
-        if (null != mCancelAvailable) {
-            canvas.drawText("Cancel",
+        if (null != bButtonLabel) {
+            canvas.drawText(bButtonLabel,
                     mBButtonDestRect.left + mButtonPadding,
                     mBButtonDestRect.bottom - mButtonPadding,
                     mDialogPaint);
         }
 
         Paint aButtonPaint = mDefaultPaint;
-        if (null == mDialogAvailable) {
+        if (null == aButtonLabel) {
             aButtonPaint = mSemiTransparentPaint;
         }
         mAButtonDestRect.set(mBButtonDestRect);
         mAButtonDestRect.offset(0, - mBButtonDestRect.height());
         canvas.drawBitmap(mButtonBitmap, null, mAButtonDestRect, aButtonPaint);
-        if (null != mDialogAvailable) {
-            canvas.drawText("Talk",
+        if (null != aButtonLabel) {
+            canvas.drawText(aButtonLabel,
                     mAButtonDestRect.left + mButtonPadding,
                     mAButtonDestRect.bottom - mButtonPadding,
                     mDialogPaint);
         }
 
-        if (null != mDialogShowing) {
+        String dialogText = mRoomState.getDialogText();
+        if (null != dialogText) {
             mDialogboxBackground.getPadding(mDialogTextDestRect);
             int dialogWidth = viewBounds.width() - (mDialogTextDestRect.left + mDialogTextDestRect.right);
             StaticLayout dialogLayout = new StaticLayout(
-                mDialogShowing.getDialog(),
+                dialogText,
                 mDialogPaint,
                 dialogWidth,
                 Layout.Alignment.ALIGN_NORMAL,
@@ -168,37 +116,30 @@ public class UIControls {
             canvas.translate(mDialogTextDestRect.left, mDialogTextDestRect.top);
             dialogLayout.draw(canvas);
             canvas.restore();
+
+            mRoomState.showedDialog();
         }
     }
 
-    private void setDpad(int x, int y) {
-        if (null != mDialogShowing) {
-            return;
-        }
-
+    private void readDpad(int x, int y) {
         int xOffset = x - mDpadDestRect.centerX();
         int yOffset = y - mDpadDestRect.centerY();
         if (Math.abs(xOffset) > Math.abs(yOffset)) { // Left or Right
             if (xOffset > 0) {
-                mCurrentDirection = Direction.DIRECTION_RIGHT;
+                mRoomState.requestMovement(RoomState.Direction.DIRECTION_RIGHT);
             } else {
-                mCurrentDirection = Direction.DIRECTION_LEFT;
+                mRoomState.requestMovement(RoomState.Direction.DIRECTION_LEFT);
             }
         } else { // Up or down
             if (yOffset > 0) {
-                mCurrentDirection = Direction.DIRECTION_DOWN;
+                mRoomState.requestMovement(RoomState.Direction.DIRECTION_DOWN);
             } else {
-                mCurrentDirection = Direction.DIRECTION_UP;
+                mRoomState.requestMovement(RoomState.Direction.DIRECTION_UP);
             }
         }
     }
 
-    private Direction mCurrentDirection;
-    private Dialog mDialogAvailable;
-    private Dialog mDialogShowing;
-    private CancelCommand mCancelAvailable;
-    private boolean mAButtonIsPressed;
-    private boolean mBButtonIsPressed;
+    private final RoomState mRoomState;
 
     private final float mButtonPadding;
     private final Paint mSemiTransparentPaint;
@@ -212,8 +153,6 @@ public class UIControls {
     private final Rect mBButtonDestRect;
     private final Rect mDialogDestRect;
     private final Rect mDialogTextDestRect;
-
-    private static final CancelCommand CANCEL_COMMAND = new CancelCommand();
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.UIControls";

@@ -2,10 +2,8 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.Log;
 
 public class GameCharacter {
     // HARDCODED LAYOUT
@@ -28,7 +26,7 @@ public class GameCharacter {
         mDestRect = new Rect(0, 0, mSpriteSize, mSpriteSize);
 
         mPosition = new PointF(0, 0);
-        mAnimationDirection = UIControls.Direction.DIRECTION_DOWN;
+        mAnimationDirection = RoomState.Direction.DIRECTION_DOWN;
         mAnimationDistance = 0;
         mLastTime = -1;
 
@@ -36,7 +34,7 @@ public class GameCharacter {
         mSpeedPxPerMilli = stepsPerSecond * mSpriteSize / 1000f;
     }
 
-    public void directionCommand(long milliTime, UIControls.Direction direction) {
+    public void directionCommand(long milliTime, RoomState.Direction direction, RoomState.Direction facing) {
         if (mLastTime < 0) {
             mLastTime = milliTime;
         }
@@ -83,7 +81,8 @@ public class GameCharacter {
 
         mLastTime = milliTime;
 
-        if (UIControls.Direction.DIRECTION_NONE == direction) {
+        if (RoomState.Direction.DIRECTION_NONE == direction) {
+            mAnimationDirection = facing;
             mAnimationDistance = 0;
         } else if (mAnimationDirection != direction) {
             mAnimationDirection = direction;
@@ -99,11 +98,7 @@ public class GameCharacter {
         mPosition.set(startPoint);
     }
 
-    public void setFacing(UIControls.Direction facing) {
-        mAnimationDirection = facing;
-    }
-
-    // TODO REFACTOR eliminate mPosition and use GameState directly
+    // TODO REFACTOR eliminate mPosition and use RoomState directly
     public PointF getPosition() {
         return mPosition;
     }
@@ -137,7 +132,7 @@ public class GameCharacter {
     }
 
     private long mLastTime;
-    private UIControls.Direction mAnimationDirection;
+    private RoomState.Direction mAnimationDirection;
     private float mAnimationDistance;
     private Room mCurrentRoom;
 

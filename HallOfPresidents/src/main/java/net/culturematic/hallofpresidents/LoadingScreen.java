@@ -8,10 +8,9 @@ import android.graphics.drawable.Drawable;
 
 public class LoadingScreen implements Screen {
 
-    public LoadingScreen(Bitmap display, Rect viewBounds, GameState savedState, AssetLoader loader) {
+    public LoadingScreen(Bitmap display, Rect viewBounds, RoomState roomState, AssetLoader loader) {
         mDisplay = display;
         mViewBounds = viewBounds;
-        mSavedState = savedState;
         mAssetLoader = loader;
         mLoadingDrawable = mAssetLoader.loadLoadingScreen();
 
@@ -24,7 +23,7 @@ public class LoadingScreen implements Screen {
         mDisplayCanvas = new Canvas(display);
         mLoadedScreen = null;
 
-        Thread loadThread = new LoadThread(savedState.getRoomCatalogItem());
+        Thread loadThread = new LoadThread(roomState);
         loadThread.start();
     }
 
@@ -64,28 +63,27 @@ public class LoadingScreen implements Screen {
     }
 
     private class LoadThread extends Thread {
-        public LoadThread(RoomCatalogItem item) {
-            mItem = item;
+        public LoadThread(RoomState roomState) {
+            mRoomState = roomState;
         }
 
         public void run() {
             RoomLoader roomLoader = new RoomLoader(mAssetLoader);
             GameCharacter hero = new GameCharacter(mAssetLoader);
-            UIControls controls = new UIControls(mAssetLoader);
-            Room room = roomLoader.load(mItem.getPath());
-            mSavedState.setPosition(room.defaultDoor());
+            UIControls controls = new UIControls(mAssetLoader, mRoomState);
+            Room room = roomLoader.load(mRoomState.getRoomCatalogItem().getPath());
+            mRoomState.setPosition(room.defaultDoor());
 
-            Screen loaded = new WorldScreen(mDisplay, mViewBounds, mSavedState, room, hero, controls);
+            Screen loaded = new WorldScreen(mDisplay, mViewBounds, mRoomState, room, hero, controls);
             setLoadedScreen(loaded);
         }
 
-        private final RoomCatalogItem mItem;
+        private final RoomState mRoomState;
     }
 
     private final Bitmap mDisplay;
     private final Rect mViewBounds;
     private final AssetLoader mAssetLoader;
-    private final GameState mSavedState;
     private final Drawable mLoadingDrawable;
     private final Canvas mDisplayCanvas;
 
