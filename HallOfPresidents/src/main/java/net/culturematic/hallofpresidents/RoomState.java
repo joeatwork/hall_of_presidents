@@ -1,30 +1,73 @@
 package net.culturematic.hallofpresidents;
 
 import android.graphics.PointF;
-import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 public class RoomState {
+    public static class NoSuchDirectionException extends Exception {
+        public NoSuchDirectionException(String message) {
+            super(message);
+        }
+    }
 
     public enum Direction {
         DIRECTION_NONE,
         DIRECTION_UP,
         DIRECTION_RIGHT,
         DIRECTION_DOWN,
-        DIRECTION_LEFT
-    }
+        DIRECTION_LEFT;
+    } // Direction
 
     public RoomState(RoomCatalogItem item) {
+        mRoomPosition = null;
         mRoomItem = item;
         mRoomFlags = new HashSet<String>();
-        mRoomPosition = new PointF(0, 0);
         mControlState = ControlState.WALKING;
         mMovement = Direction.DIRECTION_NONE;
         mFacing = Direction.DIRECTION_DOWN;
         mIsComplete = false;
+    }
+
+    public static RoomState readJSON(JSONObject stateDesc)
+        throws JSONException {
+        final JSONObject positionDesc = stateDesc.getJSONObject("room_position");
+        final PointF position = new PointF(
+            (float) positionDesc.getDouble("x"),
+            (float) positionDesc.getDouble("y")
+        );
+
+        final JSONObject itemDesc = stateDesc.getJSONObject("room_item");
+        final RoomCatalogItem item = RoomCatalogItem.readJSON(itemDesc);
+        final RoomState ret = new RoomState(item);
+        ret.setPosition(position);
+
+        if (stateDesc.getBoolean("is_complete")) {
+            ret.setComplete();
+        }
+        return ret;
+    }
+
+    public JSONObject toJSON() {
+        try {
+            final JSONObject ret = new JSONObject();
+            ret.put("is_complete", mIsComplete);
+            ret.put("room_item", mRoomItem.toJSON());
+
+            final JSONObject positionObj = new JSONObject();
+            positionObj.put("x", mRoomPosition.x);
+            positionObj.put("y", mRoomPosition.y);
+            ret.put("room_position", positionObj);
+
+          return ret;
+        } catch (JSONException e) {
+            throw new RuntimeException("Can't serialize RoomState to JSON", e);
+        }
     }
 
     public void setComplete() {
@@ -36,6 +79,9 @@ public class RoomState {
     }
 
     public void setPosition(PointF position) {
+        if (null == mRoomPosition) {
+            mRoomPosition = new PointF();
+        }
         mRoomPosition.set(position);
     }
 

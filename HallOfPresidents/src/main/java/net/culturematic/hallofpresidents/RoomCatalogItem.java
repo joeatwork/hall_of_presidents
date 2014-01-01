@@ -1,5 +1,8 @@
 package net.culturematic.hallofpresidents;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Set;
 
 public class RoomCatalogItem {
@@ -19,6 +22,28 @@ public class RoomCatalogItem {
 
     public String getStorage() {
         return mStorage;
+    }
+
+    public String getFullPath() {
+        return getStorage() + ':' + getPath();
+    }
+
+    public static RoomCatalogItem readJSON(JSONObject itemDesc)
+        throws JSONException {
+        return new RoomCatalogItem(
+            itemDesc.getString("name"),
+            itemDesc.getString("path"),
+            itemDesc.getString("storage")
+        );
+    }
+
+    public JSONObject toJSON()
+        throws JSONException {
+        JSONObject ret = new JSONObject();
+        ret.put("name", mName);
+        ret.put("path", mPath);
+        ret.put("storage", mStorage);
+        return ret;
     }
 
     private final String mName;

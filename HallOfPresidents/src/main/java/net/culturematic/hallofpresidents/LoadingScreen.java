@@ -77,8 +77,9 @@ public class LoadingScreen implements Screen {
             GameCharacter hero = new GameCharacter(mAssetLoader, mRoomState);
             UIControls controls = new UIControls(mAssetLoader, mRoomState);
             Room room = roomLoader.load(mRoomState.getRoomCatalogItem().getPath());
-            mRoomState.setPosition(room.defaultDoor());
-
+            if (null == mRoomState.getPosition()) {
+                mRoomState.setPosition(room.defaultDoor());
+            }
             Screen loaded = new WorldScreen(mAssetLoader, mDisplay, mViewBounds, mRoomState, room, hero, controls);
             setLoadedScreen(loaded);
         }

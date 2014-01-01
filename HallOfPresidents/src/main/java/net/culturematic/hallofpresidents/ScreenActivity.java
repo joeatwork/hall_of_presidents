@@ -39,8 +39,7 @@ public class ScreenActivity extends Activity {
                 final RoomCatalogAdapter adapter =
                         (RoomCatalogAdapter) adapterView.getAdapter();
                 final RoomCatalogItem item = adapter.getItem(itemIx);
-                final RoomState roomState = new RoomState(item);
-                showGame(assetLoader, roomState);
+                showGame(assetLoader, item);
             }
         });
 
@@ -65,8 +64,7 @@ public class ScreenActivity extends Activity {
         super.onPause();
 
         if (null != mGameLoop) {
-            @SuppressWarnings("unused")
-            RoomState state = mGameLoop.pause(); // At some point, we'll save this jonk.
+            mGameLoop.pause();
             mGameLoop = null;
         }
     }
@@ -89,7 +87,7 @@ public class ScreenActivity extends Activity {
         setContentView(mRoomPickerView);
     }
 
-    private void showGame(AssetLoader assetLoader, RoomState roomState) {
+    private void showGame(AssetLoader assetLoader, RoomCatalogItem item) {
         final Point gameDimensions = getBitmapDimensions();
         mInputEvents = new InputEvents();
         mSurfaceView.setOnTouchListener(mInputEvents);
@@ -98,7 +96,7 @@ public class ScreenActivity extends Activity {
                 mSurfaceView.getHolder(),
                 gameDimensions,
                 assetLoader,
-                roomState
+                item
         );
         mGameLoop.start();
     }
@@ -107,15 +105,15 @@ public class ScreenActivity extends Activity {
         public GameLoop(SurfaceHolder holder,
                         Point gameDimensions,
                         AssetLoader assetLoader,
-                        RoomState roomState) {
+                        RoomCatalogItem item) {
             mRunning = true;
             mDimensions = gameDimensions;
             mAssetLoader = assetLoader;
-            mRoomState = roomState;
+            mRoomCatalogItem = item;
             mHolder = holder;
         }
 
-        public RoomState pause() {
+        public void pause() {
             mRunning = false;
             while (true) {
                 try {
@@ -125,21 +123,11 @@ public class ScreenActivity extends Activity {
                     // keep trying
                 }
             }
-            return getGameState();
-        }
-
-        private synchronized RoomState getGameState() {
-            return mRoomState;
-        }
-
-        private synchronized void setGameState(RoomState roomState) {
-            mRoomState = roomState;
         }
 
         @Override
         public void run() {
-            RoomState roomState = getGameState();
-            setGameState(null);
+            RoomState roomState = mAssetLoader.loadSavedRoomState(mRoomCatalogItem);
 
             final Rect boundsRect = new Rect();
             final Bitmap displayBitmap = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
@@ -172,7 +160,7 @@ public class ScreenActivity extends Activity {
                     mRunning = false;
                 }
             }// while
-            setGameState(roomState);
+            mAssetLoader.saveRoomState(roomState);
 
             runOnUiThread(new Runnable() {
                 @Override
@@ -185,7 +173,7 @@ public class ScreenActivity extends Activity {
         private final Point mDimensions;
         private final SurfaceHolder mHolder;
         private final AssetLoader mAssetLoader;
-        private RoomState mRoomState;
+        private final RoomCatalogItem mRoomCatalogItem;
         private volatile boolean mRunning;
     } // class
 

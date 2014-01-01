@@ -21,11 +21,7 @@ public class RoomCatalogAdapter extends BaseAdapter {
             mCatalog = new ArrayList<RoomCatalogItem>(catalog.length());
             for (int i = 0; i < catalog.length(); i++) {
                 final JSONObject itemDesc = catalog.getJSONObject(i);
-                final RoomCatalogItem item = new RoomCatalogItem(
-                    itemDesc.getString("name"),
-                    itemDesc.getString("path"),
-                    itemDesc.getString("storage")
-                );
+                final RoomCatalogItem item = RoomCatalogItem.readJSON(itemDesc);
                 mCatalog.add(item);
             }
         } catch (JSONException e) {
