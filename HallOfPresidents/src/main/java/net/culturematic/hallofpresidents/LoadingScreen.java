@@ -74,7 +74,7 @@ public class LoadingScreen implements Screen {
 
         public void run() {
             RoomLoader roomLoader = new RoomLoader(mAssetLoader);
-            GameCharacter hero = new GameCharacter(mAssetLoader);
+            GameCharacter hero = new GameCharacter(mAssetLoader, mRoomState);
             UIControls controls = new UIControls(mAssetLoader, mRoomState);
             Room room = roomLoader.load(mRoomState.getRoomCatalogItem().getPath());
             mRoomState.setPosition(room.defaultDoor());

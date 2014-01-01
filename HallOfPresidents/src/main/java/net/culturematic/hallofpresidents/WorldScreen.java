@@ -30,7 +30,7 @@ public class WorldScreen implements Screen {
         mHero = hero;
         mControls = controls;
         mRoomState = savedState;
-        mHero.setRoom(room, mRoomState.getPosition());
+        mHero.setRoom(room);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class WorldScreen implements Screen {
         RoomState.Direction facing = mRoomState.getFacing();
         mHero.directionCommand(milliTime, move, facing);
 
-        PointF heroPosition = mHero.getPosition(); // TODO Refactor to mRoomState
+        PointF heroPosition = mRoomState.getPosition();
         WorldEvent worldEvent = mRoom.checkForEvent(heroPosition);
         if (null != worldEvent) {
             Dialog dialog = worldEvent.getDialog();
