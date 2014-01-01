@@ -51,7 +51,10 @@ public class RoomCatalogAdapter extends BaseAdapter {
             assert null != convertView;
         }
         RoomCatalogItem item = getItem(position);
-        ((TextView) convertView).setText(item.getName());
+        TextView roomNameView = (TextView) convertView.findViewWithTag("tag_room_name");
+        roomNameView.setText(item.getName());
+        TextView roomDescView = (TextView) convertView.findViewWithTag("tag_room_description");
+        roomDescView.setText(item.getDescription());
         return convertView;
     }
 

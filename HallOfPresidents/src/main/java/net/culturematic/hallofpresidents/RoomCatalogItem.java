@@ -4,10 +4,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RoomCatalogItem {
-    public RoomCatalogItem(String name, String path, String storage) {
+    public RoomCatalogItem(String name, String path, String storage, String description) {
         mName = name;
         mPath = path;
         mStorage = storage;
+        mDescription = description;
     }
 
     public String getName() {
@@ -22,6 +23,8 @@ public class RoomCatalogItem {
         return mStorage;
     }
 
+    public String getDescription() { return mDescription; }
+
     public String getFullPath() {
         return getStorage() + ':' + getPath();
     }
@@ -31,7 +34,8 @@ public class RoomCatalogItem {
         return new RoomCatalogItem(
             itemDesc.getString("name"),
             itemDesc.getString("path"),
-            itemDesc.getString("storage")
+            itemDesc.getString("storage"),
+            itemDesc.getString("description")
         );
     }
 
@@ -41,10 +45,12 @@ public class RoomCatalogItem {
         ret.put("name", mName);
         ret.put("path", mPath);
         ret.put("storage", mStorage);
+        ret.put("description", mDescription);
         return ret;
     }
 
     private final String mName;
     private final String mPath;
     private final String mStorage;
+    private final String mDescription;
 }
