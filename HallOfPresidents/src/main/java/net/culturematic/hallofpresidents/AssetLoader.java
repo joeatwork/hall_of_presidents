@@ -5,8 +5,10 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.text.TextPaint;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -15,12 +17,16 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 
 public class AssetLoader {
     public AssetLoader(Context context) {
         mAssetManager = context.getAssets();
         mResources = context.getResources();
         mDisplayDensity = context.getResources().getDisplayMetrics().densityDpi;
+        mCachedDialogBackground = null;
+        mCachedTextPaint = null;
     }
 
     public int scaleInt(int original) {
@@ -33,8 +39,20 @@ public class AssetLoader {
         return mResources.getDrawable(R.drawable.mug_of_adventure);
     }
 
-    public Typeface loadDialogTypeface() {
-        return Typeface.createFromAsset(mAssetManager, TYPEFACE_ASSET_PATH);
+    public TextPaint loadDialogTextPaint() {
+        if (null == mCachedTextPaint) {
+            float fontSize = mResources.getDisplayMetrics().scaledDensity * DIALOG_FONT_SIZE_SP;
+            Typeface dialogFace = Typeface.createFromAsset(mAssetManager, TYPEFACE_ASSET_PATH);
+            mCachedTextPaint = new TextPaint();
+            mCachedTextPaint.setTypeface(dialogFace);
+            mCachedTextPaint.setColor(Color.BLACK);
+            mCachedTextPaint.setTextSize(fontSize);
+        }
+        return mCachedTextPaint;
+    }
+
+    public TextPaint loadButtonTextPaint() {
+        return loadDialogTextPaint();
     }
 
     public Bitmap loadHeroSpritesBitmap() {
@@ -54,11 +72,10 @@ public class AssetLoader {
     }
 
     public Drawable loadDialogBackground() {
-        return mResources.getDrawable(R.drawable.dialogbox);
-    }
-
-    public float getDialogFontSize() {
-        return mResources.getDisplayMetrics().scaledDensity * DIALOG_FONT_SIZE_SP;
+        if (null == mCachedDialogBackground) {
+            mCachedDialogBackground = mResources.getDrawable(R.drawable.dialogbox);
+        }
+        return mCachedDialogBackground;
     }
 
     public JSONObject loadJSONObject(String path) {
@@ -118,6 +135,12 @@ public class AssetLoader {
         }
         return retBuffer.toString();
     }
+
+    // We should only LruCache bitmaps and such, but we know
+    // 1) these are used in multiple spots and 2) are kinda small.
+    // Might wanna cache the UIControls stuff, too.
+    private TextPaint mCachedTextPaint;
+    private Drawable mCachedDialogBackground;
 
     private final AssetManager mAssetManager;
     private final Resources mResources;

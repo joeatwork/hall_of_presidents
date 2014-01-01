@@ -50,8 +50,8 @@ public class LoadingScreen implements Screen {
     }
 
     @Override
-    public RoomState getRoomState() {
-        return mLoadThread.getRoomState();
+    public boolean done() {
+        return false;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class LoadingScreen implements Screen {
             Room room = roomLoader.load(mRoomState.getRoomCatalogItem().getPath());
             mRoomState.setPosition(room.defaultDoor());
 
-            Screen loaded = new WorldScreen(mDisplay, mViewBounds, mRoomState, room, hero, controls);
+            Screen loaded = new WorldScreen(mAssetLoader, mDisplay, mViewBounds, mRoomState, room, hero, controls);
             setLoadedScreen(loaded);
         }
 

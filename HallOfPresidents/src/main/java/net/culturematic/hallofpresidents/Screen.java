@@ -5,7 +5,7 @@ public interface Screen {
 
     public Screen nextScreen();
 
-    public RoomState getRoomState();
+    public boolean done();
 
     public void recycle();
 }

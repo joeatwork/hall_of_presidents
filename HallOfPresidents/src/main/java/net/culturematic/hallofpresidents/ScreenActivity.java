@@ -36,22 +36,11 @@ public class ScreenActivity extends Activity {
         mRoomPickerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int itemIx, long itemId) {
-                final Point gameDimensions = getBitmapDimensions();
                 final RoomCatalogAdapter adapter =
                         (RoomCatalogAdapter) adapterView.getAdapter();
                 final RoomCatalogItem item = adapter.getItem(itemIx);
                 final RoomState roomState = new RoomState(item);
-
-                mInputEvents = new InputEvents();
-                mSurfaceView.setOnTouchListener(mInputEvents);
-                setContentView(mSurfaceView);
-                mGameLoop = new GameLoop(
-                    mSurfaceView.getHolder(),
-                    gameDimensions,
-                    assetLoader,
-                        roomState
-                );
-                mGameLoop.start();
+                showGame(assetLoader, roomState);
             }
         });
 
@@ -88,6 +77,30 @@ public class ScreenActivity extends Activity {
         int width = display.getWidth();  // deprecated
         int height = display.getHeight();  // deprecated
         return new Point(width, height);
+    }
+
+    private void showRoomPicker() {
+        if (null != mGameLoop) {
+            // Probably already paused, but there is a slight race condition
+            // since this can be called during the tail end of the game loop.
+            mGameLoop.pause();
+            mGameLoop = null;
+        }
+        setContentView(mRoomPickerView);
+    }
+
+    private void showGame(AssetLoader assetLoader, RoomState roomState) {
+        final Point gameDimensions = getBitmapDimensions();
+        mInputEvents = new InputEvents();
+        mSurfaceView.setOnTouchListener(mInputEvents);
+        setContentView(mSurfaceView);
+        mGameLoop = new GameLoop(
+                mSurfaceView.getHolder(),
+                gameDimensions,
+                assetLoader,
+                roomState
+        );
+        mGameLoop.start();
     }
 
     private class GameLoop extends Thread {
@@ -141,7 +154,7 @@ public class ScreenActivity extends Activity {
                 }
                 long timeMillis = System.currentTimeMillis();
                 mInputEvents.getPointsDown(touchSpots);
-                game.update(timeMillis, touchSpots);
+                boolean isDone = game.update(timeMillis, touchSpots);
                 Canvas canvas = null;
                 try {
                     canvas = mHolder.lockCanvas();
@@ -155,8 +168,18 @@ public class ScreenActivity extends Activity {
                         mHolder.unlockCanvasAndPost(canvas);
                     }
                 }
+                if (isDone) {
+                    mRunning = false;
+                }
             }// while
             setGameState(roomState);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showRoomPicker();
+                }
+            });
         } // run()
 
         private final Point mDimensions;

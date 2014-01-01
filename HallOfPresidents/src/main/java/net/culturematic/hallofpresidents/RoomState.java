@@ -24,6 +24,15 @@ public class RoomState {
         mControlState = ControlState.WALKING;
         mMovement = Direction.DIRECTION_NONE;
         mFacing = Direction.DIRECTION_DOWN;
+        mIsComplete = false;
+    }
+
+    public void setComplete() {
+        mIsComplete = true;
+    }
+
+    public boolean getIsComplete() {
+        return mIsComplete;
     }
 
     public void setPosition(PointF position) {
@@ -51,11 +60,11 @@ public class RoomState {
         return mControlState.getBButtonLabel();
     }
 
-    public void aButton() {
+    public void pressAButton() {
         mControlState = mControlState.onAButton();
     }
 
-    public void bButton() {
+    public void pressBButton() {
         mControlState = mControlState.onBButton();
     }
 
@@ -182,6 +191,7 @@ public class RoomState {
         private final String mBButtonLabel;
     }
 
+    private boolean mIsComplete;
     private Direction mMovement;
     private Direction mFacing;
     private Dialog mDialogAvailable;

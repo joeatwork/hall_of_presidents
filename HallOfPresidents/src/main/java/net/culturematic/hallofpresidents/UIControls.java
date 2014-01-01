@@ -16,24 +16,19 @@ public class UIControls {
         mRoomState = roomState;
         mDpadBitmap = assetLoader.loadDpadBitmap();
         mButtonBitmap = assetLoader.loadButtonBitmap();
-        mDialogboxBackground = assetLoader.loadDialogBackground();
         mButtonPadding = assetLoader.getButtonPadding();
+        mButtonTextPaint = assetLoader.loadButtonTextPaint();
 
         mDefaultPaint = new Paint();
 
         mSemiTransparentPaint = new Paint();
         mSemiTransparentPaint.setAlpha(128);
 
-        mDialogPaint = new TextPaint();
-        mDialogPaint.setTypeface(assetLoader.loadDialogTypeface());
-        mDialogPaint.setColor(Color.BLACK);
-        mDialogPaint.setTextSize(assetLoader.getDialogFontSize());
-
         mDpadDestRect = new Rect(0, 0, mDpadBitmap.getWidth(), mDpadBitmap.getHeight());
         mAButtonDestRect = new Rect(0, 0, mButtonBitmap.getWidth(), mButtonBitmap.getHeight());
         mBButtonDestRect = new Rect(0, 0, mButtonBitmap.getWidth(), mButtonBitmap.getHeight());
-        mDialogDestRect = new Rect(0, 0, 500, 500);
-        mDialogTextDestRect = new Rect(mDialogDestRect);
+
+        mDialogUI = new DialogUI(assetLoader);
     }
 
     public void intepretInteractions(long milliTime, InputEvents.TouchSpot[] spots) {
@@ -53,7 +48,7 @@ public class UIControls {
                 aButtonIsDown = true;
                 if (! mAButtonWasDown) {
                     mAButtonWasDown = true;
-                    mRoomState.aButton();
+                    mRoomState.pressAButton();
                 }
             }
 
@@ -61,7 +56,7 @@ public class UIControls {
                 bButtonIsDown = true;
                 if (! mBButtonWasDown) {
                     mBButtonWasDown = true;
-                    mRoomState.bButton();
+                    mRoomState.pressBButton();
                 }
             }
         }
@@ -90,7 +85,7 @@ public class UIControls {
             canvas.drawText(bButtonLabel,
                     mBButtonDestRect.left + mButtonPadding,
                     mBButtonDestRect.bottom - mButtonPadding,
-                    mDialogPaint);
+                    mButtonTextPaint);
         }
 
         Paint aButtonPaint = mDefaultPaint;
@@ -104,33 +99,12 @@ public class UIControls {
             canvas.drawText(aButtonLabel,
                     mAButtonDestRect.left + mButtonPadding,
                     mAButtonDestRect.bottom - mButtonPadding,
-                    mDialogPaint);
+                    mButtonTextPaint);
         }
 
         String dialogText = mRoomState.getDialogText();
         if (null != dialogText) {
-            mDialogboxBackground.getPadding(mDialogTextDestRect);
-            int dialogWidth = viewBounds.width() - (mDialogTextDestRect.left + mDialogTextDestRect.right);
-            StaticLayout dialogLayout = new StaticLayout(
-                dialogText,
-                mDialogPaint,
-                dialogWidth,
-                Layout.Alignment.ALIGN_NORMAL,
-                1.4f, // SpacingMult (Multiply line height)
-                0.0f, // SpacingAdd (add to line height)
-                false // IncludePad (no idea what this does)
-            );
-
-            int dialogBottom = mDialogTextDestRect.top + dialogLayout.getHeight() + mDialogTextDestRect.bottom;
-            mDialogDestRect.set(viewBounds.top, viewBounds.left, viewBounds.right, dialogBottom);
-            mDialogboxBackground.setBounds(mDialogDestRect);
-            mDialogboxBackground.draw(canvas);
-
-            canvas.save();
-            canvas.translate(mDialogTextDestRect.left, mDialogTextDestRect.top);
-            dialogLayout.draw(canvas);
-            canvas.restore();
-
+            mDialogUI.drawDialog(dialogText, viewBounds, canvas);
             mRoomState.showedDialog();
         }
     }
@@ -158,18 +132,16 @@ public class UIControls {
 
     private final RoomState mRoomState;
 
+    private final TextPaint mButtonTextPaint;
+    private final DialogUI mDialogUI;
     private final float mButtonPadding;
     private final Paint mSemiTransparentPaint;
     private final Paint mDefaultPaint;
-    private final TextPaint mDialogPaint;
     private final Bitmap mDpadBitmap;
     private final Bitmap mButtonBitmap;
-    private final Drawable mDialogboxBackground;
     private final Rect mDpadDestRect;
     private final Rect mAButtonDestRect;
     private final Rect mBButtonDestRect;
-    private final Rect mDialogDestRect;
-    private final Rect mDialogTextDestRect;
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.UIControls";

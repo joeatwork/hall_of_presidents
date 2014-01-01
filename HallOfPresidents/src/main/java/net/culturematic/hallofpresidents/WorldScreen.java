@@ -12,14 +12,18 @@ import java.util.Set;
 public class WorldScreen implements Screen {
 
     public WorldScreen(
+            AssetLoader assetLoader,
             Bitmap display,
             Rect viewBounds,
             RoomState savedState,
             Room room,
             GameCharacter hero,
             UIControls controls) {
+        mAssetLoader = assetLoader;
+        mNextScreen = null;
         mViewBounds = viewBounds;
         mWorldBounds = new Rect(viewBounds);
+        mDisplay = display;
         mCanvas = new Canvas(display);
         mRoom = room;
         mVictoryFlags = mRoom.getVictory().getRoomFlagsToRequire();
@@ -27,7 +31,6 @@ public class WorldScreen implements Screen {
         mControls = controls;
         mRoomState = savedState;
         mHero.setRoom(room, mRoomState.getPosition());
-
     }
 
     @Override
@@ -36,7 +39,9 @@ public class WorldScreen implements Screen {
         if (mRoomState.canGetVictory()) {
             Set<String> hasFlags = mRoomState.getRoomFlags();
             if (hasFlags.containsAll(mVictoryFlags)) {
-                Log.d(LOGTAG, "VICTORY! DO SOMETHING GREAT HERE!");
+                mRoomState.setComplete();
+                Dialog victoryDialog = mRoom.getVictory();
+                mNextScreen = new VictoryScreen(mAssetLoader, mDisplay, mViewBounds, victoryDialog);
             }
         }
         mControls.intepretInteractions(milliTime, touchSpots);
@@ -72,12 +77,12 @@ public class WorldScreen implements Screen {
 
     @Override
     public Screen nextScreen() {
-        return null;
+        return mNextScreen;
     }
 
     @Override
-    public RoomState getRoomState() {
-        return mRoomState;
+    public boolean done() {
+        return false;
     }
 
     @Override
@@ -85,6 +90,10 @@ public class WorldScreen implements Screen {
         // TODO- recycle mHero, mRoom, mControls here
     }
 
+    private Screen mNextScreen;
+
+    private final AssetLoader mAssetLoader;
+    private final Bitmap mDisplay;
     private final Room mRoom;
     private final Set<String> mVictoryFlags;
     private final Canvas mCanvas;

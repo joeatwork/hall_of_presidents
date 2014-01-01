@@ -9,17 +9,14 @@ public class Game {
         mScreen = new LoadingScreen(display, viewBounds, savedState, assetLoader);
     }
 
-    public void update(final long milliTime, InputEvents.TouchSpot[] touchSpots) {
+    public boolean update(final long milliTime, InputEvents.TouchSpot[] touchSpots) {
         mScreen.update(milliTime, touchSpots);
         Screen nextScreen = mScreen.nextScreen();
         if (null != nextScreen) {
             mScreen.recycle();
             mScreen = nextScreen;
         }
-    }
-
-    public RoomState getRoomState() {
-        return mScreen.getRoomState();
+        return mScreen.done();
     }
 
     private Screen mScreen;
