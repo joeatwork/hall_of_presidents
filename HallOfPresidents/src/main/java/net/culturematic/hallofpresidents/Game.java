@@ -18,8 +18,8 @@ public class Game {
         }
     }
 
-    public RoomState getState() {
-        return new RoomState();
+    public RoomState getRoomState() {
+        return mScreen.getRoomState();
     }
 
     private Screen mScreen;

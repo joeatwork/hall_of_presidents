@@ -5,12 +5,15 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
+import java.util.Set;
+
 public class Room {
-    public Room(Bitmap background, Bitmap furniture, Bitmap terrain, WorldEvent[] events) {
+    public Room(Bitmap background, Bitmap furniture, Bitmap terrain, WorldEvent[] events, Dialog victoryDialog) {
         mBackground = background;
         mFurniture = furniture;
         mTerrain = terrain;
         mEvents = events;
+        mVictory = victoryDialog;
     }
 
     /**
@@ -69,10 +72,15 @@ public class Room {
         return null;
     }
 
+    public Dialog getVictory() {
+        return mVictory;
+    }
+
     private final Bitmap mBackground;
     private final Bitmap mFurniture;
     private final Bitmap mTerrain;
     private final WorldEvent[] mEvents;
+    private final Dialog mVictory;
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.Room";

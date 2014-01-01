@@ -1,6 +1,7 @@
 package net.culturematic.hallofpresidents;
 
 import android.graphics.PointF;
+import android.util.Log;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,12 +17,30 @@ public class RoomState {
         DIRECTION_LEFT
     }
 
-    public RoomState() {
+    public RoomState(RoomCatalogItem item) {
+        mRoomItem = item;
         mRoomFlags = new HashSet<String>();
         mRoomPosition = new PointF(0, 0);
         mControlState = ControlState.WALKING;
         mMovement = Direction.DIRECTION_NONE;
         mFacing = Direction.DIRECTION_DOWN;
+    }
+
+    public void setPosition(PointF position) {
+        mRoomPosition.set(position);
+    }
+
+    public void setDialogAvailable(Dialog dialog) {
+        if (null == dialog) {
+            mControlState = mControlState.onNoDialogAvailable();
+        } else {
+            mControlState = mControlState.onDialogAvailable();
+        }
+        mDialogAvailable = dialog;
+    }
+
+    public boolean canGetVictory() {
+        return mControlState.canGetVictory();
     }
 
     public String getAButtonLabel() {
@@ -70,23 +89,6 @@ public class RoomState {
         return mFacing;
     }
 
-    public void setDialogAvailable(Dialog dialog) {
-        if (null == dialog) {
-            mControlState = mControlState.onNoDialogAvailable();
-        } else {
-            mControlState = mControlState.onDialogAvailable();
-        }
-        mDialogAvailable = dialog;
-    }
-
-    public Dialog getDialogAvailable() {
-        return mDialogAvailable;
-    }
-
-    public void setRoomCatalogItem(RoomCatalogItem roomItem) {
-        mRoomItem = roomItem;
-    }
-
     public RoomCatalogItem getRoomCatalogItem() {
         return mRoomItem;
     }
@@ -101,10 +103,6 @@ public class RoomState {
 
     public PointF getPosition() {
         return mRoomPosition;
-    }
-
-    public void setPosition(PointF position) {
-        mRoomPosition.set(position);
     }
 
     public enum ControlState {
@@ -136,6 +134,10 @@ public class RoomState {
             @Override
             public Direction movement(Direction request) {
                 return Direction.DIRECTION_NONE;
+            }
+            @Override
+            public boolean canGetVictory() {
+                return false;
             }
         };
 
@@ -172,6 +174,10 @@ public class RoomState {
             return request;
         }
 
+        public boolean canGetVictory() {
+            return true;
+        }
+
         private final String mAButtonLabel;
         private final String mBButtonLabel;
     }
@@ -184,4 +190,6 @@ public class RoomState {
     private ControlState mControlState;
     private final Set<String> mRoomFlags;
 
+    @SuppressWarnings("unused")
+    private static final String LOGTAG = "hallofpresidents.RoomState";
 }

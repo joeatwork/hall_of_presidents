@@ -5,6 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Log;
+
+import java.util.Set;
 
 public class WorldScreen implements Screen {
 
@@ -19,14 +22,23 @@ public class WorldScreen implements Screen {
         mWorldBounds = new Rect(viewBounds);
         mCanvas = new Canvas(display);
         mRoom = room;
+        mVictoryFlags = mRoom.getVictory().getRoomFlagsToRequire();
         mHero = hero;
         mControls = controls;
         mRoomState = savedState;
         mHero.setRoom(room, mRoomState.getPosition());
+
     }
 
     @Override
     public void update(long milliTime, InputEvents.TouchSpot[] touchSpots) {
+
+        if (mRoomState.canGetVictory()) {
+            Set<String> hasFlags = mRoomState.getRoomFlags();
+            if (hasFlags.containsAll(mVictoryFlags)) {
+                Log.d(LOGTAG, "VICTORY! DO SOMETHING GREAT HERE!");
+            }
+        }
         mControls.intepretInteractions(milliTime, touchSpots);
 
         // TODO should be handled directly by hero
@@ -64,15 +76,24 @@ public class WorldScreen implements Screen {
     }
 
     @Override
+    public RoomState getRoomState() {
+        return mRoomState;
+    }
+
+    @Override
     public void recycle() {
         // TODO- recycle mHero, mRoom, mControls here
     }
 
-    private Room mRoom;
+    private final Room mRoom;
+    private final Set<String> mVictoryFlags;
     private final Canvas mCanvas;
     private final Rect mViewBounds; // Area of screen for us to draw on
     private final Rect mWorldBounds; // Area of the world to show on the screen
     private final GameCharacter mHero;
     private final UIControls mControls;
     private final RoomState mRoomState;
+
+    @SuppressWarnings("unused")
+    private static final String LOGTAG = "hallofpresidents.WorldScreen";
 }

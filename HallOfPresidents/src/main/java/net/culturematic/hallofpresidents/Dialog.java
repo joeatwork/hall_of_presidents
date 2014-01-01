@@ -4,10 +4,11 @@ import java.util.Collections;
 import java.util.Set;
 
 public class Dialog {
-    public Dialog(String dialog, RoomState.Direction facing, Set<String> roomFlagsToSet) {
+    public Dialog(String dialog, RoomState.Direction facing, Set<String> roomFlagsToSet, Set<String> roomFlagsToRequire) {
         mDialog = dialog;
         mFacing = facing;
         mRoomFlagsToSet = Collections.unmodifiableSet(roomFlagsToSet);
+        mRoomFlagsToRequire = Collections.unmodifiableSet(roomFlagsToRequire);
     }
 
     public String getDialog() {
@@ -20,7 +21,10 @@ public class Dialog {
         return mRoomFlagsToSet;
     }
 
+    public Set<String> getRoomFlagsToRequire() { return mRoomFlagsToRequire; }
+
     private final String mDialog;
     private final RoomState.Direction mFacing;
     private final Set<String> mRoomFlagsToSet;
+    private final Set<String> mRoomFlagsToRequire;
 }

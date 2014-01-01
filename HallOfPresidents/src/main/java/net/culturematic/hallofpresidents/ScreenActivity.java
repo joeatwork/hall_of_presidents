@@ -25,8 +25,6 @@ public class ScreenActivity extends Activity {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
-        final RoomState roomState = new RoomState();
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -42,7 +40,7 @@ public class ScreenActivity extends Activity {
                 final RoomCatalogAdapter adapter =
                         (RoomCatalogAdapter) adapterView.getAdapter();
                 final RoomCatalogItem item = adapter.getItem(itemIx);
-                roomState.setRoomCatalogItem(item);
+                final RoomState roomState = new RoomState(item);
 
                 mInputEvents = new InputEvents();
                 mSurfaceView.setOnTouchListener(mInputEvents);

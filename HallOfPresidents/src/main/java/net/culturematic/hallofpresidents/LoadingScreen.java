@@ -23,8 +23,8 @@ public class LoadingScreen implements Screen {
         mDisplayCanvas = new Canvas(display);
         mLoadedScreen = null;
 
-        Thread loadThread = new LoadThread(roomState);
-        loadThread.start();
+        mLoadThread = new LoadThread(roomState);
+        mLoadThread.start();
     }
 
     @Override
@@ -47,6 +47,11 @@ public class LoadingScreen implements Screen {
             return getLoadedScreen();
         }
         return null;
+    }
+
+    @Override
+    public RoomState getRoomState() {
+        return mLoadThread.getRoomState();
     }
 
     @Override
@@ -78,6 +83,17 @@ public class LoadingScreen implements Screen {
             setLoadedScreen(loaded);
         }
 
+        public RoomState getRoomState() {
+            while (true) {
+                try {
+                    this.join();
+                    return mRoomState;
+                } catch (InterruptedException e) {
+                    ; // keep trying
+                }
+            }// forever
+        }
+
         private final RoomState mRoomState;
     }
 
@@ -86,6 +102,7 @@ public class LoadingScreen implements Screen {
     private final AssetLoader mAssetLoader;
     private final Drawable mLoadingDrawable;
     private final Canvas mDisplayCanvas;
+    private final LoadThread mLoadThread;
 
     private Screen mLoadedScreen;
 

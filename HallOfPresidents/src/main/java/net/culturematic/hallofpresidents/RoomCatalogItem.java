@@ -1,5 +1,7 @@
 package net.culturematic.hallofpresidents;
 
+import java.util.Set;
+
 public class RoomCatalogItem {
     public RoomCatalogItem(String name, String path, String storage) {
         mName = name;
