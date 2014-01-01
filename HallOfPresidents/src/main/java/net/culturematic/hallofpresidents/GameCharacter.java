@@ -131,6 +131,10 @@ public class GameCharacter {
         canvas.drawBitmap(mSpriteSheet, mSourceRect, mDestRect, null);
     }
 
+    public void recycle() {
+        mSpriteSheet.recycle();
+    }
+
     private long mLastTime;
     private RoomState.Direction mAnimationDirection;
     private float mAnimationDistance;

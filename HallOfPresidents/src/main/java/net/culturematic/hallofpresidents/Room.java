@@ -76,6 +76,12 @@ public class Room {
         return mVictory;
     }
 
+    public void recycle() {
+        mBackground.recycle();
+        mFurniture.recycle();
+        mTerrain.recycle();
+    }
+
     private final Bitmap mBackground;
     private final Bitmap mFurniture;
     private final Bitmap mTerrain;

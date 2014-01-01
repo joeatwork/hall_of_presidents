@@ -87,7 +87,9 @@ public class WorldScreen implements Screen {
 
     @Override
     public void recycle() {
-        // TODO- recycle mHero, mRoom, mControls here
+        mHero.recycle();
+        mControls.recycle();
+        mRoom.recycle();
     }
 
     private Screen mNextScreen;

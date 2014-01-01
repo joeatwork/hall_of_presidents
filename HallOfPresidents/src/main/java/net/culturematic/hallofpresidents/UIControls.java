@@ -109,6 +109,11 @@ public class UIControls {
         }
     }
 
+    public void recycle() {
+        mDpadBitmap.recycle();
+        mButtonBitmap.recycle();
+    }
+
     private void readDpad(int x, int y) {
         int xOffset = x - mDpadDestRect.centerX();
         int yOffset = y - mDpadDestRect.centerY();

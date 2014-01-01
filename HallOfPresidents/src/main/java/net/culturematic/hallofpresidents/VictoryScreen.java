@@ -17,11 +17,16 @@ public class VictoryScreen implements Screen {
 
     @Override
     public void update(long milliTime, InputEvents.TouchSpot[] touchSpots) {
+        if (mStartedMillis < 0) {
+            mStartedMillis = milliTime;
+        }
         mCanvas.drawColor(Color.WHITE);
         mDialogUI.drawDialog(mVictoryDialog.getDialog(), mViewBounds, mCanvas);
 
-        if (touchSpots.length > 0 && null != touchSpots[0]) {
-            mDone = true;
+        if (milliTime - mStartedMillis > MIN_SHOW_TIME_MILLIS) {
+            if (touchSpots.length > 0 && null != touchSpots[0]) {
+                mDone = true;
+            }
         }
     }
 
@@ -41,10 +46,13 @@ public class VictoryScreen implements Screen {
     }
 
     private boolean mDone;
+    private long mStartedMillis = -1;
 
     private final Bitmap mDisplay;
     private final Canvas mCanvas;
     private final Rect mViewBounds;
     private final Dialog mVictoryDialog;
     private final DialogUI mDialogUI;
+
+    private final int MIN_SHOW_TIME_MILLIS = 1000;
 }
