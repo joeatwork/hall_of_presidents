@@ -11,18 +11,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class RoomState {
-    public static class NoSuchDirectionException extends Exception {
-        public NoSuchDirectionException(String message) {
-            super(message);
-        }
-    }
 
     public enum Direction {
         DIRECTION_NONE,
         DIRECTION_UP,
         DIRECTION_RIGHT,
         DIRECTION_DOWN,
-        DIRECTION_LEFT;
+        DIRECTION_LEFT
     } // Direction
 
     public RoomState(RoomCatalogItem item) {

@@ -48,11 +48,11 @@ public class RoomCatalogAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup container) {
         if (null == convertView) {
             convertView = mLayoutInflater.inflate(R.layout.catalog_entry_view, container, false);
+            assert null != convertView;
         }
         RoomCatalogItem item = getItem(position);
         ((TextView) convertView).setText(item.getName());
         return convertView;
-
     }
 
     private final LayoutInflater mLayoutInflater;

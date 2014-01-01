@@ -2,15 +2,12 @@ package net.culturematic.hallofpresidents;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
-import android.util.DisplayMetrics;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -18,8 +15,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
 
 public class AssetLoader {
     public AssetLoader(Context context) {
@@ -31,7 +26,7 @@ public class AssetLoader {
 
     public int scaleInt(int original) {
         long scaleUp = (long) original * mDisplayDensity;
-        long scaleDown = scaleUp / DisplayMetrics.DENSITY_XXHIGH;
+        long scaleDown = scaleUp / DENSITY_XXHIGH;
         return (int) scaleDown;
     }
 
@@ -122,7 +117,9 @@ public class AssetLoader {
             throw new RuntimeException("Couldn't parse JSON object at path " + path, e);
         } finally {
             try {
-                in.close();
+                if (null != in) {
+                    in.close();
+                }
             } catch (IOException e) {
                 Log.e(LOGTAG, "Couldn't close asset stream at " + path, e);
             }
@@ -133,7 +130,7 @@ public class AssetLoader {
         InputStream in = null;
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
 
-        bitmapOptions.inDensity = DisplayMetrics.DENSITY_XXHIGH;
+        bitmapOptions.inDensity = DENSITY_XXHIGH;
         bitmapOptions.inTargetDensity = mDisplayDensity;
         if (null != preferredConfig) {
             bitmapOptions.inPreferredConfig = preferredConfig;
@@ -185,5 +182,6 @@ public class AssetLoader {
     private static final float DIALOG_FONT_SIZE_SP = 14f;
     private static final int BUTTON_PADDING_HACK = 64; // Until we clean up the buttons
 
+    private static final int DENSITY_XXHIGH = 480; // Can't use DisplayMatrics in API 14
     private static final String LOGTAG = "hallofpresidents.AssetLoader";
 }

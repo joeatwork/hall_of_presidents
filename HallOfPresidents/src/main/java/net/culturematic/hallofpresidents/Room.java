@@ -5,8 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
-import java.util.Set;
-
 public class Room {
     public Room(Bitmap background, Bitmap furniture, Bitmap terrain, WorldEvent[] events, Dialog victoryDialog) {
         mBackground = background;

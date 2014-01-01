@@ -4,7 +4,6 @@ import android.graphics.Rect;
 
 public class WorldEvent {
 
-
     public WorldEvent(final Rect bounds, final String name, final Dialog dialog) {
         mBounds = bounds;
         mName = name;

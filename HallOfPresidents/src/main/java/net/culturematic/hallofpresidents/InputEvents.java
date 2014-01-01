@@ -74,5 +74,5 @@ public class InputEvents implements View.OnTouchListener {
     private final Stack<TouchSpot> mSpareSpots;
 
     @SuppressWarnings("unused")
-    private final String LOGTAG = "hallofpresidents.InputEvents";
+    private static final String LOGTAG = "hallofpresidents.InputEvents";
 }

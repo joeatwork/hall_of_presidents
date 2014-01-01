@@ -3,8 +3,6 @@ package net.culturematic.hallofpresidents;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Set;
-
 public class RoomCatalogItem {
     public RoomCatalogItem(String name, String path, String storage) {
         mName = name;

@@ -2,12 +2,8 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.text.Layout;
-import android.text.StaticLayout;
 import android.text.TextPaint;
 
 public class UIControls {
@@ -31,7 +27,7 @@ public class UIControls {
         mDialogUI = new DialogUI(assetLoader);
     }
 
-    public void intepretInteractions(long milliTime, InputEvents.TouchSpot[] spots) {
+    public void intepretInteractions(InputEvents.TouchSpot[] spots) {
         boolean dpadPressed = false;
         boolean aButtonIsDown = false;
         boolean bButtonIsDown = false;

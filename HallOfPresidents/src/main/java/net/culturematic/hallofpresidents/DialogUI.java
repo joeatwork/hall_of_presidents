@@ -29,7 +29,7 @@ public class DialogUI {
         );
 
         int dialogBottom = mDialogPaddingRect.top + dialogLayout.getHeight() + mDialogPaddingRect.bottom;
-        mDialogDestRect.set(viewBounds.top, viewBounds.left, viewBounds.right, dialogBottom);
+        mDialogDestRect.set(viewBounds.left, viewBounds.top, viewBounds.right, dialogBottom);
         mDialogBackground.setBounds(mDialogDestRect);
         mDialogBackground.draw(canvas);
 

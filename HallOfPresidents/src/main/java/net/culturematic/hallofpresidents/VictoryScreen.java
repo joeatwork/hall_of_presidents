@@ -7,8 +7,7 @@ import android.graphics.Rect;
 
 public class VictoryScreen implements Screen {
     public VictoryScreen(AssetLoader assetLoader, Bitmap display, Rect viewBounds, Dialog victoryDialog) {
-        mDisplay = display;
-        mCanvas = new Canvas(mDisplay);
+        mCanvas = new Canvas(display);
         mViewBounds = viewBounds;
         mVictoryDialog = victoryDialog;
         mDialogUI = new DialogUI(assetLoader);
@@ -48,11 +47,10 @@ public class VictoryScreen implements Screen {
     private boolean mDone;
     private long mStartedMillis = -1;
 
-    private final Bitmap mDisplay;
     private final Canvas mCanvas;
     private final Rect mViewBounds;
     private final Dialog mVictoryDialog;
     private final DialogUI mDialogUI;
 
-    private final int MIN_SHOW_TIME_MILLIS = 1000;
+    private static final int MIN_SHOW_TIME_MILLIS = 1000;
 }

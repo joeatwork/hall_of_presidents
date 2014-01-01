@@ -107,5 +107,7 @@ public class RoomLoader {
     }
 
     private final AssetLoader mAssetLoader;
-    private final String LOGTAG = "hallofpresidents.RoomLoader";
+
+    @SuppressWarnings("unused")
+    private static final String LOGTAG = "hallofpresidents.RoomLoader";
 }

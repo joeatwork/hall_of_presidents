@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.Log;
 
 import java.util.Set;
 
@@ -45,7 +44,7 @@ public class WorldScreen implements Screen {
                 mNextScreen = new VictoryScreen(mAssetLoader, mDisplay, mViewBounds, victoryDialog);
             }
         }
-        mControls.intepretInteractions(milliTime, touchSpots);
+        mControls.intepretInteractions(touchSpots);
 
         // TODO should be handled directly by hero
         RoomState.Direction move = mRoomState.getMovement();
