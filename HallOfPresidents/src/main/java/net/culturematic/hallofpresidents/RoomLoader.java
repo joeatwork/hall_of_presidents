@@ -23,7 +23,7 @@ public class RoomLoader {
             final Bitmap background = mAssetLoader.loadBitmap(backgroundPath, Bitmap.Config.RGB_565);
 
             final String furniturePath = description.getString("furniture");
-            final Bitmap furniture = mAssetLoader.loadBitmap(furniturePath, null);
+            final Bitmap furniture = mAssetLoader.loadBitmap(furniturePath, Bitmap.Config.ARGB_4444);
 
             final String terrainPath = description.getString("terrain");
             final Bitmap terrain = mAssetLoader.loadBitmap(terrainPath, Bitmap.Config.ALPHA_8);

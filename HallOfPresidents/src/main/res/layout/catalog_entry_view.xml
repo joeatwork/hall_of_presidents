@@ -9,13 +9,20 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:orientation="horizontal">
-    <TextView
-        android:tag="tag_room_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="14dp"
-        android:textSize="22sp"
-        android:text="Placeholder Room Name"/>
+        <TextView
+            android:tag="tag_room_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="14dp"
+            android:textSize="22sp"
+            android:text="Placeholder Room Name" />
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/holo_green_light"
+            android:visibility="invisible"
+            android:text="@string/completed"/>
     </LinearLayout>
     <TextView
         android:tag="tag_room_description"
@@ -23,5 +30,6 @@
         android:layout_width="match_parent"
         android:padding="14dp"
         android:textSize="14sp"
-        android:text="Placeholder text. Lorem ipsum dolor amet etcetera etcetera ad infinitum."/>
+        android:text="Placeholder text. Lorem ipsum dolor amet etcetera etcetera ad infinitum."
+        />
 </LinearLayout>

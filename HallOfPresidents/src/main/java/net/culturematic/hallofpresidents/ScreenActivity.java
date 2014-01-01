@@ -48,6 +48,8 @@ public class ScreenActivity extends Activity {
             JSONArray catalog = catalogObject.getJSONArray("catalog");
             RoomCatalogAdapter catalogAdapter = new RoomCatalogAdapter(getLayoutInflater(), catalog);
             mRoomPickerView.setAdapter(catalogAdapter);
+
+            // TODO this is only supposed to happen once per activity
             setContentView(mRoomPickerView);
         } catch (JSONException e) {
             throw new RuntimeException("Can't parse catalog", e);
@@ -84,6 +86,8 @@ public class ScreenActivity extends Activity {
             mGameLoop.pause();
             mGameLoop = null;
         }
+
+        // TODO This shouldn't really work?
         setContentView(mRoomPickerView);
     }
 
@@ -91,6 +95,9 @@ public class ScreenActivity extends Activity {
         final Point gameDimensions = getBitmapDimensions();
         mInputEvents = new InputEvents();
         mSurfaceView.setOnTouchListener(mInputEvents);
+
+        // TODO This shouldn't really work? Should probably be a separate activity,
+        // or (even better) a screen.
         setContentView(mSurfaceView);
         mGameLoop = new GameLoop(
                 mSurfaceView.getHolder(),

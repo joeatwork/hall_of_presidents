@@ -164,9 +164,6 @@ public class AssetLoader {
         return retBuffer.toString();
     }
 
-    // We should only LruCache bitmaps and such, but we know
-    // 1) these are used in multiple spots and 2) are kinda small.
-    // Might wanna cache the UIControls stuff, too.
     private TextPaint mCachedTextPaint;
     private Drawable mCachedDialogBackground;
 
