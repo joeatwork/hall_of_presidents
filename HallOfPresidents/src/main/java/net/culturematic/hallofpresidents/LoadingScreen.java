@@ -110,5 +110,5 @@ public class LoadingScreen implements Screen {
     private long mFirstTime = -1;
     private boolean mReadyToPlay = false;
 
-    private static int MINIMUM_LOAD_TIME_MILLIS = 3000;
+    private static int MINIMUM_LOAD_TIME_MILLIS = 2000;
 }

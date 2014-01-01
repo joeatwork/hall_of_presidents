@@ -2,6 +2,7 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.PointF;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,6 +48,13 @@ public class RoomState {
         final RoomState ret = new RoomState(item);
         ret.setPosition(position);
 
+        final JSONArray flagsArray = stateDesc.getJSONArray("room_flags_acquired");
+        final Set<String> flagsSet = new HashSet<String>();
+        for (int i = 0; i < flagsArray.length(); i++) {
+            flagsSet.add(flagsArray.getString(i));
+        }
+        ret.addRoomFlags(flagsSet);
+
         if (stateDesc.getBoolean("is_complete")) {
             ret.setComplete();
         }
@@ -63,6 +71,9 @@ public class RoomState {
             positionObj.put("x", mRoomPosition.x);
             positionObj.put("y", mRoomPosition.y);
             ret.put("room_position", positionObj);
+
+            final JSONArray flagsArray = new JSONArray(mRoomFlags);
+            ret.put("room_flags_acquired", flagsArray);
 
           return ret;
         } catch (JSONException e) {
@@ -150,6 +161,10 @@ public class RoomState {
 
     public void addRoomFlags(Collection<String> newFlags) {
         mRoomFlags.addAll(newFlags);
+    }
+
+    public void clearRoomFlags() {
+        mRoomFlags.clear();
     }
 
     public Set<String> getRoomFlags() {
