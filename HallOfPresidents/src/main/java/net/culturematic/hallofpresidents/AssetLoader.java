@@ -30,37 +30,6 @@ public class AssetLoader {
         return (int) scaleDown;
     }
 
-    public RoomState loadSavedRoomState(RoomCatalogItem item) {
-        final SharedPreferences prefs = mContext.getSharedPreferences(ROOM_STATE_PREFS_NAME, Context.MODE_PRIVATE);
-        final String prefsString = prefs.getString(item.getFullPath(), null);
-        RoomState ret = null;
-
-        if (null != prefsString) {
-            try {
-                final JSONObject prefsJson = new JSONObject(prefsString);
-                ret =  RoomState.readJSON(prefsJson);
-            } catch (JSONException e) {
-                Log.e(LOGTAG, "(Apparently) Corrupted room preferences found.", e);
-            }
-        }
-
-        if (null == ret) {
-            ret = new RoomState(item);
-            return ret;
-        }
-
-        return ret;
-    }
-
-    public void saveRoomState(RoomState roomState) {
-        final SharedPreferences prefs = mContext.getSharedPreferences(ROOM_STATE_PREFS_NAME, Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = prefs.edit();
-        final String storagePath = roomState.getRoomCatalogItem().getFullPath();
-        final JSONObject storagePayload = roomState.toJSON();
-        editor.putString(storagePath, storagePayload.toString());
-        editor.commit();
-    }
-
     public Drawable loadLoadingScreen() {
         return mContext.getResources().getDrawable(R.drawable.mug_of_adventure);
     }
@@ -170,7 +139,6 @@ public class AssetLoader {
     private final Context mContext;
     private final int mDisplayDensity;
 
-    private static final String ROOM_STATE_PREFS_NAME = "RoomStates";
     private static final String TYPEFACE_ASSET_PATH = "pressstart2p.ttf";
     private static final String HERO_SPRITES_ASSET_PATH = "hero_sprites_128x128.png";
     private static final String DPAD_ASSET_PATH = "widget_dpad.png";

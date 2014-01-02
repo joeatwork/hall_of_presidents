@@ -1,6 +1,8 @@
 package net.culturematic.hallofpresidents;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -15,7 +17,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,31 +30,11 @@ public class ScreenActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        final AssetLoader assetLoader = new AssetLoader(this);
+        mAssetLoader = new AssetLoader(this);
         mSurfaceView = new SurfaceView(this);
-
         mRoomPickerView = new ListView(this);
-        mRoomPickerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int itemIx, long itemId) {
-                final RoomCatalogAdapter adapter =
-                        (RoomCatalogAdapter) adapterView.getAdapter();
-                final RoomCatalogItem item = adapter.getItem(itemIx);
-                showGame(assetLoader, item);
-            }
-        });
 
-        try {
-            JSONObject catalogObject = assetLoader.loadJSONObject("catalog.js");
-            JSONArray catalog = catalogObject.getJSONArray("catalog");
-            RoomCatalogAdapter catalogAdapter = new RoomCatalogAdapter(getLayoutInflater(), catalog);
-            mRoomPickerView.setAdapter(catalogAdapter);
-
-            // TODO this is only supposed to happen once per activity
-            setContentView(mRoomPickerView);
-        } catch (JSONException e) {
-            throw new RuntimeException("Can't parse catalog", e);
-        }
+        showRoomPicker();
     }
 
     @Override
@@ -66,17 +47,39 @@ public class ScreenActivity extends Activity {
         super.onPause();
 
         if (null != mGameLoop) {
-            mGameLoop.pause();
+            final RoomState roomState = mGameLoop.pause();
             mGameLoop = null;
+            saveRoomState(roomState);
         }
     }
 
     @SuppressWarnings("deprecation")
     public Point getBitmapDimensions() {
-        Display display = getWindowManager().getDefaultDisplay();
-        int width = display.getWidth();  // deprecated
-        int height = display.getHeight();  // deprecated
+        final Display display = getWindowManager().getDefaultDisplay();
+        final int width = display.getWidth();  // deprecated
+        final int height = display.getHeight();  // deprecated
         return new Point(width, height);
+    }
+
+    private RoomCatalog loadRoomCatalog(AssetLoader assetLoader) {
+        try {
+            final SharedPreferences prefs = getSharedPreferences(ROOM_STATE_PREFS_NAME, Context.MODE_PRIVATE);
+            final JSONObject catalogObject = assetLoader.loadJSONObject("catalog.js");
+            final RoomCatalog ret = RoomCatalog.loadFromJSON(catalogObject);
+            for (int i = 0; i < ret.size(); i++) {
+                final RoomCatalogItem item = ret.get(i);
+                RoomState savedState = null;
+                final String savedString = prefs.getString(item.getFullPath(), null);
+                if (null != savedString) {
+                    final JSONObject savedDesc = new JSONObject(savedString);
+                    savedState = RoomState.readJSON(savedDesc);
+                }
+                ret.putSavedState(i, savedState);
+            }
+            return ret;
+        } catch (JSONException e) {
+            throw new RuntimeException("Can't load room catalog", e);
+        }
     }
 
     private void showRoomPicker() {
@@ -87,11 +90,30 @@ public class ScreenActivity extends Activity {
             mGameLoop = null;
         }
 
+        // TODO Waaay to much IO for here. Need a loading interaction while this is happening.
+        final RoomCatalog catalog = loadRoomCatalog(mAssetLoader);
+        mRoomPickerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int itemIx, long itemId) {
+                final RoomCatalogAdapter adapter =
+                        (RoomCatalogAdapter) adapterView.getAdapter();
+                RoomState savedState = catalog.getSavedState(itemIx);
+                if (null == savedState) {
+                    final RoomCatalogItem item = adapter.getItem(itemIx);
+                    savedState = new RoomState(item);
+                }
+                showGame(savedState);
+            }
+        });
+
+        RoomCatalogAdapter catalogAdapter = new RoomCatalogAdapter(getLayoutInflater(), catalog);
+        mRoomPickerView.setAdapter(catalogAdapter);
+
         // TODO This shouldn't really work?
         setContentView(mRoomPickerView);
     }
 
-    private void showGame(AssetLoader assetLoader, RoomCatalogItem item) {
+    private void showGame(RoomState roomState) {
         final Point gameDimensions = getBitmapDimensions();
         mInputEvents = new InputEvents();
         mSurfaceView.setOnTouchListener(mInputEvents);
@@ -102,25 +124,34 @@ public class ScreenActivity extends Activity {
         mGameLoop = new GameLoop(
                 mSurfaceView.getHolder(),
                 gameDimensions,
-                assetLoader,
-                item
+                mAssetLoader,
+                roomState
         );
         mGameLoop.start();
+    }
+
+    private void saveRoomState(RoomState roomState) {
+        final SharedPreferences prefs = getSharedPreferences(ROOM_STATE_PREFS_NAME, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = prefs.edit();
+        final String storagePath = roomState.getRoomCatalogItem().getFullPath();
+        final JSONObject storagePayload = roomState.toJSON();
+        editor.putString(storagePath, storagePayload.toString());
+        editor.commit();
     }
 
     private class GameLoop extends Thread {
         public GameLoop(SurfaceHolder holder,
                         Point gameDimensions,
                         AssetLoader assetLoader,
-                        RoomCatalogItem item) {
+                        RoomState roomState) {
             mRunning = true;
             mDimensions = gameDimensions;
             mAssetLoader = assetLoader;
-            mRoomCatalogItem = item;
+            mRoomState = roomState;
             mHolder = holder;
         }
 
-        public void pause() {
+        public RoomState pause() {
             mRunning = false;
             while (true) {
                 try {
@@ -130,17 +161,16 @@ public class ScreenActivity extends Activity {
                     // keep trying
                 }
             }
+            return mRoomState;
         }
 
         @Override
         public void run() {
-            RoomState roomState = mAssetLoader.loadSavedRoomState(mRoomCatalogItem);
-
             final Rect boundsRect = new Rect();
             final Bitmap displayBitmap = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
 
             final Rect gameDimensions = new Rect(0, 0, mDimensions.x, mDimensions.y);
-            final Game game = new Game(displayBitmap, gameDimensions, roomState, mAssetLoader);
+            final Game game = new Game(displayBitmap, gameDimensions, mRoomState, mAssetLoader);
             final InputEvents.TouchSpot[] touchSpots = new InputEvents.TouchSpot[InputEvents.MAX_TOUCH_SPOTS];
 
             while (mRunning) {
@@ -167,11 +197,12 @@ public class ScreenActivity extends Activity {
                     mRunning = false;
                 }
             }// while
-            mAssetLoader.saveRoomState(roomState);
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    RoomState roomState = pause();
+                    saveRoomState(roomState);
                     showRoomPicker();
                 }
             });
@@ -180,7 +211,7 @@ public class ScreenActivity extends Activity {
         private final Point mDimensions;
         private final SurfaceHolder mHolder;
         private final AssetLoader mAssetLoader;
-        private final RoomCatalogItem mRoomCatalogItem;
+        private final RoomState mRoomState;
         private volatile boolean mRunning;
     } // class
 
@@ -188,4 +219,7 @@ public class ScreenActivity extends Activity {
     private SurfaceView mSurfaceView;
     private ListView mRoomPickerView;
     private GameLoop mGameLoop;
+    private AssetLoader mAssetLoader;
+
+    private static final String ROOM_STATE_PREFS_NAME = "RoomStates";
 }

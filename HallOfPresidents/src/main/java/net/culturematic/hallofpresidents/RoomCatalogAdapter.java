@@ -14,19 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoomCatalogAdapter extends BaseAdapter {
-    public RoomCatalogAdapter(LayoutInflater layoutInflater, JSONArray catalog) {
+    public RoomCatalogAdapter(LayoutInflater layoutInflater, RoomCatalog catalog) {
         super();
         mLayoutInflater = layoutInflater;
-        try {
-            mCatalog = new ArrayList<RoomCatalogItem>(catalog.length());
-            for (int i = 0; i < catalog.length(); i++) {
-                final JSONObject itemDesc = catalog.getJSONObject(i);
-                final RoomCatalogItem item = RoomCatalogItem.readJSON(itemDesc);
-                mCatalog.add(item);
-            }
-        } catch (JSONException e) {
-            throw new RuntimeException("Can't parse catalog", e);
-        }
+        mCatalog = catalog;
     }
 
     @Override
@@ -50,14 +41,25 @@ public class RoomCatalogAdapter extends BaseAdapter {
             convertView = mLayoutInflater.inflate(R.layout.catalog_entry_view, container, false);
             assert null != convertView;
         }
-        RoomCatalogItem item = getItem(position);
+
+        View completedTag = convertView.findViewWithTag("tag_completed_flag");
         TextView roomNameView = (TextView) convertView.findViewWithTag("tag_room_name");
-        roomNameView.setText(item.getName());
         TextView roomDescView = (TextView) convertView.findViewWithTag("tag_room_description");
+        assert null != completedTag;
+        assert null != roomNameView;
+        assert null != roomDescView;
+
+        RoomCatalogItem item = mCatalog.get(position);
+        RoomState saved = mCatalog.getSavedState(position);
+        if (null != saved && saved.isComplete()) {
+            completedTag.setVisibility(View.VISIBLE);
+        }
+
+        roomNameView.setText(item.getName());
         roomDescView.setText(item.getDescription());
         return convertView;
     }
 
     private final LayoutInflater mLayoutInflater;
-    private final List<RoomCatalogItem> mCatalog;
+    private final RoomCatalog mCatalog;
 }

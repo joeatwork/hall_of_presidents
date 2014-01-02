@@ -80,7 +80,7 @@ public class RoomState {
         mIsComplete = true;
     }
 
-    public boolean getIsComplete() {
+    public boolean isComplete() {
         return mIsComplete;
     }
 

@@ -17,6 +17,7 @@
             android:textSize="22sp"
             android:text="Placeholder Room Name" />
         <TextView
+            android:tag="tag_completed_flag"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textSize="14sp"
