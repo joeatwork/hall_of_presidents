@@ -11,7 +11,7 @@
 	"room": "intro",
 	"position": {
 	    "_COMMENT": "I just made these up randomly, will need retweaking when we get this running",
-	    "x": 256, "y": 256
+	    "x": 1118, "y": 1440
 	}
     },
     "hero": {
