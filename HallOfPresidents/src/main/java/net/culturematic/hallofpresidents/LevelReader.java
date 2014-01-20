@@ -155,8 +155,8 @@ public class LevelReader {
         ret.standFramesPerSecond = spriteDesc.getInt("stand_frames_per_second");
 
         final JSONObject boundsDesc = spriteDesc.getJSONObject("bounds");
-        ret.boundsWidth = boundsDesc.getInt("width");
-        ret.boundsHeight = boundsDesc.getInt("height");
+        ret.boundsWidth = mAssetLoader.scaleInt(boundsDesc.getInt("width"));
+        ret.boundsHeight = mAssetLoader.scaleInt(boundsDesc.getInt("height"));
 
         ret.spriteBitmap = mAssetLoader.loadBitmap(rootPath + "/" + bitmapPath, null);
         if (spriteDesc.has("STAND_DOWN")) {

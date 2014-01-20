@@ -2,6 +2,8 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
@@ -70,6 +72,7 @@ public class GameCharacter {
             case DIRECTION_UP:
                 float yUp = position.y - distance;
                 int yCheckUp = (int) yUp - boundsHeight;
+
                 if (currentRoom.inBounds((int) position.x + halfBoundsWidth, yCheckUp) &&
                         currentRoom.inBounds((int) position.x - halfBoundsWidth, yCheckUp)) {
                     position.y = yUp;
@@ -79,6 +82,7 @@ public class GameCharacter {
             case DIRECTION_DOWN:
                 float yDown = position.y + distance;
                 int yCheckDown = (int) yDown;
+
                 if (currentRoom.inBounds((int) position.x + halfBoundsWidth, yCheckDown) &&
                         currentRoom.inBounds((int) position.x - halfBoundsWidth, yCheckDown)) {
                     position.y = yDown;
@@ -88,7 +92,8 @@ public class GameCharacter {
             case DIRECTION_RIGHT:
                 float xRight = position.x + distance;
                 int xCheckRight = (int) xRight + halfBoundsWidth;
-                if (currentRoom.inBounds(xCheckRight, (int) position.y + boundsHeight) &&
+
+                if (currentRoom.inBounds(xCheckRight, (int) position.y - boundsHeight) &&
                         currentRoom.inBounds(xCheckRight, (int) position.y)) {
                     position.x = xRight;
                     ret = true;
@@ -97,7 +102,8 @@ public class GameCharacter {
             case DIRECTION_LEFT:
                 float xLeft = position.x - distance;
                 int xCheckLeft = (int) xLeft - halfBoundsWidth;
-                if (currentRoom.inBounds(xCheckLeft, (int) position.y + boundsHeight) &&
+
+                if (currentRoom.inBounds(xCheckLeft, (int) position.y - boundsHeight) &&
                         currentRoom.inBounds(xCheckLeft, (int) position.y)) {
                     position.x = xLeft;
                     ret = true;

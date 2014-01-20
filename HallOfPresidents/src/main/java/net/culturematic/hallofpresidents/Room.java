@@ -2,6 +2,8 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
@@ -35,6 +37,8 @@ public class Room {
             bounds.offset(- worldRect.left, - worldRect.top);
             canvas.drawRect(bounds, redPaint);
         }
+        *
+        * END DEBUGGING
         */
     }
 
