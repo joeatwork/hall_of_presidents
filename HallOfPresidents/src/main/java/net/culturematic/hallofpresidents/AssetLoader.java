@@ -25,7 +25,7 @@ public class AssetLoader {
 
     public int scaleInt(int original) {
         long scaleUp = (long) original * mDisplayDensity;
-        long scaleDown = scaleUp / DENSITY_XXHIGH;
+        long scaleDown = scaleUp / DENSITY_XHIGH;
         return (int) scaleDown;
     }
 
@@ -94,7 +94,7 @@ public class AssetLoader {
         InputStream in = null;
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
 
-        bitmapOptions.inDensity = DENSITY_XXHIGH;
+        bitmapOptions.inDensity = DENSITY_XHIGH;
         bitmapOptions.inTargetDensity = mDisplayDensity;
         if (null != preferredConfig) {
             bitmapOptions.inPreferredConfig = preferredConfig;
@@ -102,7 +102,8 @@ public class AssetLoader {
 
         try {
             in = mContext.getAssets().open(path);
-            return BitmapFactory.decodeStream(in, null, bitmapOptions);
+            final Bitmap ret = BitmapFactory.decodeStream(in, null, bitmapOptions);
+            return ret;
         } catch (IOException e) {
             throw new RuntimeException("Couldn't read Bitmap at asset path " + path, e);
         } finally {
@@ -135,13 +136,13 @@ public class AssetLoader {
     private final int mDisplayDensity;
 
     private static final String TYPEFACE_ASSET_PATH = "pressstart2p.ttf";
-    private static final String HERO_SPRITES_ASSET_PATH = "hero_sprites_128x128.png";
     private static final String DPAD_ASSET_PATH = "widget_dpad.png";
     private static final String BUTTON_ASSET_PATH = "widget_button.png";
 
     private static final float DIALOG_FONT_SIZE_SP = 14f;
     private static final int BUTTON_PADDING_HACK = 64; // Until we clean up the buttons
 
-    private static final int DENSITY_XXHIGH = 480; // Can't use DisplayMatrics in API 14
+    private static final int DENSITY_XHIGH = 320;
+    // private static final int DENSITY_XXHIGH = 480; // Can't use DisplayMatrics in API 14
     private static final String LOGTAG = "hallofpresidents.AssetLoader";
 }

@@ -63,8 +63,8 @@ public class LevelReader {
             }
             final JSONObject startPositionDesc = startDesc.getJSONObject("position");
             final PointF startPosition = new PointF(
-                 startPositionDesc.getInt("x"),
-                 startPositionDesc.getInt("y")
+                 mAssetLoader.scaleInt(startPositionDesc.getInt("x")),
+                 mAssetLoader.scaleInt(startPositionDesc.getInt("y"))
             );
 
             return new Level(hero, rooms, victory, startRoom, startPosition);

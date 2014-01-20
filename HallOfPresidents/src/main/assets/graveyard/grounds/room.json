@@ -1,0 +1,88 @@
+{
+    "_COMMENT": "GROUNDS",
+    "background": "background.png",
+    "furniture": "furniture.png",
+    "terrain": "terrain.png",
+    "characters": [
+	{
+	    "_COMMENT": [
+		"Small Ghost",
+		"'ghost' style is random flickering, facing down"
+	    ],
+	    "sprites": "../sprites/small_ghost_sprites_68x188.png",
+	    "style": "ghost",
+	    "position": {
+		"_COMMENT": [
+		    "Center of the bottom edge of sprite",
+		    "Upper right corner of scene"
+		],
+		"x": 1165, "y": 267
+	    },
+	    "ghost_sprites": [
+		{ "x": 0, "y": 0,   "width": 68, "height": 188 },
+		{ "x": 0, "y": 188, "width": 68, "height": 188 },
+		{ "x": 0, "y": 376, "width": 68, "height": 188 }
+	    ]
+	},
+	{
+	    "_COMMENT": [
+		"Small Ghost",
+		"'ghost' style is random flickering, facing down"
+	    ],
+	    "sprites": "../sprites/small_ghost_sprites_68x188.png",
+	    "style": "ghost",
+	    "position": {
+		"_COMMENT": [
+		    "Center of the bottom edge of sprite",
+		    "right below the gnarly old tree"
+		],
+		"x": 305, "y": 451
+	    },
+	    "ghost_sprites": [
+		{ "x": 0, "y": 0,   "width": 68, "height": 188 },
+		{ "x": 0, "y": 188, "width": 68, "height": 188 },
+		{ "x": 0, "y": 376, "width": 68, "height": 188 }
+	    ]
+	},
+	{
+	    "_COMMENT": [
+		"Small Ghost",
+		"'ghost' style is random flickering, facing down"
+	    ],
+	    "sprites": "../sprites/small_ghost_sprites_68x188.png",
+	    "style": "ghost",
+	    "position": {
+		"_COMMENT": [
+		    "Center of the bottom edge of sprite",
+		    "near the left-most obelisk"
+		],
+		"x": 115, "y": 723
+	    },
+	    "ghost_sprites": [
+		{ "x": 0, "y": 0,   "width": 68, "height": 188 },
+		{ "x": 0, "y": 188, "width": 68, "height": 188 },
+		{ "x": 0, "y": 376, "width": 68, "height": 188 }
+	    ]
+	},
+	{
+	    "_COMMENT": [
+		"Small Ghost",
+		"'ghost' style is random flickering, facing down"
+	    ],
+	    "sprites": "../sprites/small_ghost_sprites_68x188.png",
+	    "style": "ghost",
+	    "position": {
+		"_COMMENT": [
+		    "Center of the bottom edge of sprite",
+		    "Blocking the entrance to the crypt"
+		],
+		"x": 620, "y": 790
+	    },
+	    "ghost_sprites": [
+		{ "x": 0, "y": 0,   "width": 68, "height": 188 },
+		{ "x": 0, "y": 188, "width": 68, "height": 188 },
+		{ "x": 0, "y": 376, "width": 68, "height": 188 }
+	    ]
+	}
+    ]
+}
