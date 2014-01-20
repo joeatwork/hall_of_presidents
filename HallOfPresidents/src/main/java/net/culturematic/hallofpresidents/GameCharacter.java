@@ -48,6 +48,7 @@ public class GameCharacter {
         final PointF position = mLevelState.getPosition();
         int xDestOffset = ((int) position.x) - (halfWidth + viewportOffsetX);
         int yDestOffset = ((int) position.y) - (spriteHeight + viewportOffsetY);
+        mDestRect.set(mCurrentSpriteRect);
         mDestRect.offsetTo(xDestOffset, yDestOffset);
         canvas.drawBitmap(mCurrentBitmap, mCurrentSpriteRect, mDestRect, null);
     }

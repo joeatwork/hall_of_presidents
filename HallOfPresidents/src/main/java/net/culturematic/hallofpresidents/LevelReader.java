@@ -192,10 +192,10 @@ public class LevelReader {
         final Rect[] ret = new Rect[rectsArray.length()];
         for (int i = 0; i < rectsArray.length(); i++) {
             final JSONObject rect = rectsArray.getJSONObject(i);
-            int x = rect.getInt("x");
-            int y = rect.getInt("y");
-            int width = rect.getInt("width");
-            int height = rect.getInt("height");
+            int x = mAssetLoader.scaleInt(rect.getInt("x"));
+            int y = mAssetLoader.scaleInt(rect.getInt("y"));
+            int width = mAssetLoader.scaleInt(rect.getInt("width"));
+            int height = mAssetLoader.scaleInt(rect.getInt("height"));
             ret[i] = new Rect(x, y, x + width, y + height);
         }
         return ret;
