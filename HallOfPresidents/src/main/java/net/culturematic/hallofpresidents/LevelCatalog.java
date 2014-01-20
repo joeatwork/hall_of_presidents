@@ -7,41 +7,41 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoomCatalog {
-    public RoomCatalog(List<RoomCatalogItem> items) {
+public class LevelCatalog {
+    public LevelCatalog(List<LevelCatalogItem> items) {
         mItems = items;
-        mSavedStates = new ArrayList<RoomState>(mItems.size());
+        mSavedStates = new ArrayList<LevelState>(mItems.size());
     }
 
     public int size() {
         return mItems.size();
     }
 
-    public RoomCatalogItem get(int i) {
+    public LevelCatalogItem get(int i) {
         return mItems.get(i);
     }
 
-    public void putSavedState(int i, RoomState state) {
+    public void putSavedState(int i, LevelState state) {
         mSavedStates.add(i, state);
     }
 
-    public RoomState getSavedState(int i) {
+    public LevelState getSavedState(int i) {
         return mSavedStates.get(i);
     }
 
-    public static RoomCatalog loadFromJSON(JSONObject catalogDesc)
+    public static LevelCatalog loadFromJSON(JSONObject catalogDesc)
         throws JSONException {
         final JSONArray catalogArray = catalogDesc.getJSONArray("catalog");
-        final List<RoomCatalogItem> items = new ArrayList<RoomCatalogItem>(catalogArray.length());
+        final List<LevelCatalogItem> items = new ArrayList<LevelCatalogItem>(catalogArray.length());
         for (int i = 0; i < catalogArray.length(); i++) {
             final JSONObject itemDesc = catalogArray.getJSONObject(i);
-            final RoomCatalogItem item = RoomCatalogItem.readJSON(itemDesc);
+            final LevelCatalogItem item = LevelCatalogItem.readJSON(itemDesc);
             items.add(item);
         }
 
-        return new RoomCatalog(items);
+        return new LevelCatalog(items);
     }
 
-    private final List<RoomCatalogItem> mItems;
-    private final List<RoomState> mSavedStates;
+    private final List<LevelCatalogItem> mItems;
+    private final List<LevelState> mSavedStates;
 }

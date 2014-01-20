@@ -8,8 +8,8 @@ import android.text.TextPaint;
 
 public class UIControls {
 
-    public UIControls(AssetLoader assetLoader, RoomState roomState) {
-        mRoomState = roomState;
+    public UIControls(AssetLoader assetLoader, LevelState levelState) {
+        mLevelState = levelState;
         mDpadBitmap = assetLoader.loadDpadBitmap();
         mButtonBitmap = assetLoader.loadButtonBitmap();
         mButtonPadding = assetLoader.getButtonPadding();
@@ -44,7 +44,7 @@ public class UIControls {
                 aButtonIsDown = true;
                 if (! mAButtonWasDown) {
                     mAButtonWasDown = true;
-                    mRoomState.pressAButton();
+                    mLevelState.pressAButton();
                 }
             }
 
@@ -52,12 +52,12 @@ public class UIControls {
                 bButtonIsDown = true;
                 if (! mBButtonWasDown) {
                     mBButtonWasDown = true;
-                    mRoomState.pressBButton();
+                    mLevelState.pressBButton();
                 }
             }
         }
         if (!dpadPressed) {
-            mRoomState.requestMovement(RoomState.Direction.DIRECTION_NONE);
+            mLevelState.requestMovement(LevelState.Direction.DIRECTION_NONE);
         }
         mAButtonWasDown = aButtonIsDown;
         mBButtonWasDown = bButtonIsDown;
@@ -67,8 +67,8 @@ public class UIControls {
         mDpadDestRect.offsetTo(0, viewBounds.height() - mDpadDestRect.height());
         canvas.drawBitmap(mDpadBitmap, null, mDpadDestRect, null);
 
-        final String aButtonLabel = mRoomState.getAButtonLabel();
-        final String bButtonLabel = mRoomState.getBButtonLabel();
+        final String aButtonLabel = mLevelState.getAButtonLabel();
+        final String bButtonLabel = mLevelState.getBButtonLabel();
 
         Paint bButtonPaint = mDefaultPaint;
         if (null == bButtonLabel) {
@@ -98,10 +98,10 @@ public class UIControls {
                     mButtonTextPaint);
         }
 
-        String dialogText = mRoomState.getDialogText();
+        String dialogText = mLevelState.getDialogText();
         if (null != dialogText) {
             mDialogUI.drawDialog(dialogText, viewBounds, canvas);
-            mRoomState.showedDialog();
+            mLevelState.showedDialog();
         }
     }
 
@@ -115,15 +115,15 @@ public class UIControls {
         int yOffset = y - mDpadDestRect.centerY();
         if (Math.abs(xOffset) > Math.abs(yOffset)) { // Left or Right
             if (xOffset > 0) {
-                mRoomState.requestMovement(RoomState.Direction.DIRECTION_RIGHT);
+                mLevelState.requestMovement(LevelState.Direction.DIRECTION_RIGHT);
             } else {
-                mRoomState.requestMovement(RoomState.Direction.DIRECTION_LEFT);
+                mLevelState.requestMovement(LevelState.Direction.DIRECTION_LEFT);
             }
         } else { // Up or down
             if (yOffset > 0) {
-                mRoomState.requestMovement(RoomState.Direction.DIRECTION_DOWN);
+                mLevelState.requestMovement(LevelState.Direction.DIRECTION_DOWN);
             } else {
-                mRoomState.requestMovement(RoomState.Direction.DIRECTION_UP);
+                mLevelState.requestMovement(LevelState.Direction.DIRECTION_UP);
             }
         }
     }
@@ -131,7 +131,7 @@ public class UIControls {
     private boolean mAButtonWasDown = false;
     private boolean mBButtonWasDown = false;
 
-    private final RoomState mRoomState;
+    private final LevelState mLevelState;
 
     private final TextPaint mButtonTextPaint;
     private final DialogUI mDialogUI;

@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RoomState {
+public class LevelState {
 
     public enum Direction {
         DIRECTION_NONE,
@@ -20,18 +20,20 @@ public class RoomState {
         DIRECTION_LEFT
     } // Direction
 
-    public RoomState(RoomCatalogItem item) {
+    public LevelState(LevelCatalogItem item) {
         mRoomPosition = null;
-        mRoomItem = item;
-        mRoomFlags = new HashSet<String>();
+        mRoomName = null;
+        mLevelCatalogItem = item;
+        mLevelFlags = new HashSet<String>();
         mControlState = ControlState.WALKING;
         mMovement = Direction.DIRECTION_NONE;
         mFacing = Direction.DIRECTION_DOWN;
         mIsComplete = false;
     }
 
-    public static RoomState readJSON(JSONObject stateDesc)
+    public static LevelState readJSON(JSONObject stateDesc)
         throws JSONException {
+        final String roomName = stateDesc.getString("room_name");
         final JSONObject positionDesc = stateDesc.getJSONObject("room_position");
         final PointF position = new PointF(
             (float) positionDesc.getDouble("x"),
@@ -39,16 +41,17 @@ public class RoomState {
         );
 
         final JSONObject itemDesc = stateDesc.getJSONObject("room_item");
-        final RoomCatalogItem item = RoomCatalogItem.readJSON(itemDesc);
-        final RoomState ret = new RoomState(item);
+        final LevelCatalogItem item = LevelCatalogItem.readJSON(itemDesc);
+        final LevelState ret = new LevelState(item);
         ret.setPosition(position);
+        ret.setRoomName(roomName);
 
         final JSONArray flagsArray = stateDesc.getJSONArray("room_flags_acquired");
         final Set<String> flagsSet = new HashSet<String>();
         for (int i = 0; i < flagsArray.length(); i++) {
             flagsSet.add(flagsArray.getString(i));
         }
-        ret.addRoomFlags(flagsSet);
+        ret.addLevelFlags(flagsSet);
 
         if (stateDesc.getBoolean("is_complete")) {
             ret.setComplete();
@@ -60,19 +63,20 @@ public class RoomState {
         try {
             final JSONObject ret = new JSONObject();
             ret.put("is_complete", mIsComplete);
-            ret.put("room_item", mRoomItem.toJSON());
+            ret.put("room_item", mLevelCatalogItem.toJSON());
+            ret.put("room_name", mRoomName);
 
             final JSONObject positionObj = new JSONObject();
             positionObj.put("x", mRoomPosition.x);
             positionObj.put("y", mRoomPosition.y);
             ret.put("room_position", positionObj);
 
-            final JSONArray flagsArray = new JSONArray(mRoomFlags);
+            final JSONArray flagsArray = new JSONArray(mLevelFlags);
             ret.put("room_flags_acquired", flagsArray);
 
           return ret;
         } catch (JSONException e) {
-            throw new RuntimeException("Can't serialize RoomState to JSON", e);
+            throw new RuntimeException("Can't serialize LevelState to JSON", e);
         }
     }
 
@@ -89,6 +93,10 @@ public class RoomState {
             mRoomPosition = new PointF();
         }
         mRoomPosition.set(position);
+    }
+
+    public void setRoomName(String roomName) {
+        mRoomName = roomName;
     }
 
     public void setDialogAvailable(Dialog dialog) {
@@ -131,7 +139,7 @@ public class RoomState {
 
     public void showedDialog() {
         assert null != mDialogAvailable;
-        addRoomFlags(mDialogAvailable.getRoomFlagsToSet());
+        addLevelFlags(mDialogAvailable.getLevelFlagsToSet());
         mFacing = mDialogAvailable.getFacing();
     }
 
@@ -150,20 +158,24 @@ public class RoomState {
         return mFacing;
     }
 
-    public RoomCatalogItem getRoomCatalogItem() {
-        return mRoomItem;
+    public LevelCatalogItem getLevelCatalogItem() {
+        return mLevelCatalogItem;
     }
 
-    public void addRoomFlags(Collection<String> newFlags) {
-        mRoomFlags.addAll(newFlags);
+    public void addLevelFlags(Collection<String> newFlags) {
+        mLevelFlags.addAll(newFlags);
     }
 
-    public void clearRoomFlags() {
-        mRoomFlags.clear();
+    public void clearLevelFlags() {
+        mLevelFlags.clear();
     }
 
-    public Set<String> getRoomFlags() {
-        return mRoomFlags;
+    public String getRoomName() {
+        return mRoomName;
+    }
+
+    public Set<String> getLevelFlags() {
+        return mLevelFlags;
     }
 
     public PointF getPosition() {
@@ -251,11 +263,12 @@ public class RoomState {
     private Direction mMovement;
     private Direction mFacing;
     private Dialog mDialogAvailable;
-    private RoomCatalogItem mRoomItem;
+    private LevelCatalogItem mLevelCatalogItem;
     private PointF mRoomPosition;
+    private String mRoomName;
     private ControlState mControlState;
-    private final Set<String> mRoomFlags;
+    private final Set<String> mLevelFlags;
 
     @SuppressWarnings("unused")
-    private static final String LOGTAG = "hallofpresidents.RoomState";
+    private static final String LOGTAG = "hallofpresidents.LevelState";
 }

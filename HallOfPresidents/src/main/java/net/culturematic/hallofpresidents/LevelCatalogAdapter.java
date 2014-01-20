@@ -6,15 +6,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class RoomCatalogAdapter extends BaseAdapter {
-    public RoomCatalogAdapter(LayoutInflater layoutInflater, RoomCatalog catalog) {
+public class LevelCatalogAdapter extends BaseAdapter {
+    public LevelCatalogAdapter(LayoutInflater layoutInflater, LevelCatalog catalog) {
         super();
         mLayoutInflater = layoutInflater;
         mCatalog = catalog;
@@ -26,7 +19,7 @@ public class RoomCatalogAdapter extends BaseAdapter {
     }
 
     @Override
-    public RoomCatalogItem getItem(int i) {
+    public LevelCatalogItem getItem(int i) {
         return mCatalog.get(i);
     }
 
@@ -49,8 +42,8 @@ public class RoomCatalogAdapter extends BaseAdapter {
         assert null != roomNameView;
         assert null != roomDescView;
 
-        RoomCatalogItem item = mCatalog.get(position);
-        RoomState saved = mCatalog.getSavedState(position);
+        LevelCatalogItem item = mCatalog.get(position);
+        LevelState saved = mCatalog.getSavedState(position);
         if (null != saved && saved.isComplete()) {
             completedTag.setVisibility(View.VISIBLE);
         }
@@ -61,5 +54,5 @@ public class RoomCatalogAdapter extends BaseAdapter {
     }
 
     private final LayoutInflater mLayoutInflater;
-    private final RoomCatalog mCatalog;
+    private final LevelCatalog mCatalog;
 }

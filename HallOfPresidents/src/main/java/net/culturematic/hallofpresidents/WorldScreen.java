@@ -14,50 +14,49 @@ public class WorldScreen implements Screen {
             AssetLoader assetLoader,
             Bitmap display,
             Rect viewBounds,
-            RoomState savedState,
-            Room room,
+            Level level,
+            LevelState savedState,
             GameCharacter hero,
             UIControls controls) {
         mAssetLoader = assetLoader;
+        mLevel = level;
+        mLevelState = savedState;
         mNextScreen = null;
         mViewBounds = viewBounds;
         mWorldBounds = new Rect(viewBounds);
         mDisplay = display;
         mCanvas = new Canvas(display);
-        mRoom = room;
-        mVictoryFlags = mRoom.getVictory().getRoomFlagsToRequire();
+        mVictoryFlags = mLevel.getVictory().getRoomFlagsToRequire();
         mHero = hero;
         mControls = controls;
-        mRoomState = savedState;
-        mHero.setRoom(room);
     }
 
     @Override
     public void update(long milliTime, InputEvents.TouchSpot[] touchSpots) {
 
-        if (mRoomState.canGetVictory()) {
-            Set<String> hasFlags = mRoomState.getRoomFlags();
+        if (mLevelState.canGetVictory()) {
+            Set<String> hasFlags = mLevelState.getLevelFlags();
             if (hasFlags.containsAll(mVictoryFlags)) {
-                mRoomState.setComplete();
-                mRoomState.clearRoomFlags();
-                Dialog victoryDialog = mRoom.getVictory();
+                mLevelState.setComplete();
+                mLevelState.clearLevelFlags();
+                Dialog victoryDialog = mLevel.getVictory();
                 mNextScreen = new VictoryScreen(mAssetLoader, mDisplay, mViewBounds, victoryDialog);
             }
         }
         mControls.intepretInteractions(touchSpots);
 
-        // TODO should be handled directly by hero
-        RoomState.Direction move = mRoomState.getMovement();
-        RoomState.Direction facing = mRoomState.getFacing();
-        mHero.directionCommand(milliTime, move, facing);
+        Room room = mLevel.getRoom(mLevelState.getRoomName());
+        LevelState.Direction move = mLevelState.getMovement();
+        LevelState.Direction facing = mLevelState.getFacing();
+        mHero.directionCommand(milliTime, move, facing, room);
 
-        PointF heroPosition = mRoomState.getPosition();
-        WorldEvent worldEvent = mRoom.checkForEvent(heroPosition);
+        PointF heroPosition = mLevelState.getPosition();
+        WorldEvent worldEvent = room.checkForEvent(heroPosition);
         if (null != worldEvent) {
             Dialog dialog = worldEvent.getDialog();
-            mRoomState.setDialogAvailable(dialog);
+            mLevelState.setDialogAvailable(dialog);
         } else {
-            mRoomState.setDialogAvailable(null);
+            mLevelState.setDialogAvailable(null);
         }
         // We want the hero at the center of the Viewport
         int worldOffsetX = (int) heroPosition.x - mViewBounds.centerX();
@@ -66,13 +65,13 @@ public class WorldScreen implements Screen {
         mWorldBounds.offsetTo(worldOffsetX, worldOffsetY);
 
         mCanvas.drawColor(Color.BLACK);
-        mRoom.drawBackground(mCanvas, mWorldBounds, mViewBounds);
+        room.drawBackground(mCanvas, mWorldBounds, mViewBounds);
         mHero.drawCharacter(mCanvas, worldOffsetX, worldOffsetY);
 
-        mRoom.drawFurniture(mCanvas, mWorldBounds, mViewBounds);
+        room.drawFurniture(mCanvas, mWorldBounds, mViewBounds);
         mControls.drawControls(mCanvas, mViewBounds);
 
-        mRoomState.setPosition(heroPosition);
+        mLevelState.setPosition(heroPosition);
     }
 
     @Override
@@ -89,21 +88,21 @@ public class WorldScreen implements Screen {
     public void recycle() {
         mHero.recycle();
         mControls.recycle();
-        mRoom.recycle();
+        mLevel.recycle();
     }
 
     private Screen mNextScreen;
 
     private final AssetLoader mAssetLoader;
     private final Bitmap mDisplay;
-    private final Room mRoom;
     private final Set<String> mVictoryFlags;
     private final Canvas mCanvas;
     private final Rect mViewBounds; // Area of screen for us to draw on
     private final Rect mWorldBounds; // Area of the world to show on the screen
     private final GameCharacter mHero;
     private final UIControls mControls;
-    private final RoomState mRoomState;
+    private final Level mLevel;
+    private final LevelState mLevelState;
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.WorldScreen";

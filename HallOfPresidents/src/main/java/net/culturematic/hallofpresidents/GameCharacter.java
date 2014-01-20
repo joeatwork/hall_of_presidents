@@ -11,135 +11,173 @@ public class GameCharacter {
     // ( 1, 0) -> Standing facing up
     // ( 2, 0) -> Standing facing left
     // ( x, 1), (x, 2), (x, 3) -> Walk cycles for facing X
-    public GameCharacter(AssetLoader loader, RoomState roomState) {
-        mRoomState = roomState;
-        mSpriteSheet = loader.loadHeroSpritesBitmap();
-        mSpriteSize = loader.scaleInt(128);
-        mHalfSpriteSize = mSpriteSize / 2;
-        mAnimationFrameDistance = loader.scaleInt(128 / 4);
-        mSourceRect = new Rect(0, 0, mSpriteSize, mSpriteSize);
-        mDestRect = new Rect(0, 0, mSpriteSize, mSpriteSize);
-
-        mAnimationDirection = RoomState.Direction.DIRECTION_DOWN;
+    public GameCharacter(CharacterState characterState) {
+        mCharacterState = characterState;
         mAnimationDistance = 0;
         mLastTime = -1;
-
-        long stepsPerSecond = 2;
-        mSpeedPxPerMilli = stepsPerSecond * mSpriteSize / 1000f;
+        mDestRect = new Rect();
     }
 
-    public void directionCommand(long milliTime, RoomState.Direction direction, RoomState.Direction facing) {
+    public void setLevelState(LevelState levelState) {
+        mLevelState = levelState;
+    }
+
+    public void directionCommand(long milliTime, LevelState.Direction direction, LevelState.Direction facing, Room currentRoom) {
         if (mLastTime < 0) {
             mLastTime = milliTime;
         }
 
         final long deltaTime = milliTime - mLastTime;
-        final float distance = mSpeedPxPerMilli * deltaTime;
-        final PointF position = mRoomState.getPosition();
+        final PointF position = mLevelState.getPosition();
+        final float distance = mCharacterState.getSpeedPxPerMilli() * deltaTime;
+        if (updatePosition(direction, distance, position, currentRoom)) {
+            mAnimationDistance = mAnimationDistance + distance;
+            setCurrentMovingSprite(direction, mAnimationDistance);
+        } else {
+            mAnimationDistance = 0;
+            setCurrentStandingSprite(facing, milliTime);
+        }
 
+        mLastTime = milliTime;
+    }
+
+    public void drawCharacter(Canvas canvas, int viewportOffsetX, int viewportOffsetY) {
+        int spriteWidth = mCurrentSpriteRect.width();
+        int spriteHeight = mCurrentSpriteRect.height();
+        int halfWidth = spriteWidth / 2;
+        final PointF position = mLevelState.getPosition();
+        int xDestOffset = ((int) position.x) - (halfWidth + viewportOffsetX);
+        int yDestOffset = ((int) position.y) - (spriteHeight + viewportOffsetY);
+        mDestRect.offsetTo(xDestOffset, yDestOffset);
+        canvas.drawBitmap(mCurrentBitmap, mCurrentSpriteRect, mDestRect, null);
+    }
+
+    public void recycle() {
+        mCharacterState.recycle();
+    }
+
+    /**
+     * Returns true if position is updated.
+     */
+    private boolean updatePosition(LevelState.Direction direction, float distance, PointF position, Room currentRoom) {
+        final SpriteRenderer.Sprites sprites = mCharacterState.getSprites();
+        final int halfBoundsWidth = sprites.boundsWidth / 2;
+        final int boundsHeight = sprites.boundsHeight;
+
+        boolean ret = false;
         switch (direction) {
             case DIRECTION_UP:
                 float yUp = position.y - distance;
-                int yCheckUp = (int) yUp - mHalfSpriteSize;
-                if (mCurrentRoom.inBounds((int) position.x + mHalfSpriteSize, yCheckUp) &&
-                        mCurrentRoom.inBounds((int) position.x - mHalfSpriteSize, yCheckUp)) {
+                int yCheckUp = (int) yUp - boundsHeight;
+                if (currentRoom.inBounds((int) position.x + halfBoundsWidth, yCheckUp) &&
+                        currentRoom.inBounds((int) position.x - halfBoundsWidth, yCheckUp)) {
                     position.y = yUp;
+                    ret = true;
                 }
                 break;
             case DIRECTION_DOWN:
                 float yDown = position.y + distance;
-                int yCheckDown = (int) yDown + mHalfSpriteSize;
-                if (mCurrentRoom.inBounds((int) position.x + mHalfSpriteSize, yCheckDown) &&
-                        mCurrentRoom.inBounds((int) position.x - mHalfSpriteSize, yCheckDown)) {
+                int yCheckDown = (int) yDown;
+                if (currentRoom.inBounds((int) position.x + halfBoundsWidth, yCheckDown) &&
+                        currentRoom.inBounds((int) position.x - halfBoundsWidth, yCheckDown)) {
                     position.y = yDown;
+                    ret = true;
                 }
                 break;
             case DIRECTION_RIGHT:
                 float xRight = position.x + distance;
-                int xCheckRight = (int) xRight + mHalfSpriteSize;
-                if (mCurrentRoom.inBounds(xCheckRight, (int) position.y + mHalfSpriteSize) &&
-                        mCurrentRoom.inBounds(xCheckRight, (int) position.y - mHalfSpriteSize)) {
+                int xCheckRight = (int) xRight + halfBoundsWidth;
+                if (currentRoom.inBounds(xCheckRight, (int) position.y + boundsHeight) &&
+                        currentRoom.inBounds(xCheckRight, (int) position.y)) {
                     position.x = xRight;
+                    ret = true;
                 }
                 break;
             case DIRECTION_LEFT:
                 float xLeft = position.x - distance;
-                int xCheckLeft = (int) xLeft - mHalfSpriteSize;
-                if (mCurrentRoom.inBounds(xCheckLeft, (int) position.y + mHalfSpriteSize) &&
-                        mCurrentRoom.inBounds(xCheckLeft, (int) position.y - mHalfSpriteSize)) {
+                int xCheckLeft = (int) xLeft - halfBoundsWidth;
+                if (currentRoom.inBounds(xCheckLeft, (int) position.y + boundsHeight) &&
+                        currentRoom.inBounds(xCheckLeft, (int) position.y)) {
                     position.x = xLeft;
+                    ret = true;
                 }
                 break;
             case DIRECTION_NONE:
                 break;
         }
 
-        mLastTime = milliTime;
-
-        if (RoomState.Direction.DIRECTION_NONE == direction) {
-            mAnimationDirection = facing;
-            mAnimationDistance = 0;
-        } else if (mAnimationDirection != direction) {
-            mAnimationDirection = direction;
-            mAnimationDistance = distance % (mAnimationFrameDistance * ANIMATION_LENGTH_IN_FRAMES);
-        } else {
-            mAnimationDistance =
-                    (mAnimationDistance + distance) % (mAnimationFrameDistance * ANIMATION_LENGTH_IN_FRAMES);
-        }
+        return ret;
     }
 
-    public void setRoom(Room room) {
-        mCurrentRoom = room;
-    }
+    private void setCurrentMovingSprite(LevelState.Direction direction, float distance) {
+        SpriteRenderer.Sprites sprites = mCharacterState.getSprites();
+        mCurrentBitmap = sprites.spriteBitmap;
 
-    public void drawCharacter(Canvas canvas, int viewportOffsetX, int viewportOffsetY) {
-        int frame = (int) mAnimationDistance / mAnimationFrameDistance;
-        int frameOffset = frame * mSpriteSize;
-        int spritesheetXOffset = 0;
-        switch (mAnimationDirection) {
-            case DIRECTION_NONE:
-                throw new RuntimeException("Animation direction should never be NONE");
-            case DIRECTION_DOWN:
-                spritesheetXOffset = 0;
-                break;
+        Rect[] animationFrames = null;
+        int animationLength = 0;
+        switch(direction) {
             case DIRECTION_UP:
-                spritesheetXOffset = mSpriteSize;
+                animationFrames = sprites.moveUpFrames;
+                animationLength = sprites.boundsHeight;
+                break;
+            case DIRECTION_DOWN:
+                animationFrames = sprites.moveDownFrames;
+                animationLength = sprites.boundsHeight;
                 break;
             case DIRECTION_LEFT:
-                spritesheetXOffset = mSpriteSize * 2;
+                animationFrames = sprites.moveLeftFrames;
+                animationLength = sprites.boundsWidth;
                 break;
             case DIRECTION_RIGHT:
-                spritesheetXOffset = mSpriteSize * 3;
+                animationFrames = sprites.moveRightFrames;
+                animationLength = sprites.boundsWidth;
                 break;
+            case DIRECTION_NONE:
+                throw new RuntimeException("Can't move in DIRECTION_NONE");
         }
-        mSourceRect.set(spritesheetXOffset, frameOffset, spritesheetXOffset + mSpriteSize, frameOffset + mSpriteSize);
 
-        final PointF position = mRoomState.getPosition();
-        int xDestOffset = ((int) position.x) - (mHalfSpriteSize + viewportOffsetX);
-        int yDestOffset = ((int) position.y) - (mHalfSpriteSize + viewportOffsetY);
-        mDestRect.offsetTo(xDestOffset, yDestOffset);
-        canvas.drawBitmap(mSpriteSheet, mSourceRect, mDestRect, null);
+        float frameDistance = distance % animationLength;
+        int frameIndex = (int) (animationFrames.length * frameDistance / animationLength);
+        mCurrentSpriteRect = animationFrames[frameIndex];
     }
 
-    public void recycle() {
-        mSpriteSheet.recycle();
+    private void setCurrentStandingSprite(LevelState.Direction facing, long milliTime) {
+        SpriteRenderer.Sprites sprites = mCharacterState.getSprites();
+        mCurrentBitmap = sprites.spriteBitmap;
+        Rect[] animationFrames = null;
+        switch (facing) {
+            case DIRECTION_UP:
+                animationFrames = sprites.standUpFrames;
+                break;
+            case DIRECTION_DOWN:
+                animationFrames = sprites.standDownFrames;
+                break;
+            case DIRECTION_LEFT:
+                animationFrames = sprites.standLeftFrames;
+                break;
+            case DIRECTION_RIGHT:
+                animationFrames = sprites.standRightFrames;
+                break;
+            case DIRECTION_NONE:
+                throw new RuntimeException("Can't face DIRECTION_NONE");
+        }
+
+        long framesPerMilli = sprites.standFramesPerSecond * 1000;
+        long totalFrames = framesPerMilli / milliTime;
+        int offsetFrame = (int) (totalFrames % animationFrames.length);
+
+        mCurrentSpriteRect = animationFrames[offsetFrame];
     }
+
+    private LevelState mLevelState;
 
     private long mLastTime;
-    private RoomState.Direction mAnimationDirection;
+    private Bitmap mCurrentBitmap;
+    private Rect mCurrentSpriteRect;
     private float mAnimationDistance;
-    private Room mCurrentRoom;
 
-    private final RoomState mRoomState;
-    private final int mSpriteSize;
-    private final int mHalfSpriteSize;
-    private final int mAnimationFrameDistance;
-    private final float mSpeedPxPerMilli;
-    private final Bitmap mSpriteSheet;
-    private final Rect mSourceRect;
     private final Rect mDestRect;
-
-    private static final int ANIMATION_LENGTH_IN_FRAMES = 4;
+    private final CharacterState mCharacterState;
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.GameCharacter";

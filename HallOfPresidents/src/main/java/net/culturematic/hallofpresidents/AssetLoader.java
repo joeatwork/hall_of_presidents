@@ -1,7 +1,6 @@
 package net.culturematic.hallofpresidents;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -48,10 +47,6 @@ public class AssetLoader {
 
     public TextPaint loadButtonTextPaint() {
         return loadDialogTextPaint();
-    }
-
-    public Bitmap loadHeroSpritesBitmap() {
-        return loadBitmap(HERO_SPRITES_ASSET_PATH, null);
     }
 
     public Bitmap loadDpadBitmap() {

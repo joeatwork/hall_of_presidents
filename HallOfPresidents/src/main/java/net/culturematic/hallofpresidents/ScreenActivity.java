@@ -47,9 +47,9 @@ public class ScreenActivity extends Activity {
         super.onPause();
 
         if (null != mGameLoop) {
-            final RoomState roomState = mGameLoop.pause();
+            final LevelState levelState = mGameLoop.pause();
             mGameLoop = null;
-            saveRoomState(roomState);
+            saveRoomState(levelState);
         }
     }
 
@@ -61,18 +61,18 @@ public class ScreenActivity extends Activity {
         return new Point(width, height);
     }
 
-    private RoomCatalog loadRoomCatalog(AssetLoader assetLoader) {
+    private LevelCatalog loadRoomCatalog(AssetLoader assetLoader) {
         try {
             final SharedPreferences prefs = getSharedPreferences(ROOM_STATE_PREFS_NAME, Context.MODE_PRIVATE);
             final JSONObject catalogObject = assetLoader.loadJSONObject("catalog.js");
-            final RoomCatalog ret = RoomCatalog.loadFromJSON(catalogObject);
+            final LevelCatalog ret = LevelCatalog.loadFromJSON(catalogObject);
             for (int i = 0; i < ret.size(); i++) {
-                final RoomCatalogItem item = ret.get(i);
-                RoomState savedState = null;
+                final LevelCatalogItem item = ret.get(i);
+                LevelState savedState = null;
                 final String savedString = prefs.getString(item.getFullPath(), null);
                 if (null != savedString) {
                     final JSONObject savedDesc = new JSONObject(savedString);
-                    savedState = RoomState.readJSON(savedDesc);
+                    savedState = LevelState.readJSON(savedDesc);
                 }
                 ret.putSavedState(i, savedState);
             }
@@ -91,29 +91,29 @@ public class ScreenActivity extends Activity {
         }
 
         // TODO Waaay to much IO for here. Need a loading interaction while this is happening.
-        final RoomCatalog catalog = loadRoomCatalog(mAssetLoader);
+        final LevelCatalog catalog = loadRoomCatalog(mAssetLoader);
         mRoomPickerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int itemIx, long itemId) {
-                final RoomCatalogAdapter adapter =
-                        (RoomCatalogAdapter) adapterView.getAdapter();
-                RoomState savedState = catalog.getSavedState(itemIx);
+                final LevelCatalogAdapter adapter =
+                        (LevelCatalogAdapter) adapterView.getAdapter();
+                LevelState savedState = catalog.getSavedState(itemIx);
                 if (null == savedState) {
-                    final RoomCatalogItem item = adapter.getItem(itemIx);
-                    savedState = new RoomState(item);
+                    final LevelCatalogItem item = adapter.getItem(itemIx);
+                    savedState = new LevelState(item);
                 }
                 showGame(savedState);
             }
         });
 
-        RoomCatalogAdapter catalogAdapter = new RoomCatalogAdapter(getLayoutInflater(), catalog);
+        LevelCatalogAdapter catalogAdapter = new LevelCatalogAdapter(getLayoutInflater(), catalog);
         mRoomPickerView.setAdapter(catalogAdapter);
 
         // TODO This shouldn't really work?
         setContentView(mRoomPickerView);
     }
 
-    private void showGame(RoomState roomState) {
+    private void showGame(LevelState levelState) {
         final Point gameDimensions = getBitmapDimensions();
         mInputEvents = new InputEvents();
         mSurfaceView.setOnTouchListener(mInputEvents);
@@ -125,16 +125,16 @@ public class ScreenActivity extends Activity {
                 mSurfaceView.getHolder(),
                 gameDimensions,
                 mAssetLoader,
-                roomState
+                levelState
         );
         mGameLoop.start();
     }
 
-    private void saveRoomState(RoomState roomState) {
+    private void saveRoomState(LevelState levelState) {
         final SharedPreferences prefs = getSharedPreferences(ROOM_STATE_PREFS_NAME, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = prefs.edit();
-        final String storagePath = roomState.getRoomCatalogItem().getFullPath();
-        final JSONObject storagePayload = roomState.toJSON();
+        final String storagePath = levelState.getLevelCatalogItem().getFullPath();
+        final JSONObject storagePayload = levelState.toJSON();
         editor.putString(storagePath, storagePayload.toString());
         editor.commit();
     }
@@ -143,15 +143,15 @@ public class ScreenActivity extends Activity {
         public GameLoop(SurfaceHolder holder,
                         Point gameDimensions,
                         AssetLoader assetLoader,
-                        RoomState roomState) {
+                        LevelState levelState) {
             mRunning = true;
             mDimensions = gameDimensions;
             mAssetLoader = assetLoader;
-            mRoomState = roomState;
+            mLevelState = levelState;
             mHolder = holder;
         }
 
-        public RoomState pause() {
+        public LevelState pause() {
             mRunning = false;
             while (true) {
                 try {
@@ -161,7 +161,7 @@ public class ScreenActivity extends Activity {
                     // keep trying
                 }
             }
-            return mRoomState;
+            return mLevelState;
         }
 
         @Override
@@ -170,7 +170,7 @@ public class ScreenActivity extends Activity {
             final Bitmap displayBitmap = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
 
             final Rect gameDimensions = new Rect(0, 0, mDimensions.x, mDimensions.y);
-            final Game game = new Game(displayBitmap, gameDimensions, mRoomState, mAssetLoader);
+            final Game game = new Game(displayBitmap, gameDimensions, mLevelState, mAssetLoader);
             final InputEvents.TouchSpot[] touchSpots = new InputEvents.TouchSpot[InputEvents.MAX_TOUCH_SPOTS];
 
             while (mRunning) {
@@ -201,8 +201,8 @@ public class ScreenActivity extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    RoomState roomState = pause();
-                    saveRoomState(roomState);
+                    LevelState levelState = pause();
+                    saveRoomState(levelState);
                     showRoomPicker();
                 }
             });
@@ -211,7 +211,7 @@ public class ScreenActivity extends Activity {
         private final Point mDimensions;
         private final SurfaceHolder mHolder;
         private final AssetLoader mAssetLoader;
-        private final RoomState mRoomState;
+        private final LevelState mLevelState;
         private volatile boolean mRunning;
     } // class
 

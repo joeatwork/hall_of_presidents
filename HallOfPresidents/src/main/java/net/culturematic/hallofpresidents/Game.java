@@ -5,7 +5,7 @@ import android.graphics.Rect;
 
 
 public class Game {
-    public Game(Bitmap display, Rect viewBounds, RoomState savedState, AssetLoader assetLoader) {
+    public Game(Bitmap display, Rect viewBounds, LevelState savedState, AssetLoader assetLoader) {
         mScreen = new LoadingScreen(display, viewBounds, savedState, assetLoader);
     }
 

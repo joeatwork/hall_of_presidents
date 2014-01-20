@@ -3,8 +3,8 @@ package net.culturematic.hallofpresidents;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class RoomCatalogItem {
-    public RoomCatalogItem(String name, String path, String storage, String description) {
+public class LevelCatalogItem {
+    public LevelCatalogItem(String name, String path, String storage, String description) {
         mName = name;
         mPath = path;
         mStorage = storage;
@@ -29,9 +29,9 @@ public class RoomCatalogItem {
         return getStorage() + ':' + getPath();
     }
 
-    public static RoomCatalogItem readJSON(JSONObject itemDesc)
+    public static LevelCatalogItem readJSON(JSONObject itemDesc)
         throws JSONException {
-        return new RoomCatalogItem(
+        return new LevelCatalogItem(
             itemDesc.getString("name"),
             itemDesc.getString("path"),
             itemDesc.getString("storage"),

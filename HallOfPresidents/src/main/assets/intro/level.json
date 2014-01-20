@@ -1,0 +1,155 @@
+{
+    "_COMMENT": [
+	"version: 1",
+	"start: Room and position when level is loaded",
+	"hero: hero object",
+	"victory: victory object",
+	"rooms: named room objects"
+    ],
+    "version": 1,
+    "start": {
+	"room": "intro",
+	"position": {
+	    "_COMMENT": "I just made these up randomly, will need retweaking when we get this running",
+	    "x": 256, "y": 256
+	}
+    },
+    "hero": {
+	"_COMMENT": [
+	    "states: a list of { flags: list of flags, sprite: name in 'sprites' }",
+	    "sprites: name: { source, $direction: [ animation frames ] }"
+	],
+	"states": [
+	    { "flags": [], "sprite": "always" }
+	],
+	"sprites": {
+	    "always": {
+		"source": "sprites/hero_sprites_128x128.png",
+		"speed_px_per_second": 256,
+		"stand_frames_per_second": 1,
+		"bounds": { "width": 128, "height": 128 },
+		"STAND_DOWN": [
+		    { "x": 0, "y": 0, "width": 128, "height": 128 }
+		],
+		"STAND_UP": [
+		    { "x": 128, "y": 0, "width": 128, "height": 128 }
+		],
+		"STAND_LEFT": [
+		    { "x": 256, "y": 0, "width": 128, "height": 128 }
+		],
+		"STAND_RIGHT": [
+		    { "x": 384, "y": 0, "width": 128, "height": 128 }
+		],
+		"MOVE_DOWN": [
+		    { "x": 0, "y":   0, "width": 128, "height": 128 },
+		    { "x": 0, "y": 128, "width": 128, "height": 128 },
+		    { "x": 0, "y": 256, "width": 128, "height": 128 },
+		    { "x": 0, "y": 384, "width": 128, "height": 128 }
+		],
+		"MOVE_UP": [
+		    { "x": 128, "y":   0, "width": 128, "height": 128 },
+		    { "x": 128, "y": 128, "width": 128, "height": 128 },
+		    { "x": 128, "y": 256, "width": 128, "height": 128 },
+		    { "x": 128, "y": 384, "width": 128, "height": 128 }
+		],
+		"MOVE_LEFT": [
+		    { "x": 256, "y":   0, "width": 128, "height": 128 },
+		    { "x": 256, "y": 128, "width": 128, "height": 128 },
+		    { "x": 256, "y": 256, "width": 128, "height": 128 },
+		    { "x": 256, "y": 384, "width": 128, "height": 128 }
+		],
+		"MOVE_RIGHT": [
+		    { "x": 384, "y":   0, "width": 128, "height": 128 },
+		    { "x": 384, "y": 128, "width": 128, "height": 128 },
+		    { "x": 384, "y": 256, "width": 128, "height": 128 },
+		    { "x": 384, "y": 384, "width": 128, "height": 128 }
+		]
+	    }
+	}
+    },
+    "victory": {
+	"_COMMENT": [
+	    "dialog: dialog object for victory, including flags"
+	],
+        "dialog": {
+	    "facing": "DOWN",
+	    "condition_room_flags": [ "HEARD_ORANGE", "HEARD_GREEN", "HEARD_BLUE", "HEARD_YELLOW" ],
+	    "dialog": "CONGRATULATIONS!\n\nYou've learned the wisdom of the four elemental goddesses!\nYou're well on your way to being an epic hero! Probably!"
+        }
+    },
+    "rooms": {
+	"intro": {
+	    "_COMMENT": [
+		"background, furniture, terrain: bitmaps",
+		"characters: list of chacter objects",
+		"events: list of event objects"
+	    ],
+	    "background": "chamber/background.png",
+	    "furniture": "chamber/furniture.png",
+	    "terrain": "chamber/terrain.png",
+	    "characters": [],
+	    "events": [
+		{
+		    "bounds": {
+			"left": 264,
+			"top": 980,
+			"right": 453,
+			"bottom": 1157
+		    },
+		    "name": "WEST EVENT",
+		    "dialog": {
+			"facing": "UP",
+			"condition_room_flags": [],
+			"set_room_flags": [ "HEARD_ORANGE" ],
+			"dialog": "ORANGE GODDESS:\n\nI haven't read Joseph Campbell, but I have seen \"Star Wars\""
+		    }
+		},
+		{
+		    "bounds": {
+			"left": 742,
+			"top": 629,
+			"right": 928,
+			"bottom": 808
+		    },
+		    "name": "NORTHWEST EVENT",
+		    "dialog": {
+			"facing": "UP",
+			"condition_room_flags": [],
+			"set_room_flags": [ "HEARD_GREEN" ],
+			"dialog": "GREEN GODDESS:\n\nI haven't seen the original Star Wars, but I have seen \"The Phantom Menace\""
+		    }
+		},
+		{
+		    "bounds": {
+			"left": 1280,
+			"top": 637,
+			"right": 1469,
+			"bottom": 816
+		    },
+		    "name": "NORTHEAST EVENT",
+		    "dialog": {
+			"facing": "UP",
+			"condition_room_flags": [],
+			"set_room_flags": [ "HEARD_BLUE" ],
+			"dialog": "BLUE GODDESS:\n\nI haven't seen \"The Phantom Menace\", but I did play Final Fantasy VII."
+		    }
+		},
+		{
+		    "bounds": {
+			"left": 1742,
+			"top": 981,
+			"right": 1928,
+			"bottom": 1160
+		    },
+		    "name": "EAST EVENT",
+		    "dialog": {
+			"facing": "UP",
+			"condition_room_flags": [],
+			"set_room_flags": [ "HEARD_YELLOW" ],
+			"dialog": "YELLOW GODDESS:\n\nI haven't played any Final Fantasy, but I do read the fan fiction."
+		    }
+		}
+	    ]
+	}
+    }
+}

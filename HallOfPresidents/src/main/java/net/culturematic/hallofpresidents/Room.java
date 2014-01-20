@@ -6,13 +6,15 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 
 public class Room {
-    public Room(Bitmap background, Bitmap furniture, Bitmap terrain, WorldEvent[] events, Dialog victoryDialog) {
+    public Room(String name, Bitmap background, Bitmap furniture, Bitmap terrain, WorldEvent[] events) {
+        mName = name;
         mBackground = background;
         mFurniture = furniture;
         mTerrain = terrain;
         mEvents = events;
-        mVictory = victoryDialog;
     }
+
+    public String getName() { return mName; }
 
     /**
      *
@@ -70,21 +72,17 @@ public class Room {
         return null;
     }
 
-    public Dialog getVictory() {
-        return mVictory;
-    }
-
     public void recycle() {
         mBackground.recycle();
         mFurniture.recycle();
         mTerrain.recycle();
     }
 
+    private final String mName;
     private final Bitmap mBackground;
     private final Bitmap mFurniture;
     private final Bitmap mTerrain;
     private final WorldEvent[] mEvents;
-    private final Dialog mVictory;
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.Room";

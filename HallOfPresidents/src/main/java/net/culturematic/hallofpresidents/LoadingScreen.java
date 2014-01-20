@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
 
 public class LoadingScreen implements Screen {
 
-    public LoadingScreen(Bitmap display, Rect viewBounds, RoomState roomState, AssetLoader loader) {
+    public LoadingScreen(Bitmap display, Rect viewBounds, LevelState levelState, AssetLoader loader) {
         mDisplay = display;
         mViewBounds = viewBounds;
         mAssetLoader = loader;
@@ -23,7 +23,7 @@ public class LoadingScreen implements Screen {
         mDisplayCanvas = new Canvas(display);
         mLoadedScreen = null;
 
-        LoadThread loadThread = new LoadThread(roomState);
+        LoadThread loadThread = new LoadThread(levelState);
         loadThread.start();
     }
 
@@ -68,23 +68,35 @@ public class LoadingScreen implements Screen {
     }
 
     private class LoadThread extends Thread {
-        public LoadThread(RoomState roomState) {
-            mRoomState = roomState;
+        public LoadThread(LevelState levelState) {
+            mLevelState = levelState;
         }
 
         public void run() {
-            RoomLoader roomLoader = new RoomLoader(mAssetLoader);
-            GameCharacter hero = new GameCharacter(mAssetLoader, mRoomState);
-            UIControls controls = new UIControls(mAssetLoader, mRoomState);
-            Room room = roomLoader.load(mRoomState.getRoomCatalogItem().getPath());
-            if (null == mRoomState.getPosition()) {
-                mRoomState.setPosition(room.defaultDoor());
+            LevelReader levelReader = new LevelReader(mAssetLoader);
+            LevelCatalogItem item = mLevelState.getLevelCatalogItem();
+            Level level;
+            try {
+                level = levelReader.readLevel(item);
+            } catch (LevelReader.LevelUnreadableException e) {
+                throw new RuntimeException("Can't read level", e);
             }
-            Screen loaded = new WorldScreen(mAssetLoader, mDisplay, mViewBounds, mRoomState, room, hero, controls);
+
+            if (null == mLevelState.getRoomName()) {
+                mLevelState.setRoomName(level.getStartRoomName());
+            }
+            if (null == mLevelState.getPosition()) {
+                mLevelState.setPosition(level.getStartPosition());
+            }
+
+            GameCharacter hero = level.getHero();
+            hero.setLevelState(mLevelState);
+            UIControls controls = new UIControls(mAssetLoader, mLevelState);
+            Screen loaded = new WorldScreen(mAssetLoader, mDisplay, mViewBounds, level, mLevelState, hero, controls);
             setLoadedScreen(loaded);
         }
 
-        private final RoomState mRoomState;
+        private final LevelState mLevelState;
     }
 
     private final Bitmap mDisplay;
