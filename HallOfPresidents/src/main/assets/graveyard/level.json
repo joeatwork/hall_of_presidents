@@ -35,27 +35,27 @@
 		],
 		"MOVE_DOWN": [
 		    { "x": 0, "y":   0, "width": 80, "height": 104 },
+		    { "x": 0, "y": 104, "width": 80, "height": 104 },
 		    { "x": 0, "y": 208, "width": 80, "height": 104 },
-		    { "x": 0, "y": 312, "width": 80, "height": 104 },
-		    { "x": 0, "y": 416, "width": 80, "height": 104 }
+		    { "x": 0, "y": 312, "width": 80, "height": 104 }
 		],
 		"MOVE_UP": [
 		    { "x": 80, "y":   0, "width": 80, "height": 104 },
+		    { "x": 80, "y": 104, "width": 80, "height": 104 },
 		    { "x": 80, "y": 208, "width": 80, "height": 104 },
-		    { "x": 80, "y": 312, "width": 80, "height": 104 },
-		    { "x": 80, "y": 416, "width": 80, "height": 104 }
+		    { "x": 80, "y": 312, "width": 80, "height": 104 }
 		],
 		"MOVE_LEFT": [
 		    { "x": 160, "y":   0, "width": 80, "height": 104 },
+		    { "x": 160, "y": 104, "width": 80, "height": 104 },
 		    { "x": 160, "y": 208, "width": 80, "height": 104 },
-		    { "x": 160, "y": 312, "width": 80, "height": 104 },
-		    { "x": 160, "y": 416, "width": 80, "height": 104 }
+		    { "x": 160, "y": 312, "width": 80, "height": 104 }
 		],
 		"MOVE_RIGHT": [
 		    { "x": 240, "y":   0, "width": 80, "height": 104 },
+		    { "x": 240, "y": 104, "width": 80, "height": 104 },
 		    { "x": 240, "y": 208, "width": 80, "height": 104 },
-		    { "x": 240, "y": 312, "width": 80, "height": 104 },
-		    { "x": 240, "y": 416, "width": 80, "height": 104 }
+		    { "x": 240, "y": 312, "width": 80, "height": 104 }
 		]
 	    },
 	    "costume": {
@@ -64,40 +64,40 @@
 		"stand_frames_per_second": 1,
 		"bounds": { "width": 100, "height": 120 },
 		"STAND_DOWN": [
-		    { "x": 0, "y": 0, "width": 100, "height": 104 }
+		    { "x": 0, "y": 0, "width": 100, "height": 120 }
 		],
 		"STAND_UP": [
-		    { "x": 100, "y": 0, "width": 100, "height": 104 }
+		    { "x": 100, "y": 0, "width": 100, "height": 120 }
 		],
 		"STAND_LEFT": [
-		    { "x": 200, "y": 0, "width": 100, "height": 104 }
+		    { "x": 200, "y": 0, "width": 100, "height": 120 }
 		],
 		"STAND_RIGHT": [
-		    { "x": 300, "y": 0, "width": 100, "height": 104 }
+		    { "x": 300, "y": 0, "width": 100, "height": 120 }
 		],
 		"MOVE_DOWN": [
-		    { "x": 0, "y":   0, "width": 100, "height": 104 },
-		    { "x": 0, "y": 104, "width": 100, "height": 104 },
-		    { "x": 0, "y": 208, "width": 100, "height": 104 },
-		    { "x": 0, "y": 312, "width": 100, "height": 104 }
+		    { "x": 0, "y":   0, "width": 100, "height": 120 },
+		    { "x": 0, "y": 120, "width": 100, "height": 120 },
+		    { "x": 0, "y": 240, "width": 100, "height": 120 },
+		    { "x": 0, "y": 360, "width": 100, "height": 120 }
 		],
 		"MOVE_UP": [
-		    { "x": 100, "y":   0, "width": 100, "height": 104 },
-		    { "x": 100, "y": 104, "width": 100, "height": 104 },
-		    { "x": 100, "y": 208, "width": 100, "height": 104 },
-		    { "x": 100, "y": 312, "width": 100, "height": 104 }
+		    { "x": 100, "y":   0, "width": 100, "height": 120 },
+		    { "x": 100, "y": 120, "width": 100, "height": 120 },
+		    { "x": 100, "y": 240, "width": 100, "height": 120 },
+		    { "x": 100, "y": 360, "width": 100, "height": 120 }
 		],
 		"MOVE_LEFT": [
-		    { "x": 200, "y":   0, "width": 100, "height": 104 },
-		    { "x": 200, "y": 104, "width": 100, "height": 104 },
-		    { "x": 200, "y": 208, "width": 100, "height": 104 },
-		    { "x": 200, "y": 312, "width": 100, "height": 104 }
+		    { "x": 200, "y":   0, "width": 100, "height": 120 },
+		    { "x": 200, "y": 120, "width": 100, "height": 120 },
+		    { "x": 200, "y": 240, "width": 100, "height": 120 },
+		    { "x": 200, "y": 360, "width": 100, "height": 120 }
 		],
 		"MOVE_RIGHT": [
-		    { "x": 300, "y":   0, "width": 100, "height": 104 },
-		    { "x": 300, "y": 104, "width": 100, "height": 104 },
-		    { "x": 300, "y": 208, "width": 100, "height": 104 },
-		    { "x": 300, "y": 312, "width": 100, "height": 104 }
+		    { "x": 300, "y":   0, "width": 100, "height": 120 },
+		    { "x": 300, "y": 120, "width": 100, "height": 120 },
+		    { "x": 300, "y": 240, "width": 100, "height": 120 },
+		    { "x": 300, "y": 360, "width": 100, "height": 120 }
 		]
 	    }
 	}

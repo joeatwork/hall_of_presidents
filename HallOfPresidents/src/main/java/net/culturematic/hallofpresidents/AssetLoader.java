@@ -140,9 +140,8 @@ public class AssetLoader {
     private static final String BUTTON_ASSET_PATH = "widget_button.png";
 
     private static final float DIALOG_FONT_SIZE_SP = 14f;
-    private static final int BUTTON_PADDING_HACK = 64; // Until we clean up the buttons
+    private static final int BUTTON_PADDING_HACK = 42; // Until we clean up the buttons
 
     private static final int DENSITY_XHIGH = 320;
-    // private static final int DENSITY_XXHIGH = 480; // Can't use DisplayMatrics in API 14
     private static final String LOGTAG = "hallofpresidents.AssetLoader";
 }
