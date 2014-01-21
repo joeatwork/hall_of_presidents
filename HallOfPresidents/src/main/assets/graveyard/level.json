@@ -120,10 +120,10 @@
 		    "bounds": {
 			"x": 624, "y": 744, "width": 110, "height": 130
 		    },
-		    "name": "CRYPT DOOR",
+		    "name": "CRYPT DOOR IN",
 		    "door": {
 			"dest_room": "crypt",
-			"dest_position": { "x": 303, "y": 900 }
+			"dest_position": { "x": 303, "y": 870 }
 		    }
 		}
 	    ]
@@ -133,7 +133,18 @@
 	    "furniture": "crypt/furniture.png",
 	    "terrain": "crypt/terrain.png",
 	    "characters": [],
-	    "events": []
+	    "events": [
+		{
+		    "bounds": {
+			"x": 230, "y": 900, "width": 140, "height": 100
+		    },
+		    "name": "CRYPT DOOR",
+		    "door": {
+			"dest_room": "grounds",
+			"dest_position": { "x": 684, "y": 950 }
+		    }
+		}
+	    ]
 	}
     }
 }

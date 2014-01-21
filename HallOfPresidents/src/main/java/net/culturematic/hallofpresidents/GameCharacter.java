@@ -33,7 +33,7 @@ public class GameCharacter {
         final PointF position = mLevelState.getPosition();
         final float distance = mCharacterState.getSpeedPxPerMilli() * deltaTime;
 
-        if (updatePosition(direction, distance, position, currentRoom)) {
+        if (updatePosition(direction, distance, position, currentRoom, 2)) {
             // This is useful when debugging starting positions and event layouts
             // System.out.println("CHARACTER POSITION CHANGE TO " + position.x + ", " + position.y);
             mAnimationDistance = mAnimationDistance + distance;
@@ -65,14 +65,15 @@ public class GameCharacter {
     /**
      * Returns true if position is updated.
      */
-    private boolean updatePosition(LevelState.Direction direction, float distance, PointF position, Room currentRoom) {
+    private boolean updatePosition(LevelState.Direction direction, float distance, PointF position, Room currentRoom, int tries) {
+        // Recursion is a hack workaround. Should be RECTANGLES.
+        if (0 >= tries) {
+            return false;
+        }
         final SpriteRenderer.Sprites sprites = mCharacterState.getSprites();
         final int halfBoundsWidth = sprites.boundsWidth / 2;
         final int boundsHeight = sprites.boundsHeight;
 
-        // TODO this bounds checking is bad- as distance goes up, the character
-        // refuses to move further and further away from the obstruction.
-        // What we need is a nice DB of shapes and how-farness.
         boolean ret = false;
         switch (direction) {
             case DIRECTION_UP:
@@ -83,6 +84,8 @@ public class GameCharacter {
                         currentRoom.inBounds((int) position.x - halfBoundsWidth, yCheckUp)) {
                     position.y = yUp;
                     ret = true;
+                } else {
+                    ret = updatePosition(direction, distance/2, position, currentRoom, tries - 1);
                 }
                 break;
             case DIRECTION_DOWN:
@@ -93,6 +96,8 @@ public class GameCharacter {
                         currentRoom.inBounds((int) position.x - halfBoundsWidth, yCheckDown)) {
                     position.y = yDown;
                     ret = true;
+                } else {
+                    ret = updatePosition(direction, distance/2, position, currentRoom, tries - 1);
                 }
                 break;
             case DIRECTION_RIGHT:
@@ -103,6 +108,8 @@ public class GameCharacter {
                         currentRoom.inBounds(xCheckRight, (int) position.y)) {
                     position.x = xRight;
                     ret = true;
+                } else {
+                    ret = updatePosition(direction, distance/2, position, currentRoom, tries - 1);
                 }
                 break;
             case DIRECTION_LEFT:
@@ -113,6 +120,8 @@ public class GameCharacter {
                         currentRoom.inBounds(xCheckLeft, (int) position.y)) {
                     position.x = xLeft;
                     ret = true;
+                } else {
+                    ret = updatePosition(direction, distance/2, position, currentRoom, tries - 1);
                 }
                 break;
             case DIRECTION_NONE:
