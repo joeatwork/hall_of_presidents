@@ -225,24 +225,35 @@ public class LevelReader {
             throws JSONException {
         String name = eventDescription.getString("name");
         JSONObject boundsObj = eventDescription.getJSONObject("bounds");
-        final int unscaledTop = boundsObj.getInt("top");
-        final int unscaledRight = boundsObj.getInt("right");
-        final int unscaledLeft = boundsObj.getInt("left");
-        final int unscaledBottom = boundsObj.getInt("bottom");
+        final int unscaledLeft = boundsObj.getInt("x");
+        final int unscaledTop = boundsObj.getInt("y");
+        final int unscaledWidth = boundsObj.getInt("width");
+        final int unscaledHeight = boundsObj.getInt("height");
         final Rect bounds = new Rect(
                 mAssetLoader.scaleInt(unscaledLeft),
                 mAssetLoader.scaleInt(unscaledTop),
-                mAssetLoader.scaleInt(unscaledRight),
-                mAssetLoader.scaleInt(unscaledBottom)
+                mAssetLoader.scaleInt(unscaledLeft + unscaledWidth),
+                mAssetLoader.scaleInt(unscaledTop + unscaledHeight)
         );
 
         Dialog dialog = null;
+        WorldEvent.Door door = null;
         if (eventDescription.has("dialog")) {
             JSONObject dialogDesc = eventDescription.getJSONObject("dialog");
             dialog = readDialog(dialogDesc);
         }
+        if (eventDescription.has("door")) {
+            JSONObject doorDesc = eventDescription.getJSONObject("door");
+            JSONObject destPositionDesc = doorDesc.getJSONObject("dest_position");
+            PointF destPosition = new PointF(
+                mAssetLoader.scaleInt(destPositionDesc.getInt("x")),
+                mAssetLoader.scaleInt(destPositionDesc.getInt("y"))
+            );
+            String destRoomName = doorDesc.getString("dest_room");
+            door = new WorldEvent.Door(destRoomName, destPosition);
+        }
 
-        return new WorldEvent(bounds, name, dialog);
+        return new WorldEvent(bounds, name, dialog, door);
     }
 
     final AssetLoader mAssetLoader;

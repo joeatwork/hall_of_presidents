@@ -52,6 +52,17 @@ public class WorldScreen implements Screen {
 
         PointF heroPosition = mLevelState.getPosition();
         WorldEvent worldEvent = room.checkForEvent(heroPosition);
+
+        if (null != worldEvent) {
+            WorldEvent.Door door = worldEvent.getDoor();
+            if (null != door) {
+                mLevelState.setRoomName(door.getDestRoomName());
+                mLevelState.setPosition(door.getDestPosition());
+                return;
+            }
+        }
+        // ELSE IF NO DOOR
+
         if (null != worldEvent) {
             Dialog dialog = worldEvent.getDialog();
             mLevelState.setDialogAvailable(dialog);
