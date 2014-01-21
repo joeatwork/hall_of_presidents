@@ -73,6 +73,7 @@ public class GameCharacter {
         final SpriteRenderer.Sprites sprites = mCharacterState.getSprites();
         final int halfBoundsWidth = sprites.boundsWidth / 2;
         final int boundsHeight = sprites.boundsHeight;
+        final int halfBoundsHeight = boundsHeight / 2;
 
         boolean ret = false;
         switch (direction) {
@@ -81,6 +82,7 @@ public class GameCharacter {
                 int yCheckUp = (int) yUp - boundsHeight;
 
                 if (currentRoom.inBounds((int) position.x + halfBoundsWidth, yCheckUp) &&
+                        currentRoom.inBounds((int) position.x, yCheckUp) &&
                         currentRoom.inBounds((int) position.x - halfBoundsWidth, yCheckUp)) {
                     position.y = yUp;
                     ret = true;
@@ -93,6 +95,7 @@ public class GameCharacter {
                 int yCheckDown = (int) yDown;
 
                 if (currentRoom.inBounds((int) position.x + halfBoundsWidth, yCheckDown) &&
+                        currentRoom.inBounds((int) position.x, yCheckDown) &&
                         currentRoom.inBounds((int) position.x - halfBoundsWidth, yCheckDown)) {
                     position.y = yDown;
                     ret = true;
@@ -105,6 +108,7 @@ public class GameCharacter {
                 int xCheckRight = (int) xRight + halfBoundsWidth;
 
                 if (currentRoom.inBounds(xCheckRight, (int) position.y - boundsHeight) &&
+                        currentRoom.inBounds(xCheckRight, (int) position.y - halfBoundsHeight) &&
                         currentRoom.inBounds(xCheckRight, (int) position.y)) {
                     position.x = xRight;
                     ret = true;
@@ -117,6 +121,7 @@ public class GameCharacter {
                 int xCheckLeft = (int) xLeft - halfBoundsWidth;
 
                 if (currentRoom.inBounds(xCheckLeft, (int) position.y - boundsHeight) &&
+                        currentRoom.inBounds(xCheckLeft, (int) position.y - halfBoundsHeight) &&
                         currentRoom.inBounds(xCheckLeft, (int) position.y)) {
                     position.x = xLeft;
                     ret = true;
