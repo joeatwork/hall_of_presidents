@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Log;
 
 public class Room {
     public Room(String name, Bitmap background, Bitmap furniture, Bitmap terrain, WorldEvent[] events) {
@@ -44,10 +45,6 @@ public class Room {
 
     public void drawFurniture(Canvas canvas, Rect worldRect, Rect viewport) {
         canvas.drawBitmap(mFurniture, worldRect, viewport, null);
-    }
-
-    public PointF defaultDoor() {
-        return new PointF(mBackground.getWidth() / 2, mBackground.getHeight() / 2);
     }
 
     public boolean inBounds(int x, int y) {
