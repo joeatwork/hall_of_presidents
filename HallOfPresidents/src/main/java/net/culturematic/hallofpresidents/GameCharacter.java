@@ -33,7 +33,8 @@ public class GameCharacter {
         final PointF position = mLevelState.getPosition();
         final float distance = mCharacterState.getSpeedPxPerMilli() * deltaTime;
         if (updatePosition(direction, distance, position, currentRoom)) {
-            System.out.println("CHARACTER POSITION CHANGE TO " + position.x + ", " + position.y);
+            // This is useful when debugging starting positions and event layouts
+            // System.out.println("CHARACTER POSITION CHANGE TO " + position.x + ", " + position.y);
             mAnimationDistance = mAnimationDistance + distance;
             setCurrentMovingSprite(direction, mAnimationDistance);
         } else {
