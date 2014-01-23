@@ -193,7 +193,27 @@
 	    "background": "crypt/background.png",
 	    "furniture": "crypt/furniture.png",
 	    "terrain": "crypt/terrain.png",
-	    "characters": [],
+	    "characters": [
+		{
+		    "position": { "x": 300, "y": 300 },
+		    "states": [
+			{ "flags": [], "sprite": "normal" }
+		    ],
+		    "sprites": {
+			"normal": {
+			    "source": "sprites/big_ghosts_sprites_226x268.png",
+			    "speed_px_per_second": 0,
+			    "stand_frames_per_second": 5,
+			    "bounds": { "width": 226, "height": 268 },
+			    "STAND_DOWN": [
+				{ "x": 0, "y": 0,   "width": 226, "height": 268 },
+				{ "x": 0, "y": 268, "width": 226, "height": 268 },
+				{ "x": 0, "y": 536, "width": 226, "height": 268 }
+			    ]
+			}
+		    }
+		}
+	    ],
 	    "events": [
 		{
 		    "bounds": {
