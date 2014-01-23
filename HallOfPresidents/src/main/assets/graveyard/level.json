@@ -125,7 +125,7 @@
 			"normal": {
 			    "source": "sprites/small_ghost_sprites_68x188.png",
 			    "speed_px_per_second": 0,
-			    "stand_frames_per_second": 4,
+			    "stand_frames_per_second": 5,
 			    "bounds": { "width": 68, "height": 188 },
 			    "STAND_DOWN": [
 				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
@@ -145,7 +145,7 @@
 			"normal": {
 			    "source": "sprites/small_ghost_sprites_68x188.png",
 			    "speed_px_per_second": 0,
-			    "stand_frames_per_second": 4,
+			    "stand_frames_per_second": 5,
 			    "bounds": { "width": 68, "height": 188 },
 			    "STAND_DOWN": [
 				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
@@ -165,7 +165,7 @@
 			"normal": {
 			    "source": "sprites/small_ghost_sprites_68x188.png",
 			    "speed_px_per_second": 0,
-			    "stand_frames_per_second": 4,
+			    "stand_frames_per_second": 5,
 			    "bounds": { "width": 68, "height": 188 },
 			    "STAND_DOWN": [
 				{ "x": 0, "y": 0,   "width": 68, "height": 188 },

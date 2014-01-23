@@ -188,10 +188,9 @@ public class GameCharacter {
                 throw new RuntimeException("Can't face DIRECTION_NONE");
         }
 
-        long framesPerMilli = sprites.standFramesPerSecond * 1000;
-        long totalFrames = framesPerMilli / milliTime;
+        long twoHour = milliTime % (2 * 60 * 60 * 1000); // Overflow prevention
+        long totalFrames = (twoHour * sprites.standFramesPerSecond) / 1000;
         int offsetFrame = (int) (totalFrames % animationFrames.length);
-
         mCurrentSpriteRect = animationFrames[offsetFrame];
     }
 
