@@ -47,7 +47,8 @@ public class LevelReader {
             final JSONObject victoryDialogDesc = victoryDesc.getJSONObject("dialog");
             final Dialog victory = readDialog(victoryDialogDesc);
 
-            final GameCharacter hero = readCharacter(heroDesc, item.getPath());
+            final CharacterState heroState = readCharacter(heroDesc, item.getPath());
+            final HeroCharacter hero = new HeroCharacter(heroState);
             final Map<String, Room> rooms = new HashMap<String, Room>();
             final Iterator roomKeys = roomsDesc.keys();
             while (roomKeys.hasNext()) {
@@ -110,7 +111,7 @@ public class LevelReader {
         return new Dialog(dialogText, facing, flagsToSet, flagsToRequire);
     }
 
-    private GameCharacter readCharacter(JSONObject characterDesc, String rootPath)
+    private CharacterState readCharacter(JSONObject characterDesc, String rootPath)
         throws JSONException, LevelUnreadableException {
 
         final JSONArray statesArray = characterDesc.getJSONArray("states");
@@ -144,7 +145,7 @@ public class LevelReader {
             characterState.addState(flags, sprites);
         }
 
-        return new GameCharacter(characterState);
+        return characterState;
     }
 
     private SpriteRenderer.Sprites readSprites(JSONObject spriteDesc, String rootPath)
@@ -202,7 +203,7 @@ public class LevelReader {
     }
 
     private Room readRoom(String name, JSONObject roomDesc, String rootPath)
-        throws JSONException {
+        throws JSONException, LevelUnreadableException {
         final String backgroundPath = roomDesc.getString("background");
         final Bitmap background = mAssetLoader.loadBitmap(rootPath + "/" + backgroundPath, Bitmap.Config.RGB_565);
 
@@ -218,7 +219,20 @@ public class LevelReader {
             events[i] = readEvent(eventsDescs.getJSONObject(i));
         }
 
-        return new Room(name, background, furniture, terrain, events);
+        final JSONArray charactersDesc = roomDesc.getJSONArray("characters");
+        final GameCharacter[] characters = new GameCharacter[charactersDesc.length()];
+        for (int i = 0; i < charactersDesc.length(); i++) {
+            final JSONObject nextCharacterDesc = charactersDesc.getJSONObject(i);
+            final JSONObject positionDesc = nextCharacterDesc.getJSONObject("position");
+            final PointF position = new PointF(
+                    mAssetLoader.scaleInt(positionDesc.getInt("x")),
+                    mAssetLoader.scaleInt(positionDesc.getInt("y"))
+            );
+            final CharacterState characterState = readCharacter(nextCharacterDesc, rootPath);
+            characters[i] = new GameCharacter(characterState, position);
+        }
+
+        return new Room(name, background, furniture, terrain, characters, events);
     }
 
     private WorldEvent readEvent(JSONObject eventDescription)

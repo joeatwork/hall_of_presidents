@@ -46,6 +46,8 @@ public class WorldScreen implements Screen {
         mControls.intepretInteractions(touchSpots);
 
         Room room = mLevel.getRoom(mLevelState.getRoomName());
+        room.update(milliTime);
+
         LevelState.Direction move = mLevelState.getMovement();
         LevelState.Direction facing = mLevelState.getFacing();
         mHero.directionCommand(milliTime, move, facing, room);
@@ -77,6 +79,7 @@ public class WorldScreen implements Screen {
 
         mCanvas.drawColor(Color.BLACK);
         room.drawBackground(mCanvas, mWorldBounds, mViewBounds);
+        room.drawCharacters(mCanvas, mWorldBounds);
         mHero.drawCharacter(mCanvas, worldOffsetX, worldOffsetY);
 
         room.drawFurniture(mCanvas, mWorldBounds, mViewBounds);

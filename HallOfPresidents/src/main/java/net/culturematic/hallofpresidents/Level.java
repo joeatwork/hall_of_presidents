@@ -5,7 +5,7 @@ import android.graphics.PointF;
 import java.util.Map;
 
 public class Level {
-    public Level(GameCharacter hero, Map<String, Room> rooms, Dialog victory, String startRoom, PointF startPosition) {
+    public Level(HeroCharacter hero, Map<String, Room> rooms, Dialog victory, String startRoom, PointF startPosition) {
         mHero = hero;
         mRooms = rooms;
         mVictory = victory;
@@ -21,7 +21,7 @@ public class Level {
         return ret;
     }
 
-    public GameCharacter getHero() {
+    public HeroCharacter getHero() {
         return mHero;
     }
 
@@ -44,7 +44,7 @@ public class Level {
         }
     }
 
-    private final GameCharacter mHero;
+    private final HeroCharacter mHero;
     private final Map<String, Room> mRooms;
     private final Dialog mVictory;
     private final String mStartRoomName;

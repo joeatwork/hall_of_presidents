@@ -114,7 +114,68 @@
 	    "background": "grounds/background.png",
 	    "furniture": "grounds/furniture.png",
 	    "terrain": "grounds/terrain.png",
-	    "characters": [],
+	    "characters": [
+		{
+		    "_COMMENT": "Tall ghost near spooky tree, in northwest corner",
+		    "position": { "x": 340, "y": 580 },
+		    "states": [
+			{ "flags": [], "sprite": "normal" }
+		    ],
+		    "sprites": {
+			"normal": {
+			    "source": "sprites/small_ghost_sprites_68x188.png",
+			    "speed_px_per_second": 0,
+			    "stand_frames_per_second": 4,
+			    "bounds": { "width": 68, "height": 188 },
+			    "STAND_DOWN": [
+				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
+				{ "x": 0, "y": 188, "width": 68, "height": 188 },
+				{ "x": 0, "y": 376, "width": 68, "height": 188 }
+			    ]
+			}
+		    }
+		},
+		{
+		    "_COMMENT": "Tall ghost in far northeast corner",
+		    "position": { "x": 1170, "y": 207 },
+		    "states": [
+			{ "flags": [], "sprite": "normal" }
+		    ],
+		    "sprites": {
+			"normal": {
+			    "source": "sprites/small_ghost_sprites_68x188.png",
+			    "speed_px_per_second": 0,
+			    "stand_frames_per_second": 4,
+			    "bounds": { "width": 68, "height": 188 },
+			    "STAND_DOWN": [
+				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
+				{ "x": 0, "y": 188, "width": 68, "height": 188 },
+				{ "x": 0, "y": 376, "width": 68, "height": 188 }
+			    ]
+			}
+		    }
+		},
+		{
+		    "_COMMENT": "Tall ghost in empty patch just right of center",
+		    "position": { "x": 890, "y": 1040 },
+		    "states": [
+			{ "flags": [], "sprite": "normal" }
+		    ],
+		    "sprites": {
+			"normal": {
+			    "source": "sprites/small_ghost_sprites_68x188.png",
+			    "speed_px_per_second": 0,
+			    "stand_frames_per_second": 4,
+			    "bounds": { "width": 68, "height": 188 },
+			    "STAND_DOWN": [
+				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
+				{ "x": 0, "y": 188, "width": 68, "height": 188 },
+				{ "x": 0, "y": 376, "width": 68, "height": 188 }
+			    ]
+			}
+		    }
+		}
+	    ],
 	    "events": [
 		{
 		    "bounds": {

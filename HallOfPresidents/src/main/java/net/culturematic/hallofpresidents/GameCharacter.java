@@ -2,8 +2,6 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
@@ -13,15 +11,16 @@ public class GameCharacter {
     // ( 1, 0) -> Standing facing up
     // ( 2, 0) -> Standing facing left
     // ( x, 1), (x, 2), (x, 3) -> Walk cycles for facing X
-    public GameCharacter(CharacterState characterState) {
+    public GameCharacter(CharacterState characterState, PointF startPosition) {
         mCharacterState = characterState;
+        mPosition = startPosition;
         mAnimationDistance = 0;
         mLastTime = -1;
         mDestRect = new Rect();
     }
 
-    public void setLevelState(LevelState levelState) {
-        mLevelState = levelState;
+    protected PointF getPosition() {
+        return mPosition;
     }
 
     public void directionCommand(long milliTime, LevelState.Direction direction, LevelState.Direction facing, Room currentRoom) {
@@ -30,7 +29,7 @@ public class GameCharacter {
         }
 
         final long deltaTime = milliTime - mLastTime;
-        final PointF position = mLevelState.getPosition();
+        final PointF position = getPosition();
         final float distance = mCharacterState.getSpeedPxPerMilli() * deltaTime;
 
         if (updatePosition(direction, distance, position, currentRoom, 2)) {
@@ -50,7 +49,7 @@ public class GameCharacter {
         int spriteWidth = mCurrentSpriteRect.width();
         int spriteHeight = mCurrentSpriteRect.height();
         int halfWidth = spriteWidth / 2;
-        final PointF position = mLevelState.getPosition();
+        final PointF position = getPosition();
         int xDestOffset = ((int) position.x) - (halfWidth + viewportOffsetX);
         int yDestOffset = ((int) position.y) - (spriteHeight + viewportOffsetY);
         mDestRect.set(mCurrentSpriteRect);
@@ -196,13 +195,12 @@ public class GameCharacter {
         mCurrentSpriteRect = animationFrames[offsetFrame];
     }
 
-    private LevelState mLevelState;
-
     private long mLastTime;
     private Bitmap mCurrentBitmap;
     private Rect mCurrentSpriteRect;
     private float mAnimationDistance;
 
+    private final PointF mPosition;
     private final Rect mDestRect;
     private final CharacterState mCharacterState;
 

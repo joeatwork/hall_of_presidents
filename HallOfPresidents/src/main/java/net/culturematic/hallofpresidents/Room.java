@@ -2,22 +2,25 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.Log;
 
 public class Room {
-    public Room(String name, Bitmap background, Bitmap furniture, Bitmap terrain, WorldEvent[] events) {
+    public Room(String name, Bitmap background, Bitmap furniture, Bitmap terrain, GameCharacter[] characters, WorldEvent[] events) {
         mName = name;
         mBackground = background;
         mFurniture = furniture;
         mTerrain = terrain;
         mEvents = events;
+        mCharacters = characters;
+        mCurrentTimeMillis = -1;
     }
 
     public String getName() { return mName; }
+
+    public void update(long milliTime) {
+        mCurrentTimeMillis = milliTime;
+    }
 
     /**
      *
@@ -41,6 +44,16 @@ public class Room {
         *
         * END DEBUGGING
         */
+    }
+
+    // TODO: shouldn't take a milliTime arg here, should have an update method on the room.
+    public void drawCharacters(Canvas canvas, Rect worldRect) {
+        for (int i = 0; i < mCharacters.length; i++) {
+            // TODO: since you know the viewport, you should only draw characters that intersect it
+            GameCharacter character = mCharacters[i];
+            character.directionCommand(mCurrentTimeMillis, LevelState.Direction.DIRECTION_NONE, LevelState.Direction.DIRECTION_DOWN, this);
+            character.drawCharacter(canvas, worldRect.left, worldRect.top);
+        }
     }
 
     public void drawFurniture(Canvas canvas, Rect worldRect, Rect viewport) {
@@ -79,11 +92,14 @@ public class Room {
         mTerrain.recycle();
     }
 
+    private long mCurrentTimeMillis;
+
     private final String mName;
     private final Bitmap mBackground;
     private final Bitmap mFurniture;
     private final Bitmap mTerrain;
     private final WorldEvent[] mEvents;
+    private final GameCharacter[] mCharacters;
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.Room";
