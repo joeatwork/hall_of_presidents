@@ -8,12 +8,13 @@ public class HeroCharacter extends GameCharacter {
         super(characterState, null);
     }
 
-    public void setLevelState(LevelState levelState) {
-        mLevelState = levelState;
+    @Override
+    public PointF getPosition() {
+        return mLevelState.getPosition();
     }
 
-    protected PointF getPosition() {
-        return mLevelState.getPosition();
+    public void setLevelState(LevelState levelState) {
+        mLevelState = levelState;
     }
 
     private LevelState mLevelState;

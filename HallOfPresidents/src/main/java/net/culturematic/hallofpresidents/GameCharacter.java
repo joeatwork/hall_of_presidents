@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
-public class GameCharacter {
+public class GameCharacter implements Comparable<GameCharacter> {
     // HARDCODED LAYOUT
     // ( 0, 0) -> Standing facing down
     // ( 1, 0) -> Standing facing up
@@ -19,7 +19,25 @@ public class GameCharacter {
         mDestRect = new Rect();
     }
 
-    protected PointF getPosition() {
+    /**
+     * Sorts by y position. (That means moving characters sorts will go stale!)
+     * @param gameCharacter
+     * @return
+     */
+    @Override
+    public int compareTo(GameCharacter gameCharacter) {
+        float myY = getPosition().y;
+        float otherY = gameCharacter.getPosition().y;
+        if (myY < otherY) {
+            return -1;
+        } else if (myY > otherY) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public PointF getPosition() {
         return mPosition;
     }
 

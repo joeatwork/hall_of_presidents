@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
+import java.util.Arrays;
+
 public class Room {
     public Room(String name, Bitmap background, Bitmap furniture, Bitmap terrain, GameCharacter[] characters, WorldEvent[] events) {
         mName = name;
@@ -14,12 +16,23 @@ public class Room {
         mEvents = events;
         mCharacters = characters;
         mCurrentTimeMillis = -1;
+
+        Arrays.sort(mCharacters);
     }
 
     public String getName() { return mName; }
 
     public void update(long milliTime) {
         mCurrentTimeMillis = milliTime;
+
+        for (int i = 0; i < mCharacters.length; i++) {
+            mCharacters[i].directionCommand(
+                    mCurrentTimeMillis,
+                    LevelState.Direction.DIRECTION_NONE,
+                    LevelState.Direction.DIRECTION_DOWN,
+                    this
+            );
+        }
     }
 
     /**
@@ -47,12 +60,21 @@ public class Room {
     }
 
     // TODO: shouldn't take a milliTime arg here, should have an update method on the room.
-    public void drawCharacters(Canvas canvas, Rect worldRect) {
+    public void drawCharacters(Canvas canvas, Rect worldRect, GameCharacter hero) {
+        final PointF heroPosition = hero.getPosition();
+        boolean heroDrawn = false;
         for (int i = 0; i < mCharacters.length; i++) {
             // TODO: since you know the viewport, you should only draw characters that intersect it
-            GameCharacter character = mCharacters[i];
-            character.directionCommand(mCurrentTimeMillis, LevelState.Direction.DIRECTION_NONE, LevelState.Direction.DIRECTION_DOWN, this);
+            final GameCharacter character = mCharacters[i];
+            final PointF characterPosition = character.getPosition();
+            if (characterPosition.y > heroPosition.y && !heroDrawn) {
+                hero.drawCharacter(canvas, worldRect.left, worldRect.top);
+                heroDrawn = true;
+            }
             character.drawCharacter(canvas, worldRect.left, worldRect.top);
+        }
+        if (! heroDrawn) {
+            hero.drawCharacter(canvas, worldRect.left, worldRect.top);
         }
     }
 

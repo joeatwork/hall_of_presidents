@@ -79,8 +79,7 @@ public class WorldScreen implements Screen {
 
         mCanvas.drawColor(Color.BLACK);
         room.drawBackground(mCanvas, mWorldBounds, mViewBounds);
-        room.drawCharacters(mCanvas, mWorldBounds);
-        mHero.drawCharacter(mCanvas, worldOffsetX, worldOffsetY);
+        room.drawCharacters(mCanvas, mWorldBounds, mHero);
 
         room.drawFurniture(mCanvas, mWorldBounds, mViewBounds);
         mControls.drawControls(mCanvas, mViewBounds);
