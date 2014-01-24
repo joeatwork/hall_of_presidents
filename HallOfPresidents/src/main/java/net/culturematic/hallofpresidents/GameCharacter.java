@@ -16,7 +16,8 @@ public class GameCharacter implements Comparable<GameCharacter> {
         mPosition = startPosition;
         mAnimationDistance = 0;
         mLastTime = -1;
-        mDestRect = new Rect();
+        mBoundsRect = new Rect();
+        mCurrentSpriteRect = null;
     }
 
     /**
@@ -39,6 +40,23 @@ public class GameCharacter implements Comparable<GameCharacter> {
 
     public PointF getPosition() {
         return mPosition;
+    }
+
+    public Rect getBounds() {
+        int spriteWidth = mCurrentSpriteRect.width();
+        int spriteHeight = mCurrentSpriteRect.height();
+        int halfWidth = spriteWidth / 2;
+        final PointF position = getPosition();
+        int xDestOffset = ((int) position.x) - halfWidth;
+        int yDestOffset = ((int) position.y) - spriteHeight;
+
+        mBoundsRect.set(mCurrentSpriteRect);
+        mBoundsRect.offsetTo(xDestOffset, yDestOffset);
+        return mBoundsRect;
+    }
+
+    public Dialog getDialog() {
+        return mCharacterState.getDialog();
     }
 
     public void directionCommand(long milliTime, LevelState.Direction direction, LevelState.Direction facing, Room currentRoom) {
@@ -64,15 +82,9 @@ public class GameCharacter implements Comparable<GameCharacter> {
     }
 
     public void drawCharacter(Canvas canvas, int viewportOffsetX, int viewportOffsetY) {
-        int spriteWidth = mCurrentSpriteRect.width();
-        int spriteHeight = mCurrentSpriteRect.height();
-        int halfWidth = spriteWidth / 2;
-        final PointF position = getPosition();
-        int xDestOffset = ((int) position.x) - (halfWidth + viewportOffsetX);
-        int yDestOffset = ((int) position.y) - (spriteHeight + viewportOffsetY);
-        mDestRect.set(mCurrentSpriteRect);
-        mDestRect.offsetTo(xDestOffset, yDestOffset);
-        canvas.drawBitmap(mCurrentBitmap, mCurrentSpriteRect, mDestRect, null);
+        Rect bounds = getBounds();
+        bounds.offset(-viewportOffsetX, -viewportOffsetY);
+        canvas.drawBitmap(mCurrentBitmap, mCurrentSpriteRect, bounds, null);
     }
 
     public void recycle() {
@@ -218,7 +230,7 @@ public class GameCharacter implements Comparable<GameCharacter> {
     private float mAnimationDistance;
 
     private final PointF mPosition;
-    private final Rect mDestRect;
+    private final Rect mBoundsRect;
     private final CharacterState mCharacterState;
 
     @SuppressWarnings("unused")

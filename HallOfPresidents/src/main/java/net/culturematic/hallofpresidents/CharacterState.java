@@ -34,6 +34,8 @@ public class CharacterState {
         return mCurrentState.sprites;
     }
 
+    public Dialog getDialog() { return mCurrentState.dialog; }
+
     public float getSpeedPxPerMilli() {
         return mCurrentSpeedPxPerMilli;
     }

@@ -16,6 +16,7 @@ public class Room {
         mEvents = events;
         mCharacters = characters;
         mCurrentTimeMillis = -1;
+        mVisionRect = new Rect();
 
         Arrays.sort(mCharacters);
     }
@@ -96,15 +97,49 @@ public class Room {
         return true;
     }
 
-    public WorldEvent checkForEvent(PointF position) {
-       for (int i = 0; i < mEvents.length; i++) {
-           final WorldEvent event = mEvents[i];
-           final Rect rect = event.getBounds();
-           if (rect.contains((int) position.x, (int) position.y)) {
-               return event;
-           }
+    public WorldEvent.Door checkForDoor(HeroCharacter hero) {
+        final PointF position = hero.getPosition();
+        for (int i = 0; i < mEvents.length; i++) {
+            final WorldEvent event = mEvents[i];
+            final Rect rect = event.getBounds();
+            if (rect.contains((int) position.x, (int) position.y)) {
+                return event.getDoor();
+            }
         }
 
+        return null;
+    }
+
+    public Dialog checkForDialog(HeroCharacter hero) {
+        final PointF position = hero.getPosition();
+        for (int i = 0; i < mEvents.length; i++) {
+            final WorldEvent event = mEvents[i];
+            final Rect rect = event.getBounds();
+            if (rect.contains((int) position.x, (int) position.y)) {
+                return event.getDialog();
+            }
+        }
+
+
+        final Rect heroBounds = hero.getBounds();
+        int heroWidth = heroBounds.width();
+        int heroHeight = heroBounds.height();
+        mVisionRect.set(
+            heroBounds.left - heroWidth,
+            heroBounds.top - heroHeight,
+            heroBounds.right + heroWidth,
+            heroBounds.bottom + heroHeight
+        );
+
+        for (int i = 0; i < mCharacters.length; i++) {
+            final GameCharacter character = mCharacters[i];
+            final Rect characterBounds = character.getBounds();
+            if (null != character.getBounds()) {
+                if (mVisionRect.intersect(characterBounds)) {
+                    return character.getDialog();
+                }
+            }
+        }
         return null;
     }
 
@@ -122,6 +157,7 @@ public class Room {
     private final Bitmap mTerrain;
     private final WorldEvent[] mEvents;
     private final GameCharacter[] mCharacters;
+    private final Rect mVisionRect;
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.Room";

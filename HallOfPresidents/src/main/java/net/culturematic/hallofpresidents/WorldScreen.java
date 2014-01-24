@@ -16,7 +16,7 @@ public class WorldScreen implements Screen {
             Rect viewBounds,
             Level level,
             LevelState savedState,
-            GameCharacter hero,
+            HeroCharacter hero,
             UIControls controls) {
         mAssetLoader = assetLoader;
         mLevel = level;
@@ -35,43 +35,41 @@ public class WorldScreen implements Screen {
     public void update(long milliTime, InputEvents.TouchSpot[] touchSpots) {
 
         if (mLevelState.canGetVictory()) {
-            Set<String> hasFlags = mLevelState.getLevelFlags();
+            final Set<String> hasFlags = mLevelState.getLevelFlags();
             if (hasFlags.containsAll(mVictoryFlags)) {
                 mLevelState.setComplete();
                 mLevelState.clearLevelFlags();
-                Dialog victoryDialog = mLevel.getVictory();
+                final Dialog victoryDialog = mLevel.getVictory();
                 mNextScreen = new VictoryScreen(mAssetLoader, mDisplay, mViewBounds, victoryDialog);
             }
         }
         mControls.intepretInteractions(touchSpots);
 
-        Room room = mLevel.getRoom(mLevelState.getRoomName());
+        final Room room = mLevel.getRoom(mLevelState.getRoomName());
         room.update(milliTime);
 
         LevelState.Direction move = mLevelState.getMovement();
         LevelState.Direction facing = mLevelState.getFacing();
         mHero.directionCommand(milliTime, move, facing, room);
 
-        PointF heroPosition = mLevelState.getPosition();
-        WorldEvent worldEvent = room.checkForEvent(heroPosition);
+        final WorldEvent.Door door = room.checkForDoor(mHero);
 
-        if (null != worldEvent) {
-            WorldEvent.Door door = worldEvent.getDoor();
-            if (null != door) {
-                mLevelState.setRoomName(door.getDestRoomName());
-                mLevelState.setPosition(door.getDestPosition());
-                return;
-            }
+        if (null != door) {
+            mLevelState.setRoomName(door.getDestRoomName());
+            mLevelState.setPosition(door.getDestPosition());
+            return;
         }
         // ELSE IF NO DOOR
 
-        if (null != worldEvent) {
-            Dialog dialog = worldEvent.getDialog();
+        final Dialog dialog = room.checkForDialog(mHero);
+        if (null != dialog) {
             mLevelState.setDialogAvailable(dialog);
         } else {
             mLevelState.setDialogAvailable(null);
         }
+
         // We want the hero at the center of the Viewport
+        final PointF heroPosition = mLevelState.getPosition();
         int worldOffsetX = (int) heroPosition.x - mViewBounds.centerX();
         int worldOffsetY = (int) heroPosition.y - mViewBounds.centerY();
 
@@ -112,7 +110,7 @@ public class WorldScreen implements Screen {
     private final Canvas mCanvas;
     private final Rect mViewBounds; // Area of screen for us to draw on
     private final Rect mWorldBounds; // Area of the world to show on the screen
-    private final GameCharacter mHero;
+    private final HeroCharacter mHero;
     private final UIControls mControls;
     private final Level mLevel;
     private final LevelState mLevelState;
