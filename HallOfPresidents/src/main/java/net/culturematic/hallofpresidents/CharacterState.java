@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CharacterState {
-    public void addState(Set<String> flags, SpriteRenderer.Sprites sprites) {
+    public void addState(Set<String> flags, SpriteRenderer.Sprites sprites, Dialog dialog) {
         mStates = Arrays.copyOf(mStates, mStates.length + 1);
-        mStates[ mStates.length - 1] = new StateSprites(flags, sprites);
+        mStates[ mStates.length - 1] = new StateInfo(flags, sprites, dialog);
         Arrays.sort(mStates);
         if (null == mCurrentState) {
             mCurrentState = mStates[0];
@@ -59,24 +59,26 @@ public class CharacterState {
         mCurrentSpeedPxPerMilli = speedPxPerSecond / 1000f;
     }
 
-    private static class StateSprites implements Comparable<StateSprites> {
-        public StateSprites(final Set<String> inFlags, final SpriteRenderer.Sprites inSprites) {
+    private static class StateInfo implements Comparable<StateInfo> {
+        public StateInfo(final Set<String> inFlags, final SpriteRenderer.Sprites inSprites, final Dialog inDialog) {
             flags = Collections.unmodifiableSet(inFlags);
             sprites = inSprites;
+            dialog = inDialog;
         }
 
         @Override
-        public int compareTo(StateSprites other) {
+        public int compareTo(StateInfo other) {
             // Negative if other is SMALLER, to sort longest to shortest.
             return other.flags.size() - flags.size();
         }
 
         public final Set<String> flags;
         public final SpriteRenderer.Sprites sprites;
+        public final Dialog dialog;
     }
 
     private float mCurrentSpeedPxPerMilli = 0f;
     private Set<String> mCurrentFlags = new HashSet<String>();
-    private StateSprites mCurrentState = null;
-    private StateSprites[] mStates = new StateSprites[0];
+    private StateInfo mCurrentState = null;
+    private StateInfo[] mStates = new StateInfo[0];
 }

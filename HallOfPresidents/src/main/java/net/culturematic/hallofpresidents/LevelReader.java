@@ -117,6 +117,11 @@ public class LevelReader {
         final JSONArray statesArray = characterDesc.getJSONArray("states");
         final JSONObject spriteCollectionDesc = characterDesc.getJSONObject("sprites");
 
+        JSONObject dialogCollectionDesc = new JSONObject();
+        if (characterDesc.has("dialog")) {
+            dialogCollectionDesc = characterDesc.getJSONObject("dialog");
+        }
+
         final Map<String, SpriteRenderer.Sprites> spritesByName = new HashMap<String, SpriteRenderer.Sprites>();
         final Iterator spriteNames = spriteCollectionDesc.keys();
         while (spriteNames.hasNext()) {
@@ -126,23 +131,50 @@ public class LevelReader {
             spritesByName.put(spriteName, sprites);
         }
 
+        final Map<String, Dialog> dialogByName = new HashMap<String, Dialog>();
+        final Iterator dialogNames = dialogCollectionDesc.keys();
+        while (dialogNames.hasNext()) {
+            final String dialogName = (String) dialogNames.next();
+            final JSONObject dialogDesc = dialogCollectionDesc.getJSONObject(dialogName);
+            final Dialog dialog = readDialog(dialogDesc);
+            dialogByName.put(dialogName, dialog);
+        }
+
         CharacterState characterState = new CharacterState();
         for (int stateIx = 0; stateIx < statesArray.length(); stateIx++) {
             final JSONObject stateDesc = statesArray.getJSONObject(stateIx);
-            final String spriteName = stateDesc.getString("sprite");
-            final SpriteRenderer.Sprites sprites = spritesByName.get(spriteName);
-            if (null == sprites) {
-                throw new LevelUnreadableException(
-                        "Can't find sprites named \"" + spriteName + "\" " +
-                                "named in character states:\n" + stateDesc.toString()
-                );
-            }
+
             final JSONArray flagsArray = stateDesc.getJSONArray("flags");
             final Set<String> flags = new HashSet<String>();
             for (int flagIx = 0; flagIx < flagsArray.length(); flagIx++) {
                 flags.add(flagsArray.getString(flagIx));
             }
-            characterState.addState(flags, sprites);
+
+            SpriteRenderer.Sprites sprites = null;
+            if (stateDesc.has("sprite")) {
+                final String spriteName = stateDesc.getString("sprite");
+                sprites = spritesByName.get(spriteName);
+                if (null == sprites) {
+                    throw new LevelUnreadableException(
+                            "Can't find sprites named \"" + spriteName + "\" " +
+                                    "named in character states:\n" + stateDesc.toString()
+                    );
+                }
+            }
+
+            Dialog dialog = null;
+            if (stateDesc.has("dialog")) {
+                final String dialogName = stateDesc.getString("dialog");
+                dialog = dialogByName.get(dialogName);
+                if (null == dialog) {
+                    throw new LevelUnreadableException(
+                            "Can't find dialog named \"" + dialogName + "\" " +
+                                    "named in character states:\n" + stateDesc.toString()
+                    );
+                }
+            }
+
+            characterState.addState(flags, sprites, dialog);
         }
 
         return characterState;
@@ -155,9 +187,14 @@ public class LevelReader {
         ret.speedPxPerSecond = spriteDesc.getInt("speed_px_per_second");
         ret.standFramesPerSecond = spriteDesc.getInt("stand_frames_per_second");
 
-        final JSONObject boundsDesc = spriteDesc.getJSONObject("bounds");
-        ret.boundsWidth = mAssetLoader.scaleInt(boundsDesc.getInt("width"));
-        ret.boundsHeight = mAssetLoader.scaleInt(boundsDesc.getInt("height"));
+        if (spriteDesc.has("bounds")) {
+            final JSONObject boundsDesc = spriteDesc.getJSONObject("bounds");
+            ret.boundsWidth = mAssetLoader.scaleInt(boundsDesc.getInt("width"));
+            ret.boundsHeight = mAssetLoader.scaleInt(boundsDesc.getInt("height"));
+        } else {
+            ret.boundsWidth = -1;
+            ret.boundsHeight = -1;
+        }
 
         ret.spriteBitmap = mAssetLoader.loadBitmap(rootPath + "/" + bitmapPath, null);
         if (spriteDesc.has("STAND_DOWN")) {

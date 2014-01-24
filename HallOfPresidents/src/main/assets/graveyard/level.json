@@ -126,7 +126,6 @@
 			    "source": "sprites/small_ghost_sprites_68x188.png",
 			    "speed_px_per_second": 0,
 			    "stand_frames_per_second": 5,
-			    "bounds": { "width": 68, "height": 188 },
 			    "STAND_DOWN": [
 				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
 				{ "x": 0, "y": 188, "width": 68, "height": 188 },
@@ -146,7 +145,6 @@
 			    "source": "sprites/small_ghost_sprites_68x188.png",
 			    "speed_px_per_second": 0,
 			    "stand_frames_per_second": 5,
-			    "bounds": { "width": 68, "height": 188 },
 			    "STAND_DOWN": [
 				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
 				{ "x": 0, "y": 188, "width": 68, "height": 188 },
@@ -159,19 +157,26 @@
 		    "_COMMENT": "Tall ghost in empty patch just right of center",
 		    "position": { "x": 890, "y": 1040 },
 		    "states": [
-			{ "flags": [], "sprite": "normal" }
+			{ "flags": [], "sprite": "normal", "dialog": "normal" },
+			{ "flags": [ "HAS_SANDWICH" ] }
 		    ],
 		    "sprites": {
 			"normal": {
 			    "source": "sprites/small_ghost_sprites_68x188.png",
 			    "speed_px_per_second": 0,
 			    "stand_frames_per_second": 5,
-			    "bounds": { "width": 68, "height": 188 },
 			    "STAND_DOWN": [
 				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
 				{ "x": 0, "y": 188, "width": 68, "height": 188 },
 				{ "x": 0, "y": 376, "width": 68, "height": 188 }
 			    ]
+			}
+		    },
+		    "dialog": {
+			"normal": {
+			    "facing": "UP",
+			    "set_room_flags": [ "HAS_SANDWICH" ],
+			    "dialog": "GHOST:\n\nIn life, I was greedy with my lunch, and now I am cursed to wander the Earth until some good soul in need accepts this CHEESE SANDWICH. Please take it, and free me from my torment! Also, no mayo, if that's ok."
 			}
 		    }
 		}
@@ -195,9 +200,10 @@
 	    "terrain": "crypt/terrain.png",
 	    "characters": [
 		{
+		    "_COMMENT": "Giant ghost in crypt",
 		    "position": { "x": 300, "y": 300 },
 		    "states": [
-			{ "flags": [], "sprite": "normal" }
+			{ "flags": [], "sprite": "normal", "dialog": "normal" }
 		    ],
 		    "sprites": {
 			"normal": {
@@ -208,8 +214,16 @@
 			    "STAND_DOWN": [
 				{ "x": 0, "y": 0,   "width": 226, "height": 268 },
 				{ "x": 0, "y": 268, "width": 226, "height": 268 },
-				{ "x": 0, "y": 536, "width": 226, "height": 268 }
+				{ "x": 0, "y": 536, "width": 226, "height": 268 },
+				{ "x": 0, "y": 804, "width": 226, "height": 268 }
 			    ]
+			}
+		    },
+		    "dialog": {
+			"normal": {
+			    "facing": "UP",
+			    "set_room_flags": [ "HEARD_BIG_GHOST" ],
+			    "dialog": "GIANT GHOST:\n\nI've been clinging to the mortal world because I heard there was going to be a new \"Star Wars\" movie.\n\nWhat's that? You say it came out in 1999 and was terrible? WHAT HAVE I DONE!?"
 			}
 		    }
 		}
