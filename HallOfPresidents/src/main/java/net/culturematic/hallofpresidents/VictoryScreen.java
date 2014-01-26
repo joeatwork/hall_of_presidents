@@ -35,11 +35,6 @@ public class VictoryScreen implements Screen {
     }
 
     @Override
-    public void recycle() {
-
-    }
-
-    @Override
     public Screen nextScreen() {
         return null;
     }

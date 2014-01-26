@@ -16,6 +16,7 @@ public class Room {
         mEvents = events;
         mCharacters = characters;
         mCurrentTimeMillis = -1;
+        mCurrentLevelState = null;
         mVisionRect = new Rect();
 
         Arrays.sort(mCharacters);
@@ -23,11 +24,14 @@ public class Room {
 
     public String getName() { return mName; }
 
-    public void update(long milliTime) {
+    public void update(long milliTime, LevelState levelState) {
         mCurrentTimeMillis = milliTime;
+        mCurrentLevelState = levelState;
 
         for (int i = 0; i < mCharacters.length; i++) {
-            mCharacters[i].directionCommand(
+            final GameCharacter character = mCharacters[i];
+            character.setLevelState(levelState);
+            character.directionCommand(
                     mCurrentTimeMillis,
                     LevelState.Direction.DIRECTION_NONE,
                     LevelState.Direction.DIRECTION_DOWN,
@@ -143,13 +147,8 @@ public class Room {
         return null;
     }
 
-    public void recycle() {
-        mBackground.recycle();
-        mFurniture.recycle();
-        mTerrain.recycle();
-    }
-
     private long mCurrentTimeMillis;
+    private LevelState mCurrentLevelState;
 
     private final String mName;
     private final Bitmap mBackground;

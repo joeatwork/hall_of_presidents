@@ -13,7 +13,6 @@ public class Game {
         mScreen.update(milliTime, touchSpots);
         Screen nextScreen = mScreen.nextScreen();
         if (null != nextScreen) {
-            mScreen.recycle();
             mScreen = nextScreen;
         }
         return mScreen.done();

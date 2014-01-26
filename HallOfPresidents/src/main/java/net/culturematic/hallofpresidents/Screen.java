@@ -6,6 +6,4 @@ public interface Screen {
     public Screen nextScreen();
 
     public boolean done();
-
-    public void recycle();
 }

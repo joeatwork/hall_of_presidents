@@ -46,7 +46,7 @@ public class WorldScreen implements Screen {
         mControls.intepretInteractions(touchSpots);
 
         final Room room = mLevel.getRoom(mLevelState.getRoomName());
-        room.update(milliTime);
+        room.update(milliTime, mLevelState);
 
         LevelState.Direction move = mLevelState.getMovement();
         LevelState.Direction facing = mLevelState.getFacing();
@@ -93,13 +93,6 @@ public class WorldScreen implements Screen {
     @Override
     public boolean done() {
         return false;
-    }
-
-    @Override
-    public void recycle() {
-        mHero.recycle();
-        mControls.recycle();
-        mLevel.recycle();
     }
 
     private Screen mNextScreen;

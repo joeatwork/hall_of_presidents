@@ -54,11 +54,6 @@ public class LoadingScreen implements Screen {
         return false;
     }
 
-    @Override
-    public void recycle() {
-        // TODO recycle mLoadingDrawable
-    }
-
     private synchronized void setLoadedScreen(Screen loadedScreen) {
         mLoadedScreen = loadedScreen;
     }

@@ -2,11 +2,10 @@ package net.culturematic.hallofpresidents;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 public class CharacterState {
-    public void addState(Set<String> flags, SpriteRenderer.Sprites sprites, Dialog dialog) {
+    public void addState(Set<String> flags, Sprites sprites, Dialog dialog) {
         mStates = Arrays.copyOf(mStates, mStates.length + 1);
         mStates[ mStates.length - 1] = new StateInfo(flags, sprites, dialog);
         Arrays.sort(mStates);
@@ -16,21 +15,18 @@ public class CharacterState {
         }
     }
 
-    public void addFlag(String flag) {
-        if (! mCurrentFlags.contains(flag)) {
-            mCurrentFlags.add(flag);
-            checkCurrentState();
+    public void setLevelState(final LevelState levelState) {
+        Set<String> levelFlags = levelState.getLevelFlags();
+        for (int i = 0; i < mStates.length; i++) {
+            if (levelFlags.containsAll(mStates[i].flags)) {
+                mCurrentState = mStates[i];
+                setSpeedPxPerMilli();
+                break;
+            }
         }
     }
 
-    public void removeFlag(String flag) {
-        if (mCurrentFlags.contains(flag)) {
-            mCurrentFlags.remove(flag);
-            checkCurrentState();
-        }
-    }
-
-    public SpriteRenderer.Sprites getSprites() {
+    public Sprites getSprites() {
         return mCurrentState.sprites;
     }
 
@@ -40,29 +36,18 @@ public class CharacterState {
         return mCurrentSpeedPxPerMilli;
     }
 
-    public void recycle() {
-        for (int i = 0; i < mStates.length; i++) {
-            mStates[i].sprites.recycle();
-        }
-    }
-
-    private void checkCurrentState() {
-        for (int i = 0; i < mStates.length; i++) {
-            if (mCurrentFlags.containsAll(mStates[i].flags)) {
-                mCurrentState = mStates[i];
-                setSpeedPxPerMilli();
-                break;
-            }
-        }
-    }
-
     private void setSpeedPxPerMilli() {
-        float speedPxPerSecond = mCurrentState.sprites.speedPxPerSecond;
-        mCurrentSpeedPxPerMilli = speedPxPerSecond / 1000f;
+        Sprites sprites = mCurrentState.sprites;
+        if (null == sprites) {
+            mCurrentSpeedPxPerMilli = 0;
+        } else {
+            float speedPxPerSecond = sprites.speedPxPerSecond;
+            mCurrentSpeedPxPerMilli = speedPxPerSecond / 1000f;
+        }
     }
 
     private static class StateInfo implements Comparable<StateInfo> {
-        public StateInfo(final Set<String> inFlags, final SpriteRenderer.Sprites inSprites, final Dialog inDialog) {
+        public StateInfo(final Set<String> inFlags, final Sprites inSprites, final Dialog inDialog) {
             flags = Collections.unmodifiableSet(inFlags);
             sprites = inSprites;
             dialog = inDialog;
@@ -74,13 +59,17 @@ public class CharacterState {
             return other.flags.size() - flags.size();
         }
 
+        @Override
+        public String toString() {
+            return super.toString() + "(" + flags + ", " + sprites + ", " + dialog + ")";
+        }
+
         public final Set<String> flags;
-        public final SpriteRenderer.Sprites sprites;
+        public final Sprites sprites;
         public final Dialog dialog;
     }
 
     private float mCurrentSpeedPxPerMilli = 0f;
-    private Set<String> mCurrentFlags = new HashSet<String>();
     private StateInfo mCurrentState = null;
     private StateInfo[] mStates = new StateInfo[0];
 }

@@ -122,12 +122,12 @@ public class LevelReader {
             dialogCollectionDesc = characterDesc.getJSONObject("dialog");
         }
 
-        final Map<String, SpriteRenderer.Sprites> spritesByName = new HashMap<String, SpriteRenderer.Sprites>();
+        final Map<String, Sprites> spritesByName = new HashMap<String, Sprites>();
         final Iterator spriteNames = spriteCollectionDesc.keys();
         while (spriteNames.hasNext()) {
             final String spriteName = (String) spriteNames.next();
             final JSONObject spriteDesc = spriteCollectionDesc.getJSONObject(spriteName);
-            final SpriteRenderer.Sprites sprites = readSprites(spriteDesc, rootPath);
+            final Sprites sprites = readSprites(spriteDesc, rootPath);
             spritesByName.put(spriteName, sprites);
         }
 
@@ -150,7 +150,7 @@ public class LevelReader {
                 flags.add(flagsArray.getString(flagIx));
             }
 
-            SpriteRenderer.Sprites sprites = null;
+            Sprites sprites = null;
             if (stateDesc.has("sprite")) {
                 final String spriteName = stateDesc.getString("sprite");
                 sprites = spritesByName.get(spriteName);
@@ -180,9 +180,9 @@ public class LevelReader {
         return characterState;
     }
 
-    private SpriteRenderer.Sprites readSprites(JSONObject spriteDesc, String rootPath)
+    private Sprites readSprites(JSONObject spriteDesc, String rootPath)
         throws JSONException {
-        final SpriteRenderer.Sprites ret = new SpriteRenderer.Sprites();
+        final Sprites ret = new Sprites();
         final String bitmapPath = spriteDesc.getString("source");
         ret.speedPxPerSecond = spriteDesc.getInt("speed_px_per_second");
         ret.standFramesPerSecond = spriteDesc.getInt("stand_frames_per_second");

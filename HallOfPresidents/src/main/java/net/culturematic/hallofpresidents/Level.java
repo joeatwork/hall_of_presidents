@@ -37,13 +37,6 @@ public class Level {
         return mVictory;
     }
 
-    public void recycle() {
-        mHero.recycle();
-        for (Room room:mRooms.values()) {
-            room.recycle();
-        }
-    }
-
     private final HeroCharacter mHero;
     private final Map<String, Room> mRooms;
     private final Dialog mVictory;

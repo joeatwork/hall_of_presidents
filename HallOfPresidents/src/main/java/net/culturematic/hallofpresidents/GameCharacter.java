@@ -38,6 +38,10 @@ public class GameCharacter implements Comparable<GameCharacter> {
         }
     }
 
+    public void setLevelState(LevelState levelState) {
+        mCharacterState.setLevelState(levelState);
+    }
+
     public PointF getPosition() {
         return mPosition;
     }
@@ -68,27 +72,31 @@ public class GameCharacter implements Comparable<GameCharacter> {
         final PointF position = getPosition();
         final float distance = mCharacterState.getSpeedPxPerMilli() * deltaTime;
 
-        if (updatePosition(direction, distance, position, currentRoom, 2)) {
-            // This is useful when debugging starting positions and event layouts
-            // System.out.println("CHARACTER POSITION CHANGE TO " + position.x + ", " + position.y);
-            mAnimationDistance = mAnimationDistance + distance;
-            setCurrentMovingSprite(direction, mAnimationDistance);
+        final boolean moved = updatePosition(direction, distance, position, currentRoom, 2);
+        final Sprites sprites = mCharacterState.getSprites();
+        if (null == sprites) {
+            mCurrentSpriteRect = EMPTY_RECT;
         } else {
-            mAnimationDistance = 0;
-            setCurrentStandingSprite(facing, milliTime);
+            if (moved) {
+                // This is useful when debugging starting positions and event layouts
+                // System.out.println("CHARACTER POSITION CHANGE TO " + position.x + ", " + position.y);
+                mAnimationDistance = mAnimationDistance + distance;
+                setCurrentMovingSprite(direction, mAnimationDistance, sprites);
+            } else {
+                mAnimationDistance = 0;
+                setCurrentStandingSprite(facing, milliTime, sprites);
+            }
         }
 
         mLastTime = milliTime;
     }
 
     public void drawCharacter(Canvas canvas, int viewportOffsetX, int viewportOffsetY) {
-        Rect bounds = getBounds();
-        bounds.offset(-viewportOffsetX, -viewportOffsetY);
-        canvas.drawBitmap(mCurrentBitmap, mCurrentSpriteRect, bounds, null);
-    }
-
-    public void recycle() {
-        mCharacterState.recycle();
+        if (! mCurrentSpriteRect.isEmpty()) {
+            Rect bounds = getBounds();
+            bounds.offset(-viewportOffsetX, -viewportOffsetY);
+            canvas.drawBitmap(mCurrentBitmap, mCurrentSpriteRect, bounds, null);
+        }
     }
 
     /**
@@ -99,7 +107,12 @@ public class GameCharacter implements Comparable<GameCharacter> {
         if (0 >= tries) {
             return false;
         }
-        final SpriteRenderer.Sprites sprites = mCharacterState.getSprites();
+
+        final Sprites sprites = mCharacterState.getSprites();
+        if (null == sprites) {
+            return false;
+        }
+
         final int halfBoundsWidth = sprites.boundsWidth / 2;
         final int boundsHeight = sprites.boundsHeight;
         final int halfBoundsHeight = boundsHeight / 2;
@@ -165,8 +178,7 @@ public class GameCharacter implements Comparable<GameCharacter> {
         return ret;
     }
 
-    private void setCurrentMovingSprite(LevelState.Direction direction, float distance) {
-        SpriteRenderer.Sprites sprites = mCharacterState.getSprites();
+    private void setCurrentMovingSprite(LevelState.Direction direction, float distance, Sprites sprites) {
         mCurrentBitmap = sprites.spriteBitmap;
 
         Rect[] animationFrames = null;
@@ -197,8 +209,7 @@ public class GameCharacter implements Comparable<GameCharacter> {
         mCurrentSpriteRect = animationFrames[frameIndex];
     }
 
-    private void setCurrentStandingSprite(LevelState.Direction facing, long milliTime) {
-        SpriteRenderer.Sprites sprites = mCharacterState.getSprites();
+    private void setCurrentStandingSprite(LevelState.Direction facing, long milliTime, Sprites sprites) {
         mCurrentBitmap = sprites.spriteBitmap;
         Rect[] animationFrames = null;
         switch (facing) {
@@ -232,6 +243,8 @@ public class GameCharacter implements Comparable<GameCharacter> {
     private final PointF mPosition;
     private final Rect mBoundsRect;
     private final CharacterState mCharacterState;
+
+    private static final Rect EMPTY_RECT = new Rect(0, 0, 0, 0);
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.GameCharacter";
