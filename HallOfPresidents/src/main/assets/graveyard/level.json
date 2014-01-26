@@ -105,7 +105,7 @@
     "victory": {
 	"dialog": {
 	    "facing": "DOWN",
-	    "condition_room_flags": [ "FAKE FLAG THAT NEVER HAPPENS" ],
+	    "condition_room_flags": [ "HEARD_BIG_GHOST" ],
 	    "dialog": "CONGRATULATIONS!\n\nYou've freed the tormented souls from their curse! Good one!"
 	}
     },
@@ -119,7 +119,9 @@
 		    "_COMMENT": "Tall ghost near spooky tree, in northwest corner",
 		    "position": { "x": 340, "y": 580 },
 		    "states": [
-			{ "flags": [], "sprite": "normal" }
+			{ "flags": [], "sprite": "normal", "dialog": "normal" },
+			{ "flags": [ "HAS_SANDWICH" ], "sprite": "normal", "dialog": "sandwich" },
+			{ "flags": [ "HAS_SHEET", "HAS_SANDWICH" ] }
 		    ],
 		    "sprites": {
 			"normal": {
@@ -127,35 +129,27 @@
 			    "speed_px_per_second": 0,
 			    "stand_frames_per_second": 5,
 			    "STAND_DOWN": [
-				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
 				{ "x": 0, "y": 188, "width": 68, "height": 188 },
-				{ "x": 0, "y": 376, "width": 68, "height": 188 }
+				{ "x": 0, "y": 376, "width": 68, "height": 188 },
+				{ "x": 0, "y": 0,   "width": 68, "height": 188 }
 			    ]
+			}
+		    },
+		    "dialog": {
+			"normal": {
+			    "facing": "UP",
+			    "dialog": "GHOST:\n\nWhen I was alive, I wanted to sell this HIGH THREAD COUNT SHEET for $40 dollars. But now, I'd give it away for as little as a CHEESE SANDWICH. With no mayo, if possible."
+			},
+			"sandwich": {
+			    "facing": "UP",
+			    "set_room_flags": [ "HAS_SHEET" ],
+			    "dialog": "GHOST:\n\nWhy yes, I'd love to trade that old CHEESE SANDWICH for this fine, egyptian cotton HIGH THREAD COUNT SHEET! Now I'm gonna scoot off into the afterlife to enjoy it!\n\nsucker..."
 			}
 		    }
 		},
 		{
 		    "_COMMENT": "Tall ghost in far northeast corner",
 		    "position": { "x": 1170, "y": 207 },
-		    "states": [
-			{ "flags": [], "sprite": "normal" }
-		    ],
-		    "sprites": {
-			"normal": {
-			    "source": "sprites/small_ghost_sprites_68x188.png",
-			    "speed_px_per_second": 0,
-			    "stand_frames_per_second": 5,
-			    "STAND_DOWN": [
-				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
-				{ "x": 0, "y": 188, "width": 68, "height": 188 },
-				{ "x": 0, "y": 376, "width": 68, "height": 188 }
-			    ]
-			}
-		    }
-		},
-		{
-		    "_COMMENT": "Tall ghost in empty patch just right of center",
-		    "position": { "x": 890, "y": 1040 },
 		    "states": [
 			{ "flags": [], "sprite": "normal", "dialog": "normal" },
 			{ "flags": [ "HAS_SANDWICH" ] }
@@ -179,6 +173,39 @@
 			    "dialog": "GHOST:\n\nIn life, I was greedy with my lunch, and now I am cursed to wander the Earth until some good soul in need accepts this CHEESE SANDWICH. Please take it, and free me from my torment! Also, no mayo, if that's ok."
 			}
 		    }
+		},
+		{
+		    "_COMMENT": "Tall ghost in empty patch just right of center",
+		    "position": { "x": 890, "y": 1040 },
+		    "states": [
+			{ "flags": [], "sprite": "normal", "dialog": "normal" },
+			{ "flags": [ "HAS_SHEET" ], "sprite": "normal", "dialog": "costume" },
+			{ "flags": [ "HAS_SHEET", "HAS_COSTUME" ] }
+		    ],
+		    "sprites": {
+			"normal": {
+			    "source": "sprites/small_ghost_sprites_68x188.png",
+			    "speed_px_per_second": 0,
+			    "stand_frames_per_second": 5,
+			    "STAND_DOWN": [
+				{ "x": 0, "y": 376, "width": 68, "height": 188 },
+				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
+				{ "x": 0, "y": 188, "width": 68, "height": 188 }
+			    ]
+			}
+		    },
+		    "dialog": {
+			"normal": {
+			    "facing": "UP",
+			    "dialog": "GHOST:\n\nI can't go into the beyond with this embarrasing hole in my jeans, so I'm doomed to wander the earth. So keep your clothes well mended, is I guess the key learning here."
+			},
+			"costume": {
+			    "facing": "UP",
+			    "set_room_flags": [ "HAS_COSTUME" ],
+			    "dialog": "GHOST:\n\nSay, if I can borrow some bits of that HIGH THREAD COUNT SHEET for a sec... some scissors... needle and thread... and there are two perfectly servicable patchs for my jeans! I'm free!\n\nOh, and here's your sheet back, minus the two patches. You know, it wouldn't make a bad ghost costume..."
+			}
+		    }
+
 		}
 	    ],
 	    "events": [
@@ -214,8 +241,7 @@
 			    "STAND_DOWN": [
 				{ "x": 0, "y": 0,   "width": 226, "height": 268 },
 				{ "x": 0, "y": 268, "width": 226, "height": 268 },
-				{ "x": 0, "y": 536, "width": 226, "height": 268 },
-				{ "x": 0, "y": 804, "width": 226, "height": 268 }
+				{ "x": 0, "y": 536, "width": 226, "height": 268 }
 			    ]
 			}
 		    },
@@ -223,7 +249,7 @@
 			"normal": {
 			    "facing": "UP",
 			    "set_room_flags": [ "HEARD_BIG_GHOST" ],
-			    "dialog": "GIANT GHOST:\n\nI've been clinging to the mortal world because I heard there was going to be a new \"Star Wars\" movie.\n\nWhat's that? You say it came out in 1999 and was terrible? WHAT HAVE I DONE!?"
+			    "dialog": "GIANT GHOST:\n\nI've been clinging to the mortal world because I heard there was going to be a new \"Star Wars\" movie.\n\nWhat's that? You say it came out in 1999 and was terrible? I'm out of here!"
 			}
 		    }
 		}
