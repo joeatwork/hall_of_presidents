@@ -46,11 +46,12 @@ public class WorldScreen implements Screen {
         mControls.intepretInteractions(touchSpots);
 
         final Room room = mLevel.getRoom(mLevelState.getRoomName());
+        mHero.update(milliTime, mLevelState);
         room.update(milliTime, mLevelState);
 
         LevelState.Direction move = mLevelState.getMovement();
         LevelState.Direction facing = mLevelState.getFacing();
-        mHero.directionCommand(milliTime, move, facing, room);
+        mHero.directionCommand(move, facing, room);
 
         final WorldEvent.Door door = room.checkForDoor(mHero);
 

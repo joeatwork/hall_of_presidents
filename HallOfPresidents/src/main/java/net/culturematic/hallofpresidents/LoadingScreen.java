@@ -85,7 +85,6 @@ public class LoadingScreen implements Screen {
             }
 
             HeroCharacter hero = level.getHero();
-            hero.setLevelState(mLevelState);
             UIControls controls = new UIControls(mAssetLoader, mLevelState);
             Screen loaded = new WorldScreen(mAssetLoader, mDisplay, mViewBounds, level, mLevelState, hero, controls);
             setLoadedScreen(loaded);

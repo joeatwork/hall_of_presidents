@@ -38,10 +38,6 @@ public class GameCharacter implements Comparable<GameCharacter> {
         }
     }
 
-    public void setLevelState(LevelState levelState) {
-        mCharacterState.setLevelState(levelState);
-    }
-
     public PointF getPosition() {
         return mPosition;
     }
@@ -63,12 +59,17 @@ public class GameCharacter implements Comparable<GameCharacter> {
         return mCharacterState.getDialog();
     }
 
-    public void directionCommand(long milliTime, LevelState.Direction direction, LevelState.Direction facing, Room currentRoom) {
+    public void update(long milliTime, LevelState levelState) {
+        mThisTime = milliTime;
+        mCharacterState.setLevelState(levelState);
+    }
+
+    public void directionCommand(LevelState.Direction direction, LevelState.Direction facing, Room currentRoom) {
         if (mLastTime < 0) {
-            mLastTime = milliTime;
+            mLastTime = mThisTime;
         }
 
-        final long deltaTime = milliTime - mLastTime;
+        final long deltaTime = mThisTime - mLastTime;
         final PointF position = getPosition();
         final float distance = mCharacterState.getSpeedPxPerMilli() * deltaTime;
 
@@ -84,11 +85,11 @@ public class GameCharacter implements Comparable<GameCharacter> {
                 setCurrentMovingSprite(direction, mAnimationDistance, sprites);
             } else {
                 mAnimationDistance = 0;
-                setCurrentStandingSprite(facing, milliTime, sprites);
+                setCurrentStandingSprite(facing, mThisTime, sprites);
             }
         }
 
-        mLastTime = milliTime;
+        mLastTime = mThisTime;
     }
 
     public void drawCharacter(Canvas canvas, int viewportOffsetX, int viewportOffsetY) {
@@ -235,6 +236,7 @@ public class GameCharacter implements Comparable<GameCharacter> {
         mCurrentSpriteRect = animationFrames[offsetFrame];
     }
 
+    private long mThisTime;
     private long mLastTime;
     private Bitmap mCurrentBitmap;
     private Rect mCurrentSpriteRect;

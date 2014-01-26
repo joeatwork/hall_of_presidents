@@ -13,8 +13,10 @@ public class HeroCharacter extends GameCharacter {
         return mLevelState.getPosition();
     }
 
-    public void setLevelState(LevelState levelState) {
+    @Override
+    public void update(long milliTime, LevelState levelState) {
         mLevelState = levelState;
+        super.update(milliTime, levelState);
     }
 
     private LevelState mLevelState;

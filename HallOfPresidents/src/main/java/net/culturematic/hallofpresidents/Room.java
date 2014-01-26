@@ -30,9 +30,8 @@ public class Room {
 
         for (int i = 0; i < mCharacters.length; i++) {
             final GameCharacter character = mCharacters[i];
-            character.setLevelState(levelState);
+            character.update(milliTime, levelState);
             character.directionCommand(
-                    mCurrentTimeMillis,
                     LevelState.Direction.DIRECTION_NONE,
                     LevelState.Direction.DIRECTION_DOWN,
                     this
