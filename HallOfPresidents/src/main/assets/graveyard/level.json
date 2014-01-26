@@ -217,7 +217,7 @@
 		    "name": "CRYPT DOOR IN",
 		    "door": {
 			"dest_room": "crypt",
-			"dest_position": { "x": 303, "y": 870 }
+			"dest_position": { "x": 363, "y": 1080 }
 		    }
 		}
 	    ]
@@ -229,7 +229,7 @@
 	    "characters": [
 		{
 		    "_COMMENT": "Giant ghost in crypt",
-		    "position": { "x": 300, "y": 300 },
+		    "position": { "x": 363, "y": 363 },
 		    "states": [
 			{ "flags": [], "sprite": "normal", "dialog": "normal" }
 		    ],
@@ -258,7 +258,7 @@
 	    "events": [
 		{
 		    "bounds": {
-			"x": 230, "y": 900, "width": 140, "height": 100
+			"x": 265, "y": 1108, "width": 185, "height": 55
 		    },
 		    "name": "CRYPT DOOR",
 		    "door": {
