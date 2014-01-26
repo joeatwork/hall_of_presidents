@@ -206,7 +206,39 @@
 			    "dialog": "GHOST:\n\nSay, if I can borrow some bits of that HIGH THREAD COUNT SHEET for a sec... some scissors... needle and thread... and there are two perfectly servicable patchs for my jeans! I'm free!\n\nOh, and here's your sheet back, minus the two patches. You know, it wouldn't make a bad ghost costume..."
 			}
 		    }
-
+		},
+		{
+		    "_COMMENT": "Tall ghost door man",
+		    "position": { "x": 683, "y": 902 },
+		    "states": [
+			{ "flags": [], "sprite": "normal", "dialog": "normal" },
+			{ "flags": [ "HAS_COSTUME" ], "sprite": "normal", "dialog": "say_ok" },
+			{ "flags": [ "HAS_COSTUME", "HAS_OK" ] }
+		    ],
+		    "sprites": {
+			"normal": {
+			    "source": "sprites/small_ghost_sprites_68x188.png",
+			    "speed_px_per_second": 0,
+			    "stand_frames_per_second": 5,
+			    "STAND_DOWN": [
+				{ "x": 0, "y": 376, "width": 68, "height": 188 },
+				{ "x": 0, "y": 0,   "width": 68, "height": 188 },
+				{ "x": 0, "y": 188, "width": 68, "height": 188 },
+				{ "x": 0, "y": 0,   "width": 68, "height": 188 }
+			    ]
+			}
+		    },
+		    "dialog": {
+			"normal": {
+			    "facing": "UP",
+			    "dialog": "GHOST:\n\nSorry, Bub. The crypt has a strict ghosts-only policy."
+			},
+			"say_ok": {
+			    "facing": "UP",
+			    "set_room_flags": [ "HAS_OK" ],
+			    "dialog": "GHOST:\n\nSure, the big guy always has time for a fellow member of the undead! Go right in!"
+			}
+		    }
 		}
 	    ],
 	    "events": [
