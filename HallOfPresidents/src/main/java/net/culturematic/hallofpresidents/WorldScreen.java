@@ -39,6 +39,8 @@ public class WorldScreen implements Screen {
             if (hasFlags.containsAll(mVictoryFlags)) {
                 mLevelState.setComplete();
                 mLevelState.clearLevelFlags();
+                mLevelState.setRoomName(mLevel.getStartRoomName());
+                mLevelState.setPosition(mLevel.getStartPosition());
                 final Dialog victoryDialog = mLevel.getVictory();
                 mNextScreen = new VictoryScreen(mAssetLoader, mDisplay, mViewBounds, victoryDialog);
             }

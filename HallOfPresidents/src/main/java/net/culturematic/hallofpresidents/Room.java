@@ -15,7 +15,6 @@ public class Room {
         mTerrain = terrain;
         mEvents = events;
         mCharacters = characters;
-        mCurrentTimeMillis = -1;
         mVisionRect = new Rect();
 
         Arrays.sort(mCharacters);
@@ -24,8 +23,6 @@ public class Room {
     public String getName() { return mName; }
 
     public void update(long milliTime, LevelState levelState) {
-        mCurrentTimeMillis = milliTime;
-
         for (int i = 0; i < mCharacters.length; i++) {
             final GameCharacter character = mCharacters[i];
             character.update(milliTime, levelState);
@@ -148,8 +145,6 @@ public class Room {
         }
         return null;
     }
-
-    private long mCurrentTimeMillis;
 
     private final String mName;
     private final Bitmap mBackground;
