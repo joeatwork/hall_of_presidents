@@ -26,7 +26,7 @@ public class WorldScreen implements Screen {
         mWorldBounds = new Rect(viewBounds);
         mDisplay = display;
         mCanvas = new Canvas(display);
-        mVictoryFlags = mLevel.getVictory().getRoomFlagsToRequire();
+        mVictoryFlags = mLevel.getVictory().getLevelFlagsToRequire();
         mHero = hero;
         mControls = controls;
     }

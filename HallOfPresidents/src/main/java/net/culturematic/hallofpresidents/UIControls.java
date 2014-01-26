@@ -101,7 +101,6 @@ public class UIControls {
         String dialogText = mLevelState.getDialogText();
         if (null != dialogText) {
             mDialogUI.drawDialog(dialogText, viewBounds, canvas);
-            mLevelState.showedDialog();
         }
     }
 
