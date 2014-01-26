@@ -16,7 +16,6 @@ public class Room {
         mEvents = events;
         mCharacters = characters;
         mCurrentTimeMillis = -1;
-        mCurrentLevelState = null;
         mVisionRect = new Rect();
 
         Arrays.sort(mCharacters);
@@ -26,7 +25,6 @@ public class Room {
 
     public void update(long milliTime, LevelState levelState) {
         mCurrentTimeMillis = milliTime;
-        mCurrentLevelState = levelState;
 
         for (int i = 0; i < mCharacters.length; i++) {
             final GameCharacter character = mCharacters[i];
@@ -63,12 +61,10 @@ public class Room {
         */
     }
 
-    // TODO: shouldn't take a milliTime arg here, should have an update method on the room.
     public void drawCharacters(Canvas canvas, Rect worldRect, GameCharacter hero) {
         final PointF heroPosition = hero.getPosition();
         boolean heroDrawn = false;
         for (int i = 0; i < mCharacters.length; i++) {
-            // TODO: since you know the viewport, you should only draw characters that intersect it
             final GameCharacter character = mCharacters[i];
             final PointF characterPosition = character.getPosition();
             if (characterPosition.y > heroPosition.y && !heroDrawn) {
@@ -97,6 +93,14 @@ public class Room {
         if (0 == (color & 0xff000000)) {
             return false;
         }
+
+        for (int i = 0; i < mCharacters.length; i++) {
+            final Rect rect = mCharacters[i].getBounds();
+            if (null != rect && rect.contains(x, y)) {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -123,7 +127,6 @@ public class Room {
             }
         }
 
-
         final Rect heroBounds = hero.getBounds();
         int heroWidth = heroBounds.width();
         int heroHeight = heroBounds.height();
@@ -147,7 +150,6 @@ public class Room {
     }
 
     private long mCurrentTimeMillis;
-    private LevelState mCurrentLevelState;
 
     private final String mName;
     private final Bitmap mBackground;
