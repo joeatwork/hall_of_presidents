@@ -1,5 +1,6 @@
 package net.culturematic.hallofpresidents;
 
+import android.graphics.Point;
 import android.graphics.PointF;
 
 import org.json.JSONArray;
@@ -29,6 +30,11 @@ public class LevelState {
         mMovement = Direction.DIRECTION_NONE;
         mFacing = Direction.DIRECTION_DOWN;
         mIsComplete = false;
+
+        for (int i = 0; i < mActionSpots.length; i++) {
+            mActionSpots[i] = new ActionSpot();
+
+        }
     }
 
     public static LevelState readJSON(JSONObject stateDesc)
@@ -99,17 +105,31 @@ public class LevelState {
         mRoomName = roomName;
     }
 
-    public void setDialogAvailable(Dialog dialog) {
-        if (null == dialog) {
-            mControlState = mControlState.onNoDialogAvailable();
-        } else {
-            mControlState = mControlState.onDialogAvailable();
+    public void resetActions() {
+        for (int i = 0; i < mActionSpots.length; i++) {
+            mActionSpots[i].enabled = false;
         }
-        mDialogAvailable = dialog;
+    }
+
+    public void setDialogAvailable(Dialog dialog, int x, int y) {
+        for (int i = 0; i < mActionSpots.length; i++) {
+            final ActionSpot spot = mActionSpots[i];
+            if (! spot.enabled) {
+                spot.enabled = true;
+                spot.position.set(x, y);
+                spot.dialog = dialog;
+                mControlState = mControlState.onDialogAvailable();
+                break;
+            }
+        }
     }
 
     public boolean canGetVictory() {
         return mControlState.canGetVictory();
+    }
+
+    public ActionSpot[] getActions() {
+        return mActionSpots;
     }
 
     public String getAButtonLabel() {
@@ -174,6 +194,12 @@ public class LevelState {
 
     public PointF getPosition() {
         return mRoomPosition;
+    }
+
+    public class ActionSpot {
+        public final Point position = new Point();
+        public boolean enabled = false;
+        public Dialog dialog = null;
     }
 
     private enum ControlState {
@@ -270,6 +296,7 @@ public class LevelState {
     private String mRoomName;
     private ControlState mControlState;
     private final Set<String> mLevelFlags;
+    private final ActionSpot[] mActionSpots = new ActionSpot[Config.MAX_ACTION_BUTTONS];
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.LevelState";

@@ -3,6 +3,7 @@ package net.culturematic.hallofpresidents;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.text.TextPaint;
 
@@ -11,9 +12,15 @@ public class UIControls {
     public UIControls(AssetLoader assetLoader, LevelState levelState) {
         mLevelState = levelState;
         mDpadBitmap = assetLoader.loadDpadBitmap();
+        mActionButtonBitmap = assetLoader.loadActionButtonBitmap();
         mButtonBitmap = assetLoader.loadButtonBitmap();
         mButtonPadding = assetLoader.getButtonPadding();
         mButtonTextPaint = assetLoader.loadButtonTextPaint();
+
+        for (int i = 0; i < mActionButtons.length; i++) {
+            mActionButtons[i] = new ActionButton();
+            mActionButtons[i].rect.set(0, 0, mActionButtonBitmap.getWidth(), mActionButtonBitmap.getHeight());
+        }
 
         mDefaultPaint = new Paint();
 
@@ -63,9 +70,18 @@ public class UIControls {
         mBButtonWasDown = bButtonIsDown;
     }
 
-    public void drawControls(Canvas canvas, Rect viewBounds) {
+    public void drawControls(Canvas canvas, Rect worldBounds, Rect viewBounds) {
         mDpadDestRect.offsetTo(0, viewBounds.height() - mDpadDestRect.height());
         canvas.drawBitmap(mDpadBitmap, null, mDpadDestRect, null);
+
+        updateActionButtons();
+
+        for (int i = 0; i < mActionButtons.length; i++) {
+            final ActionButton button = mActionButtons[i];
+            if (button.enabled) {
+                drawActionButton(canvas, button, worldBounds, viewBounds);
+            }
+        }
 
         final String aButtonLabel = mLevelState.getAButtonLabel();
         final String bButtonLabel = mLevelState.getBButtonLabel();
@@ -104,6 +120,32 @@ public class UIControls {
         }
     }
 
+    private void updateActionButtons() {
+        final LevelState.ActionSpot[] actions = mLevelState.getActions();
+        final int actionOffsetX = mActionButtonBitmap.getWidth() / 2;
+        final int actionOffsetY = mActionButtonBitmap.getHeight();
+        for (int i = 0; i < actions.length; i++) {
+            final LevelState.ActionSpot spot = actions[i];
+            final ActionButton button = mActionButtons[i];
+            if (spot.enabled) {
+                button.enabled = true;
+                button.key = spot;
+                button.rect.offsetTo(
+                        (int) spot.position.x - actionOffsetX,
+                        (int) spot.position.y - actionOffsetY
+                );
+            } else {
+                button.enabled = false;
+            }
+        }
+    }
+
+    private void drawActionButton(Canvas canvas, ActionButton button, Rect worldBounds, Rect viewBounds) {
+        mActionButtonDestRect.set(button.rect);
+        mActionButtonDestRect.offset(-worldBounds.left, -worldBounds.top);
+        canvas.drawBitmap(mActionButtonBitmap, null, mActionButtonDestRect, null);
+    }
+
     private void readDpad(int x, int y) {
         int xOffset = x - mDpadDestRect.centerX();
         int yOffset = y - mDpadDestRect.centerY();
@@ -122,11 +164,18 @@ public class UIControls {
         }
     }
 
+    private class ActionButton {
+        public final Rect rect = new Rect();
+        public boolean enabled = false;
+        public Object key = null;
+    }
+
     private boolean mAButtonWasDown = false;
     private boolean mBButtonWasDown = false;
 
+    private final Rect mActionButtonDestRect = new Rect();
+    private final ActionButton[] mActionButtons = new ActionButton[Config.MAX_ACTION_BUTTONS];
     private final LevelState mLevelState;
-
     private final TextPaint mButtonTextPaint;
     private final DialogUI mDialogUI;
     private final float mButtonPadding;
@@ -134,6 +183,7 @@ public class UIControls {
     private final Paint mDefaultPaint;
     private final Bitmap mDpadBitmap;
     private final Bitmap mButtonBitmap;
+    private final Bitmap mActionButtonBitmap;
     private final Rect mDpadDestRect;
     private final Rect mAButtonDestRect;
     private final Rect mBButtonDestRect;

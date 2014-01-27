@@ -114,13 +114,17 @@ public class Room {
         return null;
     }
 
-    public Dialog checkForDialog(HeroCharacter hero) {
+    public void showActions(HeroCharacter hero, LevelState levelState) {
         final PointF position = hero.getPosition();
         for (int i = 0; i < mEvents.length; i++) {
             final WorldEvent event = mEvents[i];
-            final Rect rect = event.getBounds();
-            if (rect.contains((int) position.x, (int) position.y)) {
-                return event.getDialog();
+            final Dialog dialog = event.getDialog();
+            if (null != dialog) {
+                final Rect rect = event.getBounds();
+                if (rect.contains((int) position.x, (int) position.y)) {
+                    // TODO this position ain't right.
+                    levelState.setDialogAvailable(dialog, rect.centerX(), rect.top);
+                }
             }
         }
 
@@ -136,14 +140,16 @@ public class Room {
 
         for (int i = 0; i < mCharacters.length; i++) {
             final GameCharacter character = mCharacters[i];
-            final Rect characterBounds = character.getBounds();
-            if (null != character.getBounds()) {
-                if (mVisionRect.intersect(characterBounds)) {
-                    return character.getDialog();
+            final Dialog dialog = character.getDialog();
+            if (null != dialog) {
+                final Rect characterBounds = character.getBounds();
+                if (null != character.getBounds()) {
+                    if (mVisionRect.intersect(characterBounds)) {
+                        levelState.setDialogAvailable(dialog, characterBounds.centerX(), characterBounds.top);
+                    }
                 }
             }
         }
-        return null;
     }
 
     private final String mName;

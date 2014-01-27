@@ -62,6 +62,10 @@ public class AssetLoader {
         return loadBitmap(BUTTON_ASSET_PATH, null);
     }
 
+    public Bitmap loadActionButtonBitmap() {
+        return loadBitmap(ACTION_BUTTON_ASSET_PATH, null);
+    }
+
     public float getButtonPadding() {
         return (float) scaleInt(BUTTON_PADDING_HACK);
     }
@@ -154,6 +158,7 @@ public class AssetLoader {
     private static final String TYPEFACE_ASSET_PATH = "pressstart2p.ttf";
     private static final String DPAD_ASSET_PATH = "widget_dpad.png";
     private static final String BUTTON_ASSET_PATH = "widget_button.png";
+    private static final String ACTION_BUTTON_ASSET_PATH = "exclamation_button_89x118.png";
 
     private static final float DIALOG_FONT_SIZE_SP = 14f;
     private static final int BUTTON_PADDING_HACK = 42; // Until we clean up the buttons

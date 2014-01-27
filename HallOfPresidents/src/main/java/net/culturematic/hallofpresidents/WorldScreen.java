@@ -46,6 +46,7 @@ public class WorldScreen implements Screen {
             }
         }
         mControls.intepretInteractions(touchSpots);
+        mLevelState.resetActions();
 
         final Room room = mLevel.getRoom(mLevelState.getRoomName());
         mHero.update(milliTime, mLevelState);
@@ -64,12 +65,7 @@ public class WorldScreen implements Screen {
         }
         // ELSE IF NO DOOR
 
-        final Dialog dialog = room.checkForDialog(mHero);
-        if (null != dialog) {
-            mLevelState.setDialogAvailable(dialog);
-        } else {
-            mLevelState.setDialogAvailable(null);
-        }
+        room.showActions(mHero, mLevelState);
 
         // We want the hero at the center of the Viewport
         final PointF heroPosition = mLevelState.getPosition();
@@ -83,7 +79,7 @@ public class WorldScreen implements Screen {
         room.drawCharacters(mCanvas, mWorldBounds, mHero);
 
         room.drawFurniture(mCanvas, mWorldBounds, mViewBounds);
-        mControls.drawControls(mCanvas, mViewBounds);
+        mControls.drawControls(mCanvas, mWorldBounds, mViewBounds);
 
         mLevelState.setPosition(heroPosition);
     }
