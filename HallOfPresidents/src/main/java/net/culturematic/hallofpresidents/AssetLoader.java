@@ -14,6 +14,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AssetLoader {
     public AssetLoader(Context context) {
@@ -21,6 +25,7 @@ public class AssetLoader {
         mDisplayDensity = context.getResources().getDisplayMetrics().densityDpi;
         mCachedDialogBackground = null;
         mCachedTextPaint = null;
+        mBitmapCache = new HashMap<String, Reference<Bitmap>>();
     }
 
     public int scaleInt(int original) {
@@ -91,6 +96,14 @@ public class AssetLoader {
     }
 
     public Bitmap loadBitmap(String path, Bitmap.Config preferredConfig) {
+        if (mBitmapCache.containsKey(path)) {
+            final Bitmap cached = mBitmapCache.get(path).get();
+            if (null != cached) {
+                Log.d(LOGTAG, "loadBitmap returning cached reference to image " + path);
+                return cached;
+            }
+        }
+
         InputStream in = null;
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
 
@@ -103,6 +116,8 @@ public class AssetLoader {
         try {
             in = mContext.getAssets().open(path);
             final Bitmap ret = BitmapFactory.decodeStream(in, null, bitmapOptions);
+            final WeakReference<Bitmap> cacheRef = new WeakReference<Bitmap>(ret);
+            mBitmapCache.put(path, cacheRef);
             return ret;
         } catch (IOException e) {
             throw new RuntimeException("Couldn't read Bitmap at asset path " + path, e);
@@ -131,6 +146,7 @@ public class AssetLoader {
 
     private TextPaint mCachedTextPaint;
     private Drawable mCachedDialogBackground;
+    private Map<String, Reference<Bitmap>> mBitmapCache;
 
     private final Context mContext;
     private final int mDisplayDensity;
