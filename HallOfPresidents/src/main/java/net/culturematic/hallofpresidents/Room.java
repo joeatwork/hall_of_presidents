@@ -2,6 +2,8 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
@@ -144,7 +146,7 @@ public class Room {
             if (null != dialog) {
                 final Rect characterBounds = character.getBounds();
                 if (null != character.getBounds()) {
-                    if (mVisionRect.intersect(characterBounds)) {
+                    if (Rect.intersects(mVisionRect, characterBounds)) {
                         int top = characterBounds.top + character.getDialogOffsetY();
                         levelState.setDialogAvailable(dialog, characterBounds.centerX(), top);
                     }
