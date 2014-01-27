@@ -59,6 +59,10 @@ public class GameCharacter implements Comparable<GameCharacter> {
         return mCharacterState.getDialog();
     }
 
+    public int getDialogOffsetY() {
+        return mCharacterState.getDialogOffsetY();
+    }
+
     public void update(long milliTime, LevelState levelState) {
         mThisTime = milliTime;
         mCharacterState.setLevelState(levelState);

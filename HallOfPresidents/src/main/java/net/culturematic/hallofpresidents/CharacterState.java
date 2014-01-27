@@ -5,6 +5,11 @@ import java.util.Collections;
 import java.util.Set;
 
 public class CharacterState {
+
+    public void setDialogOffset(int yOffset) {
+        mDialogOffsetY = yOffset;
+    }
+
     public void addState(Set<String> flags, Sprites sprites, Dialog dialog) {
         mStates = Arrays.copyOf(mStates, mStates.length + 1);
         mStates[ mStates.length - 1] = new StateInfo(flags, sprites, dialog);
@@ -24,6 +29,10 @@ public class CharacterState {
                 break;
             }
         }
+    }
+
+    public int getDialogOffsetY() {
+        return mDialogOffsetY;
     }
 
     public Sprites getSprites() {
@@ -69,6 +78,7 @@ public class CharacterState {
         public final Dialog dialog;
     }
 
+    private int mDialogOffsetY = 0;
     private float mCurrentSpeedPxPerMilli = 0f;
     private StateInfo mCurrentState = null;
     private StateInfo[] mStates = new StateInfo[0];

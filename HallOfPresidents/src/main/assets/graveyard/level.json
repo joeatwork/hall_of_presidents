@@ -262,6 +262,7 @@
 		{
 		    "_COMMENT": "Giant ghost in crypt",
 		    "position": { "x": 363, "y": 363 },
+		    "dialogOffset": 200,
 		    "states": [
 			{ "flags": [], "sprite": "normal", "dialog": "normal" }
 		    ],

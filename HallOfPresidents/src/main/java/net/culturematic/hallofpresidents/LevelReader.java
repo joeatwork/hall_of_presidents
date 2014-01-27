@@ -141,6 +141,14 @@ public class LevelReader {
         }
 
         CharacterState characterState = new CharacterState();
+
+        // This is a HACK to deal with giant characters who are taller
+        // then the edge of the screen.
+        if (characterDesc.has("dialogOffset")) {
+            int dialogOffset = characterDesc.getInt("dialogOffset");
+            characterState.setDialogOffset(dialogOffset);
+        }
+
         for (int stateIx = 0; stateIx < statesArray.length(); stateIx++) {
             final JSONObject stateDesc = statesArray.getJSONObject(stateIx);
 

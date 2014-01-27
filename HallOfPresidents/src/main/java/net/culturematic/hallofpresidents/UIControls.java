@@ -2,10 +2,7 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Rect;
-import android.text.TextPaint;
 
 public class UIControls {
 
@@ -13,61 +10,50 @@ public class UIControls {
         mLevelState = levelState;
         mDpadBitmap = assetLoader.loadDpadBitmap();
         mActionButtonBitmap = assetLoader.loadActionButtonBitmap();
-        mButtonBitmap = assetLoader.loadButtonBitmap();
-        mButtonPadding = assetLoader.getButtonPadding();
-        mButtonTextPaint = assetLoader.loadButtonTextPaint();
 
         for (int i = 0; i < mActionButtons.length; i++) {
             mActionButtons[i] = new ActionButton();
             mActionButtons[i].rect.set(0, 0, mActionButtonBitmap.getWidth(), mActionButtonBitmap.getHeight());
         }
 
-        mDefaultPaint = new Paint();
-
-        mSemiTransparentPaint = new Paint();
-        mSemiTransparentPaint.setAlpha(128);
-
         mDpadDestRect = new Rect(0, 0, mDpadBitmap.getWidth(), mDpadBitmap.getHeight());
-        mAButtonDestRect = new Rect(0, 0, mButtonBitmap.getWidth(), mButtonBitmap.getHeight());
-        mBButtonDestRect = new Rect(0, 0, mButtonBitmap.getWidth(), mButtonBitmap.getHeight());
 
         mDialogUI = new DialogUI(assetLoader);
     }
 
-    public void intepretInteractions(InputEvents.TouchSpot[] spots) {
+    public void intepretInteractions(InputEvents.TouchSpot[] spots, Rect worldBounds) {
         boolean dpadPressed = false;
-        boolean aButtonIsDown = false;
-        boolean bButtonIsDown = false;
-        for (int i = 0; i < spots.length && null != spots[i]; i++) {
-            InputEvents.TouchSpot spot = spots[i];
-            int x = (int) spot.x;
-            int y = (int) spot.y;
+        for (int spotIx = 0; spotIx < spots.length && null != spots[spotIx]; spotIx++) {
+            final InputEvents.TouchSpot spot = spots[spotIx];
+            final int x = (int) spot.x;
+            final int y = (int) spot.y;
+            boolean touchWasOutside = true;
+
             if (mDpadDestRect.contains(x, y)) {
                 readDpad(x, y);
                 dpadPressed = true;
+                touchWasOutside = false;
             }
 
-            if (mAButtonDestRect.contains(x, y)) {
-                aButtonIsDown = true;
-                if (! mAButtonWasDown) {
-                    mAButtonWasDown = true;
-                    mLevelState.pressAButton();
+            int worldX = x + worldBounds.left;
+            int worldY = y + worldBounds.top;
+
+            // ISSUE- button rects are in WORLD coords, touches are in SCREEN coords.
+            for (int i = 0; i < mActionButtons.length; i++) {
+                final ActionButton button = mActionButtons[i];
+                if (button.enabled && button.rect.contains(worldX, worldY)) {
+                    mLevelState.requestAction(button.spot);
+                    touchWasOutside = false;
                 }
             }
 
-            if (mBButtonDestRect.contains(x, y)) {
-                bButtonIsDown = true;
-                if (! mBButtonWasDown) {
-                    mBButtonWasDown = true;
-                    mLevelState.pressBButton();
-                }
+            if (touchWasOutside) {
+                mLevelState.requestDismiss();
             }
         }
         if (!dpadPressed) {
             mLevelState.requestMovement(LevelState.Direction.DIRECTION_NONE);
         }
-        mAButtonWasDown = aButtonIsDown;
-        mBButtonWasDown = bButtonIsDown;
     }
 
     public void drawControls(Canvas canvas, Rect worldBounds, Rect viewBounds) {
@@ -81,37 +67,6 @@ public class UIControls {
             if (button.enabled) {
                 drawActionButton(canvas, button, worldBounds, viewBounds);
             }
-        }
-
-        final String aButtonLabel = mLevelState.getAButtonLabel();
-        final String bButtonLabel = mLevelState.getBButtonLabel();
-
-        Paint bButtonPaint = mDefaultPaint;
-        if (null == bButtonLabel) {
-            bButtonPaint = mSemiTransparentPaint;
-        }
-        mBButtonDestRect.offsetTo(viewBounds.width() - mBButtonDestRect.width(),
-                viewBounds.height() - mBButtonDestRect.height());
-        canvas.drawBitmap(mButtonBitmap, null, mBButtonDestRect, bButtonPaint);
-        if (null != bButtonLabel) {
-            canvas.drawText(bButtonLabel,
-                    mBButtonDestRect.left + mButtonPadding,
-                    mBButtonDestRect.bottom - mButtonPadding,
-                    mButtonTextPaint);
-        }
-
-        Paint aButtonPaint = mDefaultPaint;
-        if (null == aButtonLabel) {
-            aButtonPaint = mSemiTransparentPaint;
-        }
-        mAButtonDestRect.set(mBButtonDestRect);
-        mAButtonDestRect.offset(0, - mBButtonDestRect.height());
-        canvas.drawBitmap(mButtonBitmap, null, mAButtonDestRect, aButtonPaint);
-        if (null != aButtonLabel) {
-            canvas.drawText(aButtonLabel,
-                    mAButtonDestRect.left + mButtonPadding,
-                    mAButtonDestRect.bottom - mButtonPadding,
-                    mButtonTextPaint);
         }
 
         String dialogText = mLevelState.getDialogText();
@@ -129,7 +84,7 @@ public class UIControls {
             final ActionButton button = mActionButtons[i];
             if (spot.enabled) {
                 button.enabled = true;
-                button.key = spot;
+                button.spot = spot;
                 button.rect.offsetTo(
                         (int) spot.position.x - actionOffsetX,
                         (int) spot.position.y - actionOffsetY
@@ -167,26 +122,16 @@ public class UIControls {
     private class ActionButton {
         public final Rect rect = new Rect();
         public boolean enabled = false;
-        public Object key = null;
+        public LevelState.ActionSpot spot = null;
     }
 
-    private boolean mAButtonWasDown = false;
-    private boolean mBButtonWasDown = false;
-
+    private final Bitmap mDpadBitmap;
+    private final Bitmap mActionButtonBitmap;
     private final Rect mActionButtonDestRect = new Rect();
     private final ActionButton[] mActionButtons = new ActionButton[Config.MAX_ACTION_BUTTONS];
     private final LevelState mLevelState;
-    private final TextPaint mButtonTextPaint;
     private final DialogUI mDialogUI;
-    private final float mButtonPadding;
-    private final Paint mSemiTransparentPaint;
-    private final Paint mDefaultPaint;
-    private final Bitmap mDpadBitmap;
-    private final Bitmap mButtonBitmap;
-    private final Bitmap mActionButtonBitmap;
     private final Rect mDpadDestRect;
-    private final Rect mAButtonDestRect;
-    private final Rect mBButtonDestRect;
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.UIControls";

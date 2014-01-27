@@ -45,7 +45,7 @@ public class WorldScreen implements Screen {
                 mNextScreen = new VictoryScreen(mAssetLoader, mDisplay, mViewBounds, victoryDialog);
             }
         }
-        mControls.intepretInteractions(touchSpots);
+        mControls.intepretInteractions(touchSpots, mWorldBounds);
         mLevelState.resetActions();
 
         final Room room = mLevel.getRoom(mLevelState.getRoomName());

@@ -33,7 +33,6 @@ public class LevelState {
 
         for (int i = 0; i < mActionSpots.length; i++) {
             mActionSpots[i] = new ActionSpot();
-
         }
     }
 
@@ -118,7 +117,6 @@ public class LevelState {
                 spot.enabled = true;
                 spot.position.set(x, y);
                 spot.dialog = dialog;
-                mControlState = mControlState.onDialogAvailable();
                 break;
             }
         }
@@ -132,26 +130,10 @@ public class LevelState {
         return mActionSpots;
     }
 
-    public String getAButtonLabel() {
-        return mControlState.getAButtonLabel();
-    }
-
-    public String getBButtonLabel() {
-        return mControlState.getBButtonLabel();
-    }
-
-    public void pressAButton() {
-        mControlState = mControlState.onAButton(this);
-    }
-
-    public void pressBButton() {
-        mControlState = mControlState.onBButton(this);
-    }
-
     public String getDialogText() {
         if (ControlState.DIALOG_IN_PROGRESS == mControlState) {
-            if (null != mDialogAvailable) {
-                return mDialogAvailable.getDialog();
+            if (null != mDialogShowing) {
+                return mDialogShowing.getDialog();
             }
         }
         return null;
@@ -162,6 +144,14 @@ public class LevelState {
         if (mMovement != Direction.DIRECTION_NONE) {
             mFacing = mMovement;
         }
+    }
+
+    public void requestAction(ActionSpot spot) {
+        mControlState = mControlState.onActionRequested(this, spot);
+    }
+
+    public void requestDismiss() {
+        mControlState = mControlState.onDismissRequested(this);
     }
 
     public Direction getMovement() {
@@ -202,31 +192,22 @@ public class LevelState {
         public Dialog dialog = null;
     }
 
+    private void setDialogShowing(Dialog dialog) {
+        assert dialog != null;
+        mDialogShowing = dialog;
+    }
+
     private enum ControlState {
-        WALKING (null, null) {
+        WALKING {
             @Override
-            public ControlState onDialogAvailable() {
-                return DIALOG_AVAILABLE;
-            }
-        },
-        DIALOG_AVAILABLE ("Talk", null) {
-            @Override
-            public ControlState onAButton(LevelState levelState) {
+            public ControlState onActionRequested(LevelState levelState, ActionSpot spot) {
+                levelState.setDialogShowing(spot.dialog);
                 return DIALOG_IN_PROGRESS;
             }
-            @Override
-            public ControlState onNoDialogAvailable() {
-                return WALKING;
-            }
         },
-        DIALOG_IN_PROGRESS ("Ok", "Cancel") {
+        DIALOG_IN_PROGRESS {
             @Override
-            public ControlState onAButton(LevelState levelState) {
-                levelState.showedDialog();
-                return WALKING;
-            }
-            @Override
-            public ControlState onBButton(LevelState levelState) {
+            public ControlState onDismissRequested(LevelState levelState) {
                 levelState.showedDialog();
                 return WALKING;
             }
@@ -240,32 +221,11 @@ public class LevelState {
             }
         };
 
-        ControlState(String aButtonLabel, String bButtonLabel) {
-            mAButtonLabel = aButtonLabel;
-            mBButtonLabel = bButtonLabel;
-        }
-
-        public String getAButtonLabel() {
-            return mAButtonLabel;
-        }
-
-        public String getBButtonLabel() {
-            return mBButtonLabel;
-        }
-
-        public ControlState onAButton(LevelState levelState) {
+        public ControlState onActionRequested(LevelState levelState, ActionSpot spot) {
             return this;
         }
 
-        public ControlState onBButton(LevelState levelState) {
-            return this;
-        }
-
-        public ControlState onDialogAvailable() {
-            return this;
-        }
-
-        public ControlState onNoDialogAvailable() {
+        public ControlState onDismissRequested(LevelState levelState) {
             return this;
         }
 
@@ -276,21 +236,19 @@ public class LevelState {
         public boolean canGetVictory() {
             return true;
         }
-
-        private final String mAButtonLabel;
-        private final String mBButtonLabel;
     }
 
     private void showedDialog() {
-        assert null != mDialogAvailable;
-        addLevelFlags(mDialogAvailable.getLevelFlagsToSet());
-        mFacing = mDialogAvailable.getFacing();
+        assert null != mDialogShowing;
+        addLevelFlags(mDialogShowing.getLevelFlagsToSet());
+        mFacing = mDialogShowing.getFacing();
+        mDialogShowing = null;
     }
 
     private boolean mIsComplete;
     private Direction mMovement;
     private Direction mFacing;
-    private Dialog mDialogAvailable;
+    private Dialog mDialogShowing;
     private LevelCatalogItem mLevelCatalogItem;
     private PointF mRoomPosition;
     private String mRoomName;

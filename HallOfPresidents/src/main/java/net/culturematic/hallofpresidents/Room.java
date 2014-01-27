@@ -145,7 +145,8 @@ public class Room {
                 final Rect characterBounds = character.getBounds();
                 if (null != character.getBounds()) {
                     if (mVisionRect.intersect(characterBounds)) {
-                        levelState.setDialogAvailable(dialog, characterBounds.centerX(), characterBounds.top);
+                        int top = characterBounds.top + character.getDialogOffsetY();
+                        levelState.setDialogAvailable(dialog, characterBounds.centerX(), top);
                     }
                 }
             }
