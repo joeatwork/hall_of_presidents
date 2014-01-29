@@ -126,6 +126,10 @@ public class LevelState {
         return mControlState.canGetVictory();
     }
 
+    public boolean canMove() {
+        return mControlState.canMove();
+    }
+
     public ActionSpot[] getActions() {
         return mActionSpots;
     }
@@ -219,6 +223,10 @@ public class LevelState {
             public boolean canGetVictory() {
                 return false;
             }
+            @Override
+            public boolean canMove() {
+                return false;
+            }
         };
 
         public ControlState onActionRequested(LevelState levelState, ActionSpot spot) {
@@ -234,6 +242,10 @@ public class LevelState {
         }
 
         public boolean canGetVictory() {
+            return true;
+        }
+
+        public boolean canMove() {
             return true;
         }
     }

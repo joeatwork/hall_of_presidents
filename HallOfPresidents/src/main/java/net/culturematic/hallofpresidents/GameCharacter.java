@@ -77,7 +77,7 @@ public class GameCharacter implements Comparable<GameCharacter> {
         final PointF position = getPosition();
         final float distance = mCharacterState.getSpeedPxPerMilli() * deltaTime;
 
-        final boolean moved = updatePosition(direction, distance, position, currentRoom, 2);
+        final boolean moved = updatePosition(direction, distance, position, currentRoom, 3);
         final Sprites sprites = mCharacterState.getSprites();
         if (null == sprites) {
             mCurrentSpriteRect = EMPTY_RECT;

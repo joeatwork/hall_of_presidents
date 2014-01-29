@@ -19,7 +19,7 @@
 	"sprites": {
 	    "normal": {
 		"source": "sprites/doughboy_blue_80x104.png",
-		"speed_px_per_second": 208,
+		"speed_px_per_second": 312,
 		"stand_frames_per_second": 1,
 		"bounds": { "width": 80, "height": 104 },
 		"STAND_DOWN": [

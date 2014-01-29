@@ -29,10 +29,12 @@ public class UIControls {
             final int y = (int) spot.y;
             boolean touchWasOutside = true;
 
-            if (mDpadDestRect.contains(x, y)) {
-                readDpad(x, y);
-                dpadPressed = true;
-                touchWasOutside = false;
+            if (mLevelState.canMove()) {
+                if (mDpadDestRect.contains(x, y)) {
+                    readDpad(x, y);
+                    dpadPressed = true;
+                    touchWasOutside = false;
+                }
             }
 
             int worldX = x + worldBounds.left;
@@ -57,8 +59,10 @@ public class UIControls {
     }
 
     public void drawControls(Canvas canvas, Rect worldBounds, Rect viewBounds) {
-        mDpadDestRect.offsetTo(0, viewBounds.height() - mDpadDestRect.height());
-        canvas.drawBitmap(mDpadBitmap, null, mDpadDestRect, null);
+        if (mLevelState.canMove()) {
+            mDpadDestRect.offsetTo(0, viewBounds.height() - mDpadDestRect.height());
+            canvas.drawBitmap(mDpadBitmap, null, mDpadDestRect, null);
+        }
 
         updateActionButtons();
 
