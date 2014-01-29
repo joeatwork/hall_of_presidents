@@ -67,10 +67,11 @@ public class WorldScreen implements Screen {
 
         room.showActions(mHero, mLevelState);
 
-        // We want the hero at the center of the Viewport
+        // We want the hero ever so slightly below the center of the viewport
         final PointF heroPosition = mLevelState.getPosition();
         int worldOffsetX = (int) heroPosition.x - mViewBounds.centerX();
-        int worldOffsetY = (int) heroPosition.y - mViewBounds.centerY();
+        int worldOffsetY = (int) heroPosition.y - mViewBounds.centerY() - Config.HERO_OFFSET_BELOW_CENTER_PX;
+
 
         mWorldBounds.offsetTo(worldOffsetX, worldOffsetY);
 
