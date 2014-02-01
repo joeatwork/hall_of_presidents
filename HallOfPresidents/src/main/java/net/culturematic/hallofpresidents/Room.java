@@ -67,13 +67,13 @@ public class Room {
             final Figure character = mFigures[i];
             final PointF characterPosition = character.getPosition();
             if (characterPosition.y > heroPosition.y && !heroDrawn) {
-                hero.drawCharacter(canvas, worldRect.left, worldRect.top);
+                hero.drawCharacter(canvas, worldRect);
                 heroDrawn = true;
             }
-            character.drawCharacter(canvas, worldRect.left, worldRect.top);
+            character.drawCharacter(canvas, worldRect);
         }
         if (! heroDrawn) {
-            hero.drawCharacter(canvas, worldRect.left, worldRect.top);
+            hero.drawCharacter(canvas, worldRect);
         }
     }
 

@@ -64,10 +64,14 @@ public class Stump implements Figure {
     }
 
     @Override
-    public void drawCharacter(Canvas canvas, int viewportOffsetX, int viewportOffsetY) {
+    public void drawCharacter(Canvas canvas, Rect worldRect) {
         Rect bounds = getImageBounds();
-        bounds.offset(-viewportOffsetX, -viewportOffsetY);
-        canvas.drawBitmap(mBitmap, mDrawRegion, bounds, null);
+        if (Rect.intersects(bounds, worldRect) && ! bounds.isEmpty()) {
+            int viewportOffsetX = worldRect.left;
+            int viewportOffsetY = worldRect.top;
+            bounds.offset(-viewportOffsetX, -viewportOffsetY);
+            canvas.drawBitmap(mBitmap, mDrawRegion, bounds, null);
+        }
     }
 
     private final Bitmap mBitmap;

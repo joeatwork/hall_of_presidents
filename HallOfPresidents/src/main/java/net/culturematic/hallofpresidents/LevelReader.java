@@ -299,19 +299,20 @@ public class LevelReader {
             positionDesc.getInt("y")
         );
         final JSONObject drawRegionDesc = stumpDesc.getJSONObject("draw_region");
-        final Rect drawRegion = new Rect(
-            drawRegionDesc.getInt("x"),
-            drawRegionDesc.getInt("y"),
-            drawRegionDesc.getInt("width"),
-            drawRegionDesc.getInt("height")
-        );
+        // TODO Scaling?
+        final int drawLeft = drawRegionDesc.getInt("x");
+        final int drawTop = drawRegionDesc.getInt("y");
+        final int drawRight = drawLeft + drawRegionDesc.getInt("width");
+        final int drawBottom = drawTop + drawRegionDesc.getInt("height");
+        final Rect drawRegion = new Rect(drawLeft, drawTop, drawRight, drawBottom);
+
         final JSONObject collideRegionDesc = stumpDesc.getJSONObject("collide_region");
-        final Rect collideRegion = new Rect(
-            collideRegionDesc.getInt("x"),
-            collideRegionDesc.getInt("y"),
-            collideRegionDesc.getInt("width"),
-            collideRegionDesc.getInt("height")
-        );
+        final int collideLeft = collideRegionDesc.getInt("x");
+        final int collideTop = collideRegionDesc.getInt("y");
+        final int collideRight = collideLeft + collideRegionDesc.getInt("width");
+        final int collideBottom = collideTop + collideRegionDesc.getInt("height");
+        final Rect collideRegion = new Rect(collideLeft, collideTop, collideRight, collideBottom);
+
         return new Stump(source, position, drawRegion, collideRegion);
     }
 

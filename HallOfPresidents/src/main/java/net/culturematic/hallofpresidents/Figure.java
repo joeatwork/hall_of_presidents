@@ -22,5 +22,5 @@ public interface Figure extends Comparable<Figure> {
     public void directionCommand(LevelState.Direction direction, LevelState.Direction facing, Room currentRoom);
 
     // TODO RENAME to draw
-    public void drawCharacter(Canvas canvas, int worldOffsetX, int worldOffsetY);
+    public void drawCharacter(Canvas canvas, Rect worldRect);
 }

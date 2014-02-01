@@ -9,7 +9,7 @@
 	{
 	    "storage": "asset",
 	    "path": "graveyard",
-	    "name": "Go Hassle some Ghosts!",
+	    "name": "The Moaning Dead!",
 	    "description": "Trial of the Blue Element- Hard Knuckled Survival Horror! Hang out with the undead, and maybe lay some to rest! Also, sandwiches."
 	}
     ]

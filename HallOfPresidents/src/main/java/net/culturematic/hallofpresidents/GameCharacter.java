@@ -2,6 +2,8 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
@@ -116,9 +118,15 @@ public class GameCharacter implements Figure {
         mLastTime = mThisTime;
     }
 
-    public void drawCharacter(Canvas canvas, int viewportOffsetX, int viewportOffsetY) {
-        if (! mCurrentSpriteRect.isEmpty()) {
-            Rect bounds = getImageBounds();
+    public void drawCharacter(Canvas canvas, Rect worldRect) {
+        if (mCurrentSpriteRect.isEmpty()) {
+            return;
+        }
+
+        Rect bounds = getImageBounds();
+        if (Rect.intersects(worldRect, bounds)) {
+            int viewportOffsetX = worldRect.left;
+            int viewportOffsetY = worldRect.top;
             bounds.offset(-viewportOffsetX, -viewportOffsetY);
             canvas.drawBitmap(mCurrentBitmap, mCurrentSpriteRect, bounds, null);
         }
