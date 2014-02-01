@@ -86,6 +86,7 @@
 	    "background": "chamber/background.png",
 	    "furniture": "chamber/furniture.png",
 	    "terrain": "chamber/terrain.png",
+	    "stumps": [],
 	    "characters": [],
 	    "events": [
 		{

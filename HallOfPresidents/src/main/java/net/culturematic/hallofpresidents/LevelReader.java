@@ -264,20 +264,55 @@ public class LevelReader {
             events[i] = readEvent(eventsDescs.getJSONObject(i));
         }
 
-        final JSONArray charactersDesc = roomDesc.getJSONArray("characters");
-        final GameCharacter[] characters = new GameCharacter[charactersDesc.length()];
-        for (int i = 0; i < charactersDesc.length(); i++) {
-            final JSONObject nextCharacterDesc = charactersDesc.getJSONObject(i);
+        final JSONArray charactersArray = roomDesc.getJSONArray("characters");
+        final JSONArray stumpsArray = roomDesc.getJSONArray("stumps");
+
+        final int figuresLength = charactersArray.length() + stumpsArray.length();
+        final Figure[] figures = new Figure[figuresLength];
+        for (int i = 0; i < charactersArray.length(); i++) {
+            final JSONObject nextCharacterDesc = charactersArray.getJSONObject(i);
             final JSONObject positionDesc = nextCharacterDesc.getJSONObject("position");
             final PointF position = new PointF(
                     mAssetLoader.scaleInt(positionDesc.getInt("x")),
                     mAssetLoader.scaleInt(positionDesc.getInt("y"))
             );
             final CharacterState characterState = readCharacter(nextCharacterDesc, rootPath);
-            characters[i] = new GameCharacter(characterState, position);
+            figures[i] = new GameCharacter(characterState, position);
         }
 
-        return new Room(name, background, furniture, terrain, characters, events);
+        final int stumpsOffset = charactersArray.length();
+        for (int i = 0; i < stumpsArray.length(); i++) {
+            final JSONObject stumpDesc = stumpsArray.getJSONObject(i);
+            figures[i + stumpsOffset] = readStump(stumpDesc, rootPath);
+        }
+
+        return new Room(name, background, furniture, terrain, figures, events);
+    }
+
+    private Stump readStump(JSONObject stumpDesc, String rootPath)
+        throws JSONException {
+        final String sourcePath = stumpDesc.getString("source");
+        final Bitmap source = mAssetLoader.loadBitmap(rootPath + "/" + sourcePath, Bitmap.Config.RGB_565);
+        final JSONObject positionDesc = stumpDesc.getJSONObject("position");
+        final PointF position = new PointF(
+            positionDesc.getInt("x"),
+            positionDesc.getInt("y")
+        );
+        final JSONObject drawRegionDesc = stumpDesc.getJSONObject("draw_region");
+        final Rect drawRegion = new Rect(
+            drawRegionDesc.getInt("x"),
+            drawRegionDesc.getInt("y"),
+            drawRegionDesc.getInt("width"),
+            drawRegionDesc.getInt("height")
+        );
+        final JSONObject collideRegionDesc = stumpDesc.getJSONObject("collide_region");
+        final Rect collideRegion = new Rect(
+            collideRegionDesc.getInt("x"),
+            collideRegionDesc.getInt("y"),
+            collideRegionDesc.getInt("width"),
+            collideRegionDesc.getInt("height")
+        );
+        return new Stump(source, position, drawRegion, collideRegion);
     }
 
     private WorldEvent readEvent(JSONObject eventDescription)

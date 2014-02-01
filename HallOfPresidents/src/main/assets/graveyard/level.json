@@ -115,6 +115,110 @@
 	    "background": "grounds/background.png",
 	    "furniture": "grounds/furniture.png",
 	    "terrain": "grounds/terrain.png",
+	    "stumps": [
+		{
+		    "source": "stumps/tall_gravestone.png",
+		    "position": { "x": 1031, "y": 389 },
+		    "draw_region": { "x": 0, "y": 0, "width": 132, "height": 166 },
+		    "collide_region": { "x": 0, "y": 319, "width": 132, "height": 319 }
+		},
+		{
+		    "source": "stumps/tall_gravestone.png",
+		    "position": { "x": 1031, "y": 1056 },
+		    "draw_region": { "x": 0, "y": 0, "width": 132, "height": 166 },
+		    "collide_region": { "x": 0, "y": 986, "width": 132, "height": 986 }
+		},
+		{
+		    "source": "stumps/tall_gravestone.png",
+		    "position": { "x": 341, "y": 1301 },
+		    "draw_region": { "x": 0, "y": 0, "width": 132, "height": 166 },
+		    "collide_region": { "x": 0, "y": 1231, "width": 132, "height": 1231 }
+		},
+		{
+		    "source": "stumps/ghosts_sign.png",
+		    "position": { "x": 500, "y": 1295 },
+		    "draw_region": { "x": 0, "y": 0, "width": 191, "height": 195 },
+		    "collide_region": { "x": 0, "y": 1225, "width": 191, "height": 1225 }
+		},
+		{
+		    "source": "stumps/cross_stone.png",
+		    "position": { "x": 1031, "y": 535 },
+		    "draw_region": { "x": 0, "y": 0, "width": 112, "height": 141 },
+		    "collide_region": { "x": 0, "y": 465, "width": 112, "height": 465 }
+		},
+		{
+		    "source": "stumps/cross_stone.png",
+		    "position": { "x": 1031, "y": 930 },
+		    "draw_region": { "x": 0, "y": 0, "width": 112, "height": 141 },
+		    "collide_region": { "x": 0, "y": 860, "width": 112, "height": 860 }
+		},
+		{
+		    "source": "stumps/cross_stone.png",
+		    "position": { "x": 485, "y": 1053 },
+		    "draw_region": { "x": 0, "y": 0, "width": 112, "height": 141 },
+		    "collide_region": { "x": 0, "y": 983, "width": 112, "height": 983 }
+		},
+		{
+		    "source": "stumps/angel_statue.png",
+		    "position": { "x": 315, "y": 1054 },
+		    "draw_region": { "x": 0, "y": 0, "width": 112, "height": 178 },
+		    "collide_region": { "x": 0, "y": 984, "width": 112, "height": 984 }
+		},
+		{
+		    "source": "stumps/obelisk.png",
+		    "position": { "x": 680, "y": 270 },
+		    "draw_region": { "x": 0, "y": 0, "width": 111, "height": 253 },
+		    "collide_region": { "x": 0, "y": 200, "width": 111, "height": 200 }
+		},
+		{
+		    "source": "stumps/obelisk.png",
+		    "position": { "x": 1173, "y": 740 },
+		    "draw_region": { "x": 0, "y": 0, "width": 111, "height": 253 },
+		    "collide_region": { "x": 0, "y": 670, "width": 111, "height": 670 }
+		},
+		{
+		    "source": "stumps/short_gravestone.png",
+		    "position": { "x": 339, "y": 936 },
+		    "draw_region": { "x": 0, "y": 0, "width": 112, "height": 134 },
+		    "collide_region": { "x": 0, "y": 866, "width": 112, "height": 866 }
+		},
+		{
+		    "source": "stumps/short_gravestone.png",
+		    "position": { "x": 449, "y": 437 },
+		    "draw_region": { "x": 0, "y": 0, "width": 112, "height": 134 },
+		    "collide_region": { "x": 0, "y": 367, "width": 112, "height": 367 }
+		},
+		{
+		    "source": "stumps/short_gravestone.png",
+		    "position": { "x": 893, "y": 421 },
+		    "draw_region": { "x": 0, "y": 0, "width": 112, "height": 134 },
+		    "collide_region": { "x": 0, "y": 351, "width": 112, "height": 351 }
+		},
+		{
+		    "source": "stumps/short_gravestone.png",
+		    "position": { "x": 1004, "y": 1306 },
+		    "draw_region": { "x": 0, "y": 0, "width": 112, "height": 134 },
+		    "collide_region": { "x": 0, "y": 1236, "width": 112, "height": 1236 }
+		},
+		{
+		    "source": "stumps/obelisk.png",
+		    "position": { "x": 187, "y": 741 },
+		    "draw_region": { "x": 0, "y": 0, "width": 111, "height": 253 },
+		    "collide_region": { "x": 0, "y": 671, "width": 111, "height": 671 }
+		},
+		{
+		    "source": "stumps/angel_statue.png",
+		    "position": { "x": 848, "y": 1310 },
+		    "draw_region": { "x": 0, "y": 0, "width": 112, "height": 178 },
+		    "collide_region": { "x": 0, "y": 1240, "width": 112, "height": 1240 }
+		},
+		{
+		    "source": "stumps/spooky_tree.png",
+		    "position": { "x": 404, "y": 414 },
+		    "draw_region": { "x": 0, "y": 0, "width": 394, "height": 385 },
+		    "collide_region": { "x": 0, "y": 344, "width": 394, "height": 344 }
+		}
+	    ],
 	    "characters": [
 		{
 		    "_COMMENT": "Tall ghost near spooky tree, in northwest corner",
@@ -258,6 +362,7 @@
 	    "background": "crypt/background.png",
 	    "furniture": "crypt/furniture.png",
 	    "terrain": "crypt/terrain.png",
+	    "stumps": [],
 	    "characters": [
 		{
 		    "_COMMENT": "Giant ghost in crypt",

@@ -2,32 +2,32 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
 import java.util.Arrays;
 
 public class Room {
-    public Room(String name, Bitmap background, Bitmap furniture, Bitmap terrain, GameCharacter[] characters, WorldEvent[] events) {
+    public Room(String name, Bitmap background, Bitmap furniture, Bitmap terrain, Figure[] figures, WorldEvent[] events) {
         mName = name;
         mBackground = background;
         mFurniture = furniture;
         mTerrain = terrain;
         mEvents = events;
-        mCharacters = characters;
+        mFigures = figures;
         mVisionRect = new Rect();
 
-        Arrays.sort(mCharacters);
+        Arrays.sort(mFigures);
     }
 
     public String getName() { return mName; }
 
     public void update(long milliTime, LevelState levelState) {
-        for (int i = 0; i < mCharacters.length; i++) {
-            final GameCharacter character = mCharacters[i];
+        for (int i = 0; i < mFigures.length; i++) {
+            final Figure character = mFigures[i];
             character.update(milliTime, levelState);
+
+            // TODO this is bad. It's initializing things that shouldn't need to be initialized.
             character.directionCommand(
                     LevelState.Direction.DIRECTION_NONE,
                     LevelState.Direction.DIRECTION_DOWN,
@@ -63,8 +63,8 @@ public class Room {
     public void drawCharacters(Canvas canvas, Rect worldRect, GameCharacter hero) {
         final PointF heroPosition = hero.getPosition();
         boolean heroDrawn = false;
-        for (int i = 0; i < mCharacters.length; i++) {
-            final GameCharacter character = mCharacters[i];
+        for (int i = 0; i < mFigures.length; i++) {
+            final Figure character = mFigures[i];
             final PointF characterPosition = character.getPosition();
             if (characterPosition.y > heroPosition.y && !heroDrawn) {
                 hero.drawCharacter(canvas, worldRect.left, worldRect.top);
@@ -93,8 +93,8 @@ public class Room {
             return false;
         }
 
-        for (int i = 0; i < mCharacters.length; i++) {
-            final Rect rect = mCharacters[i].getBounds();
+        for (int i = 0; i < mFigures.length; i++) {
+            final Rect rect = mFigures[i].getCollisionBounds();
             if (null != rect && rect.contains(x, y)) {
                 return false;
             }
@@ -130,7 +130,7 @@ public class Room {
             }
         }
 
-        final Rect heroBounds = hero.getBounds();
+        final Rect heroBounds = hero.getImageBounds();
         int heroWidth = heroBounds.width();
         int heroHeight = heroBounds.height();
         mVisionRect.set(
@@ -140,12 +140,12 @@ public class Room {
             heroBounds.bottom + heroHeight
         );
 
-        for (int i = 0; i < mCharacters.length; i++) {
-            final GameCharacter character = mCharacters[i];
+        for (int i = 0; i < mFigures.length; i++) {
+            final Figure character = mFigures[i];
             final Dialog dialog = character.getDialog();
             if (null != dialog) {
-                final Rect characterBounds = character.getBounds();
-                if (null != character.getBounds()) {
+                final Rect characterBounds = character.getImageBounds();
+                if (null != character.getImageBounds()) {
                     if (Rect.intersects(mVisionRect, characterBounds)) {
                         int top = characterBounds.top + character.getDialogOffsetY();
                         levelState.setDialogAvailable(dialog, characterBounds.centerX(), top);
@@ -160,7 +160,7 @@ public class Room {
     private final Bitmap mFurniture;
     private final Bitmap mTerrain;
     private final WorldEvent[] mEvents;
-    private final GameCharacter[] mCharacters;
+    private final Figure[] mFigures;
     private final Rect mVisionRect;
 
     @SuppressWarnings("unused")

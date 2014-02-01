@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
-public class GameCharacter implements Comparable<GameCharacter> {
+public class GameCharacter implements Figure {
     // HARDCODED LAYOUT
     // ( 0, 0) -> Standing facing down
     // ( 1, 0) -> Standing facing up
@@ -16,19 +16,24 @@ public class GameCharacter implements Comparable<GameCharacter> {
         mPosition = startPosition;
         mAnimationDistance = 0;
         mLastTime = -1;
-        mBoundsRect = new Rect();
-        mCurrentSpriteRect = null;
+        mImageBoundsRect = new Rect();
+        mCollisionBoundsRect = new Rect();
+
+        Sprites sprites = mCharacterState.getSprites();
+        if (null == sprites) {
+            mCurrentSpriteRect = EMPTY_RECT;
+        } else {
+            setCurrentStandingSprite(LevelState.Direction.DIRECTION_DOWN, 0, sprites);
+        }
     }
 
     /**
      * Sorts by y position. (That means moving characters sorts will go stale!)
-     * @param gameCharacter
-     * @return
      */
     @Override
-    public int compareTo(GameCharacter gameCharacter) {
+    public int compareTo(Figure other) {
         float myY = getPosition().y;
-        float otherY = gameCharacter.getPosition().y;
+        float otherY = other.getPosition().y;
         if (myY < otherY) {
             return -1;
         } else if (myY > otherY) {
@@ -42,7 +47,7 @@ public class GameCharacter implements Comparable<GameCharacter> {
         return mPosition;
     }
 
-    public Rect getBounds() {
+    public Rect getImageBounds() {
         int spriteWidth = mCurrentSpriteRect.width();
         int spriteHeight = mCurrentSpriteRect.height();
         int halfWidth = spriteWidth / 2;
@@ -50,9 +55,24 @@ public class GameCharacter implements Comparable<GameCharacter> {
         int xDestOffset = ((int) position.x) - halfWidth;
         int yDestOffset = ((int) position.y) - spriteHeight;
 
-        mBoundsRect.set(mCurrentSpriteRect);
-        mBoundsRect.offsetTo(xDestOffset, yDestOffset);
-        return mBoundsRect;
+        mImageBoundsRect.set(mCurrentSpriteRect);
+        mImageBoundsRect.offsetTo(xDestOffset, yDestOffset);
+        return mImageBoundsRect;
+    }
+
+    public Rect getCollisionBounds() {
+        int spriteWidth = mCurrentSpriteRect.width();
+        int spriteHeight = mCurrentSpriteRect.height();
+        int halfWidth = spriteWidth / 2;
+        int thirdHeight = spriteHeight / 3;
+        final PointF position = getPosition();
+        int left = ((int) position.x) - halfWidth;
+        int top = ((int) position.y) - thirdHeight;
+        int right = ((int) position.x) + halfWidth;
+        int bottom = (int) position.y;
+
+        mCollisionBoundsRect.set(left, top, right, bottom);
+        return mCollisionBoundsRect;
     }
 
     public Dialog getDialog() {
@@ -98,7 +118,7 @@ public class GameCharacter implements Comparable<GameCharacter> {
 
     public void drawCharacter(Canvas canvas, int viewportOffsetX, int viewportOffsetY) {
         if (! mCurrentSpriteRect.isEmpty()) {
-            Rect bounds = getBounds();
+            Rect bounds = getImageBounds();
             bounds.offset(-viewportOffsetX, -viewportOffsetY);
             canvas.drawBitmap(mCurrentBitmap, mCurrentSpriteRect, bounds, null);
         }
@@ -118,8 +138,9 @@ public class GameCharacter implements Comparable<GameCharacter> {
             return false;
         }
 
-        final int halfBoundsWidth = sprites.boundsWidth / 2;
-        final int boundsHeight = sprites.boundsHeight;
+        final Rect collisionBounds = getCollisionBounds();
+        final int halfBoundsWidth = collisionBounds.width() / 2;
+        final int boundsHeight = collisionBounds.height();
         final int halfBoundsHeight = boundsHeight / 2;
 
         boolean ret = false;
@@ -247,7 +268,8 @@ public class GameCharacter implements Comparable<GameCharacter> {
     private float mAnimationDistance;
 
     private final PointF mPosition;
-    private final Rect mBoundsRect;
+    private final Rect mImageBoundsRect;
+    private final Rect mCollisionBoundsRect;
     private final CharacterState mCharacterState;
 
     private static final Rect EMPTY_RECT = new Rect(0, 0, 0, 0);
