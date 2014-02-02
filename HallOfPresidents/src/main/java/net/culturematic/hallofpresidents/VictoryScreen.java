@@ -15,6 +15,11 @@ public class VictoryScreen implements Screen {
     }
 
     @Override
+    public String getHelpMessage() {
+        return null;
+    }
+
+    @Override
     public void update(long milliTime, InputEvents.TouchSpot[] touchSpots) {
         if (mStartedMillis < 0) {
             mStartedMillis = milliTime;

@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +46,10 @@ public class ScreenActivity extends Activity {
     @Override
     public void onPause() {
         super.onPause();
+
+        if (null != mAlreadyShowingToast) {
+            mAlreadyShowingToast.cancel();
+        }
 
         if (null != mGameLoop) {
             final LevelState levelState = mGameLoop.pause();
@@ -139,6 +144,17 @@ public class ScreenActivity extends Activity {
         editor.commit();
     }
 
+    private void showToast(CharSequence toastMessage) {
+        if (null == mLastToastMessage || ! mLastToastMessage.equals(toastMessage)) {
+            if (null != mAlreadyShowingToast) {
+                mAlreadyShowingToast.cancel();
+            }
+            mLastToastMessage = toastMessage;
+            mAlreadyShowingToast = Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_LONG);
+            mAlreadyShowingToast.show();
+        }
+    }
+
     private class GameLoop extends Thread {
         public GameLoop(SurfaceHolder holder,
                         Point gameDimensions,
@@ -193,6 +209,16 @@ public class ScreenActivity extends Activity {
                         mHolder.unlockCanvasAndPost(canvas);
                     }
                 }
+                final String helpText = game.getHelpMessage();
+                if (null != helpText) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showToast(helpText);
+                        }
+                    });
+                }
+
                 if (isDone) {
                     mRunning = false;
                 }
@@ -220,6 +246,8 @@ public class ScreenActivity extends Activity {
     private ListView mRoomPickerView;
     private GameLoop mGameLoop;
     private AssetLoader mAssetLoader;
+    private CharSequence mLastToastMessage;
+    private Toast mAlreadyShowingToast;
 
     private static final String ROOM_STATE_PREFS_NAME = "RoomStates";
 }

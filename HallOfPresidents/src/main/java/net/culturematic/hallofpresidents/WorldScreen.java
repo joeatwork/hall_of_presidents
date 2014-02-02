@@ -29,6 +29,13 @@ public class WorldScreen implements Screen {
         mVictoryFlags = mLevel.getVictory().getLevelFlagsToRequire();
         mHero = hero;
         mControls = controls;
+        mHelpMessage = null;
+        mFirstSawDialog = -1;
+    }
+
+    @Override
+    public String getHelpMessage() {
+        return mHelpMessage;
     }
 
     @Override
@@ -45,6 +52,19 @@ public class WorldScreen implements Screen {
                 mNextScreen = new VictoryScreen(mAssetLoader, mDisplay, mViewBounds, victoryDialog);
             }
         }
+
+        if (mFirstSawDialog < 0 && mLevelState.dialogHasBeenAvailable()) {
+            mFirstSawDialog = milliTime;
+        }
+
+        if (mLevelState.dialogHasBeenAvailable() &&
+                (! mLevelState.dialogHasBeenShown()) &&
+                (milliTime - mFirstSawDialog > Config.MILLIS_TILL_POPUP)) {
+            mHelpMessage = "Tap the \"!\" icon to investigate!";
+        } else {
+            mHelpMessage = null;
+        }
+
         mControls.intepretInteractions(touchSpots, mWorldBounds);
         mLevelState.resetActions();
 
@@ -72,7 +92,6 @@ public class WorldScreen implements Screen {
         int worldOffsetX = (int) heroPosition.x - mViewBounds.centerX();
         int worldOffsetY = (int) heroPosition.y - mViewBounds.centerY() - Config.HERO_OFFSET_BELOW_CENTER_PX;
 
-
         mWorldBounds.offsetTo(worldOffsetX, worldOffsetY);
 
         mCanvas.drawColor(Color.BLACK);
@@ -96,6 +115,8 @@ public class WorldScreen implements Screen {
     }
 
     private Screen mNextScreen;
+    private long mFirstSawDialog;
+    private String mHelpMessage;
 
     private final AssetLoader mAssetLoader;
     private final Bitmap mDisplay;

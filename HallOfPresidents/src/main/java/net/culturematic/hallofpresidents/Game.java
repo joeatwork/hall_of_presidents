@@ -18,6 +18,10 @@ public class Game {
         return mScreen.done();
     }
 
+    public String getHelpMessage() {
+        return mScreen.getHelpMessage();
+    }
+
     private Screen mScreen;
 
     @SuppressWarnings("unused")

@@ -28,6 +28,11 @@ public class LoadingScreen implements Screen {
     }
 
     @Override
+    public String getHelpMessage() {
+        return null;
+    }
+
+    @Override
     public void update(long milliTime, InputEvents.TouchSpot[] touchSpots) {
         mDisplayCanvas.drawColor(Color.WHITE);
         mLoadingDrawable.draw(mDisplayCanvas);

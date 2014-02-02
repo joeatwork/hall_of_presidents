@@ -1,6 +1,8 @@
 package net.culturematic.hallofpresidents;
 
 public interface Screen {
+    public String getHelpMessage();
+
     public void update(final long milliTime, InputEvents.TouchSpot[] touchSpots);
 
     public Screen nextScreen();

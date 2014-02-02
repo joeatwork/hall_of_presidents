@@ -30,6 +30,8 @@ public class LevelState {
         mMovement = Direction.DIRECTION_NONE;
         mFacing = Direction.DIRECTION_DOWN;
         mIsComplete = false;
+        mDialogHasBeenAvailable = false;
+        mDialogHasBeenShown = false;
 
         for (int i = 0; i < mActionSpots.length; i++) {
             mActionSpots[i] = new ActionSpot();
@@ -85,6 +87,14 @@ public class LevelState {
         }
     }
 
+    public boolean dialogHasBeenAvailable() {
+        return mDialogHasBeenAvailable;
+    }
+
+    public boolean dialogHasBeenShown() {
+        return mDialogHasBeenShown;
+    }
+
     public void setComplete() {
         mIsComplete = true;
     }
@@ -114,6 +124,7 @@ public class LevelState {
         for (int i = 0; i < mActionSpots.length; i++) {
             final ActionSpot spot = mActionSpots[i];
             if (! spot.enabled) {
+                mDialogHasBeenAvailable = true;
                 spot.enabled = true;
                 spot.position.set(x, y);
                 spot.dialog = dialog;
@@ -198,6 +209,7 @@ public class LevelState {
 
     private void setDialogShowing(Dialog dialog) {
         assert dialog != null;
+        mDialogHasBeenShown = true;
         mDialogShowing = dialog;
     }
 
@@ -257,6 +269,8 @@ public class LevelState {
         mDialogShowing = null;
     }
 
+    private boolean mDialogHasBeenAvailable;
+    private boolean mDialogHasBeenShown;
     private boolean mIsComplete;
     private Direction mMovement;
     private Direction mFacing;
