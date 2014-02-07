@@ -252,8 +252,11 @@ public class LevelReader {
         final String backgroundPath = roomDesc.getString("background");
         final Bitmap background = mAssetLoader.loadBitmap(rootPath + "/" + backgroundPath, Bitmap.Config.RGB_565);
 
-        final String furniturePath = roomDesc.getString("furniture");
-        final Bitmap furniture = mAssetLoader.loadBitmap(rootPath + "/" + furniturePath, Bitmap.Config.RGB_565);
+        Bitmap furniture = null;
+        if (roomDesc.has("furniture")) {
+            final String furniturePath = roomDesc.getString("furniture");
+            furniture = mAssetLoader.loadBitmap(rootPath + "/" + furniturePath, Bitmap.Config.RGB_565);
+        }
 
         final String terrainPath = roomDesc.getString("terrain");
         final Bitmap terrain = mAssetLoader.loadBitmap(rootPath + "/" + terrainPath, Bitmap.Config.ALPHA_8);

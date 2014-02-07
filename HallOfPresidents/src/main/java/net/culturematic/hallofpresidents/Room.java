@@ -78,7 +78,9 @@ public class Room {
     }
 
     public void drawFurniture(Canvas canvas, Rect worldRect, Rect viewport) {
-        canvas.drawBitmap(mFurniture, worldRect, viewport, null);
+        if (null != mFurniture) {
+            canvas.drawBitmap(mFurniture, worldRect, viewport, null);
+        }
     }
 
     public boolean inBounds(int x, int y) {
