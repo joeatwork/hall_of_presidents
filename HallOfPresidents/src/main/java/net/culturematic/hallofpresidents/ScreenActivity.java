@@ -52,6 +52,7 @@ public class ScreenActivity extends Activity {
             mMixpanel.getPeople().identify(newPeopleId);
         }
         mMixpanel.getPeople().initPushHandling(Config.GOOGLE_API_PROJECT);
+
         // Should be mMixpanel.getPeople().setOnce(Open Date)
         mMixpanel.track("App Opened", null);
         final Date now = new Date();
@@ -59,6 +60,17 @@ public class ScreenActivity extends Activity {
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         mMixpanel.getPeople().set("Last Open", dateFormat.format(now));
         mMixpanel.getPeople().set("Identifier", mMixpanel.getPeople().getDistinctId());
+        mMixpanel.getPeople().set("Debug Build", BuildConfig.DEBUG);
+
+        if (BuildConfig.DEBUG) {
+            try {
+                final JSONObject props = new JSONObject();
+                props.put("Debug", BuildConfig.DEBUG);
+                mMixpanel.registerSuperProperties(props);
+            } catch (final JSONException e) {
+                throw new RuntimeException("Impossible exception", e);
+            }
+        }
 
         showRoomPicker();
     }
