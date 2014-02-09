@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -52,6 +53,14 @@ public class ScreenActivity extends Activity {
             mixpanel.getPeople().identify(newPeopleId);
         }
         mixpanel.getPeople().initPushHandling(Config.GOOGLE_API_PROJECT);
+        mixpanel.getPeople().set("App Version", BuildConfig.VERSION_CODE);
+        try {
+            final JSONObject props = new JSONObject();
+            props.put("App Version", BuildConfig.VERSION_CODE);
+            mixpanel.registerSuperProperties(props);
+        } catch (final JSONException e) {
+            Log.e(LOGTAG, "Impossible exception", e);
+        }
 
         // Should be mMixpanel.getPeople().setOnce(Open Date)
         mixpanel.track("App Opened", null);
@@ -287,5 +296,6 @@ public class ScreenActivity extends Activity {
     private CharSequence mLastToastMessage;
     private Toast mAlreadyShowingToast;
 
+    private static final String LOGTAG = "MixpanelAPI ScreenActivity";
     private static final String ROOM_STATE_PREFS_NAME = "RoomStates";
 }
