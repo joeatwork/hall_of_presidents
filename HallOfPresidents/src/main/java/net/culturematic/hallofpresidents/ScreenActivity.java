@@ -21,6 +21,14 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.UUID;
+
 public class ScreenActivity extends Activity {
 
     @Override
@@ -31,9 +39,26 @@ public class ScreenActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        mMixpanel = MixpanelAPI.getInstance(this, Config.MIXPANEL_TOKEN);
         mAssetLoader = new AssetLoader(this);
         mSurfaceView = new SurfaceView(this);
         mRoomPickerView = new ListView(this);
+
+        // MIXPANEL STUFF
+
+        final String oldPeopleId = mMixpanel.getPeople().getDistinctId();
+        if (null == oldPeopleId) {
+            final String newPeopleId = UUID.randomUUID().toString();
+            mMixpanel.getPeople().identify(newPeopleId);
+        }
+        mMixpanel.getPeople().initPushHandling(Config.GOOGLE_API_PROJECT);
+        // Should be mMixpanel.getPeople().setOnce(Open Date)
+        mMixpanel.track("App Opened", null);
+        final Date now = new Date();
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        mMixpanel.getPeople().set("Last Open", dateFormat.format(now));
+        mMixpanel.getPeople().set("Identifier", mMixpanel.getPeople().getDistinctId());
 
         showRoomPicker();
     }
@@ -241,6 +266,7 @@ public class ScreenActivity extends Activity {
         private volatile boolean mRunning;
     } // class
 
+    private MixpanelAPI mMixpanel;
     private InputEvents mInputEvents;
     private SurfaceView mSurfaceView;
     private ListView mRoomPickerView;

@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.android.tools.build:gradle:0.8.+'
     }
 }
 apply plugin: 'android'
@@ -20,9 +20,25 @@ android {
         minSdkVersion 10
         targetSdkVersion 19
     }
+
+    signingConfigs {
+        release {
+            storeFile (localKeystoreName as File)
+            storePassword localKeystorePassword
+            keyAlias 'hallofpresidents'
+            keyPassword localKeyPassword
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
 }
 
 dependencies {
 	compile 'com.android.support:appcompat-v7:+'
 	compile 'com.android.support:support-v4:18.0.0'
+    compile "com.mixpanel.android:mixpanel-android:4.0.0-RC3@aar"
 }
