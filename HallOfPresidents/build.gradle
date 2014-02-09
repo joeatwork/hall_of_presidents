@@ -10,6 +10,7 @@ apply plugin: 'android'
 
 repositories {
     mavenCentral()
+    maven { url 'file:///Users/joe/.m2/repository' }
 }
 
 android {
@@ -40,5 +41,5 @@ android {
 dependencies {
 	compile 'com.android.support:appcompat-v7:+'
 	compile 'com.android.support:support-v4:18.0.0'
-    compile "com.mixpanel.android:mixpanel-android:4.0.0-RC3@aar"
+    compile "com.mixpanel.android:mixpanel-android:4.0.0-beta@aar"
 }

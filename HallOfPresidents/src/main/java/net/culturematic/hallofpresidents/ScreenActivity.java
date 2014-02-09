@@ -39,34 +39,34 @@ public class ScreenActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        mMixpanel = MixpanelAPI.getInstance(this, Config.MIXPANEL_TOKEN);
+        MixpanelAPI mixpanel = MixpanelAPI.getInstance(this, Config.MIXPANEL_TOKEN);
         mAssetLoader = new AssetLoader(this);
         mSurfaceView = new SurfaceView(this);
         mRoomPickerView = new ListView(this);
 
         // MIXPANEL STUFF
 
-        final String oldPeopleId = mMixpanel.getPeople().getDistinctId();
+        final String oldPeopleId = mixpanel.getPeople().getDistinctId();
         if (null == oldPeopleId) {
             final String newPeopleId = UUID.randomUUID().toString();
-            mMixpanel.getPeople().identify(newPeopleId);
+            mixpanel.getPeople().identify(newPeopleId);
         }
-        mMixpanel.getPeople().initPushHandling(Config.GOOGLE_API_PROJECT);
+        mixpanel.getPeople().initPushHandling(Config.GOOGLE_API_PROJECT);
 
         // Should be mMixpanel.getPeople().setOnce(Open Date)
-        mMixpanel.track("App Opened", null);
+        mixpanel.track("App Opened", null);
         final Date now = new Date();
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        mMixpanel.getPeople().set("Last Open", dateFormat.format(now));
-        mMixpanel.getPeople().set("Identifier", mMixpanel.getPeople().getDistinctId());
-        mMixpanel.getPeople().set("Debug Build", BuildConfig.DEBUG);
+        mixpanel.getPeople().set("Last Open", dateFormat.format(now));
+        mixpanel.getPeople().set("Identifier", mixpanel.getPeople().getDistinctId());
+        mixpanel.getPeople().set("Debug Build", BuildConfig.DEBUG);
 
         if (BuildConfig.DEBUG) {
             try {
                 final JSONObject props = new JSONObject();
                 props.put("Debug", BuildConfig.DEBUG);
-                mMixpanel.registerSuperProperties(props);
+                mixpanel.registerSuperProperties(props);
             } catch (final JSONException e) {
                 throw new RuntimeException("Impossible exception", e);
             }
@@ -132,7 +132,6 @@ public class ScreenActivity extends Activity {
             mGameLoop = null;
         }
 
-        // TODO Waaay to much IO for here. Need a loading interaction while this is happening.
         final LevelCatalog catalog = loadRoomCatalog(mAssetLoader);
         mRoomPickerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -151,7 +150,6 @@ public class ScreenActivity extends Activity {
         LevelCatalogAdapter catalogAdapter = new LevelCatalogAdapter(getLayoutInflater(), catalog);
         mRoomPickerView.setAdapter(catalogAdapter);
 
-        // TODO This shouldn't really work?
         setContentView(mRoomPickerView);
     }
 
@@ -221,10 +219,13 @@ public class ScreenActivity extends Activity {
         public void run() {
             final Rect boundsRect = new Rect();
             final Bitmap displayBitmap = Bitmap.createBitmap(mDimensions.x, mDimensions.y, Bitmap.Config.RGB_565);
+            final MixpanelAPI mixpanel = MixpanelAPI.getInstance(getApplicationContext(), Config.MIXPANEL_TOKEN);
+            final Analytics analytics = new Analytics(mixpanel);
 
             final Rect gameDimensions = new Rect(0, 0, mDimensions.x, mDimensions.y);
-            final Game game = new Game(displayBitmap, gameDimensions, mLevelState, mAssetLoader);
+            final Game game = new Game(displayBitmap, gameDimensions, mLevelState, mAssetLoader, analytics);
             final InputEvents.TouchSpot[] touchSpots = new InputEvents.TouchSpot[InputEvents.MAX_TOUCH_SPOTS];
+
 
             while (mRunning) {
                 if (! mHolder.getSurface().isValid()) {
@@ -278,7 +279,6 @@ public class ScreenActivity extends Activity {
         private volatile boolean mRunning;
     } // class
 
-    private MixpanelAPI mMixpanel;
     private InputEvents mInputEvents;
     private SurfaceView mSurfaceView;
     private ListView mRoomPickerView;

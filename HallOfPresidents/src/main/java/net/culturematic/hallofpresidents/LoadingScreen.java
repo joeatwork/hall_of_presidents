@@ -8,7 +8,8 @@ import android.graphics.drawable.Drawable;
 
 public class LoadingScreen implements Screen {
 
-    public LoadingScreen(Bitmap display, Rect viewBounds, LevelState levelState, AssetLoader loader) {
+    public LoadingScreen(Bitmap display, Rect viewBounds, LevelState levelState, AssetLoader loader, Analytics analytics) {
+        mAnalytics = analytics;
         mDisplay = display;
         mViewBounds = viewBounds;
         mAssetLoader = loader;
@@ -22,6 +23,7 @@ public class LoadingScreen implements Screen {
 
         mDisplayCanvas = new Canvas(display);
         mLoadedScreen = null;
+        mLevelName = levelState.getLevelCatalogItem().getName();
 
         LoadThread loadThread = new LoadThread(levelState);
         loadThread.start();
@@ -33,11 +35,12 @@ public class LoadingScreen implements Screen {
     }
 
     @Override
-    public void update(long milliTime, InputEvents.TouchSpot[] touchSpots) {
+    public void update(long milliTime, InputEvents.TouchSpot[] ignored) {
         mDisplayCanvas.drawColor(Color.WHITE);
         mLoadingDrawable.draw(mDisplayCanvas);
 
         if (mFirstTime < 0) {
+            mAnalytics.trackLevelLoading(mLevelName);
             mFirstTime = milliTime;
         }
 
@@ -91,13 +94,15 @@ public class LoadingScreen implements Screen {
 
             HeroCharacter hero = level.getHero();
             UIControls controls = new UIControls(mAssetLoader, mLevelState);
-            Screen loaded = new WorldScreen(mAssetLoader, mDisplay, mViewBounds, level, mLevelState, hero, controls);
+            Screen loaded = new WorldScreen(mAssetLoader, mDisplay, mViewBounds, level, mLevelState, hero, controls, mAnalytics);
             setLoadedScreen(loaded);
         }
 
         private final LevelState mLevelState;
     }
 
+    private final Analytics mAnalytics;
+    private final String mLevelName;
     private final Bitmap mDisplay;
     private final Rect mViewBounds;
     private final AssetLoader mAssetLoader;

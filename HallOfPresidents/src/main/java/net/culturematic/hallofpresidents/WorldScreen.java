@@ -17,7 +17,8 @@ public class WorldScreen implements Screen {
             Level level,
             LevelState savedState,
             HeroCharacter hero,
-            UIControls controls) {
+            UIControls controls,
+            Analytics analytics) {
         mAssetLoader = assetLoader;
         mLevel = level;
         mLevelState = savedState;
@@ -31,6 +32,9 @@ public class WorldScreen implements Screen {
         mControls = controls;
         mHelpMessage = null;
         mFirstSawDialog = -1;
+        mAnalytics = analytics;
+
+        analytics.trackLevelOpened(mLevelState.getLevelCatalogItem().getName());
     }
 
     @Override
@@ -49,7 +53,7 @@ public class WorldScreen implements Screen {
                 mLevelState.setRoomName(mLevel.getStartRoomName());
                 mLevelState.setPosition(mLevel.getStartPosition());
                 final Dialog victoryDialog = mLevel.getVictory();
-                mNextScreen = new VictoryScreen(mAssetLoader, mDisplay, mViewBounds, victoryDialog);
+                mNextScreen = new VictoryScreen(mLevelState, mAssetLoader, mDisplay, mViewBounds, victoryDialog, mAnalytics);
             }
         }
 
@@ -118,6 +122,7 @@ public class WorldScreen implements Screen {
     private long mFirstSawDialog;
     private String mHelpMessage;
 
+    private final Analytics mAnalytics;
     private final AssetLoader mAssetLoader;
     private final Bitmap mDisplay;
     private final Set<String> mVictoryFlags;

@@ -6,12 +6,14 @@ import android.graphics.Color;
 import android.graphics.Rect;
 
 public class VictoryScreen implements Screen {
-    public VictoryScreen(AssetLoader assetLoader, Bitmap display, Rect viewBounds, Dialog victoryDialog) {
+    public VictoryScreen(LevelState levelState, AssetLoader assetLoader, Bitmap display, Rect viewBounds, Dialog victoryDialog, Analytics analytics) {
         mCanvas = new Canvas(display);
         mViewBounds = viewBounds;
         mVictoryDialog = victoryDialog;
         mDialogUI = new DialogUI(assetLoader);
         mDone = false;
+        mAnalytics = analytics;
+        analytics.trackLevelVictory(levelState.getLevelCatalogItem().getName());
     }
 
     @Override
@@ -47,6 +49,7 @@ public class VictoryScreen implements Screen {
     private boolean mDone;
     private long mStartedMillis = -1;
 
+    private final Analytics mAnalytics;
     private final Canvas mCanvas;
     private final Rect mViewBounds;
     private final Dialog mVictoryDialog;

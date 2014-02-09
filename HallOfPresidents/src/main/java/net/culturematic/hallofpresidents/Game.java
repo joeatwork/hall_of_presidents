@@ -5,8 +5,8 @@ import android.graphics.Rect;
 
 
 public class Game {
-    public Game(Bitmap display, Rect viewBounds, LevelState savedState, AssetLoader assetLoader) {
-        mScreen = new LoadingScreen(display, viewBounds, savedState, assetLoader);
+    public Game(Bitmap display, Rect viewBounds, LevelState savedState, AssetLoader assetLoader, Analytics analytics) {
+        mScreen = new LoadingScreen(display, viewBounds, savedState, assetLoader, analytics);
     }
 
     public boolean update(final long milliTime, InputEvents.TouchSpot[] touchSpots) {

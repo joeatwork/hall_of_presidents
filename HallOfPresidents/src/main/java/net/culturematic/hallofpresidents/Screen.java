@@ -7,5 +7,8 @@ public interface Screen {
 
     public Screen nextScreen();
 
+    /**
+     * @return True if the game is over, and control should return to the Game Menu
+     */
     public boolean done();
 }
