@@ -2,6 +2,8 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
@@ -21,7 +23,7 @@ public class GameCharacter implements Figure {
 
         Sprites sprites = mCharacterState.getSprites();
         if (null == sprites) {
-            mCurrentSpriteRect = EMPTY_RECT;
+            mCurrentFrameInfo = EMPTY_FRAME;
         } else {
             setCurrentStandingSprite(LevelState.Direction.DIRECTION_DOWN, 0, sprites);
         }
@@ -48,28 +50,30 @@ public class GameCharacter implements Figure {
     }
 
     public Rect getImageBounds() {
-        int spriteWidth = mCurrentSpriteRect.width();
-        int spriteHeight = mCurrentSpriteRect.height();
+        final Rect frame = mCurrentFrameInfo.frame;
+        int spriteWidth = frame.width();
+        int spriteHeight = frame.height();
         int halfWidth = spriteWidth / 2;
         final PointF position = getPosition();
         int xDestOffset = ((int) position.x) - halfWidth;
         int yDestOffset = ((int) position.y) - spriteHeight;
 
-        mImageBoundsRect.set(mCurrentSpriteRect);
+        mImageBoundsRect.set(frame);
         mImageBoundsRect.offsetTo(xDestOffset, yDestOffset);
         return mImageBoundsRect;
     }
 
     public Rect getCollisionBounds() {
-        int spriteWidth = mCurrentSpriteRect.width();
-        int spriteHeight = mCurrentSpriteRect.height();
-        int halfWidth = spriteWidth / 2;
-        int thirdHeight = spriteHeight / 3;
+        final Rect collision = mCurrentFrameInfo.collision;
+
+        final int width = collision.width();
+        final int height = collision.height();
+        final int halfWidth = width / 2;
         final PointF position = getPosition();
-        int left = ((int) position.x) - halfWidth;
-        int top = ((int) position.y) - thirdHeight;
-        int right = ((int) position.x) + halfWidth;
-        int bottom = (int) position.y;
+        final int left = ((int) position.x) - halfWidth;
+        final int top = ((int) position.y) - height;
+        final int right = ((int) position.x) + halfWidth;
+        final int bottom = (int) position.y;
 
         mCollisionBoundsRect.set(left, top, right, bottom);
         return mCollisionBoundsRect;
@@ -100,7 +104,7 @@ public class GameCharacter implements Figure {
         final boolean moved = updatePosition(direction, distance, position, currentRoom, 3);
         final Sprites sprites = mCharacterState.getSprites();
         if (null == sprites) {
-            mCurrentSpriteRect = EMPTY_RECT;
+            mCurrentFrameInfo = EMPTY_FRAME;
         } else {
             if (moved) {
                 // This is useful when debugging starting positions and event layouts
@@ -117,16 +121,17 @@ public class GameCharacter implements Figure {
     }
 
     public void drawCharacter(Canvas canvas, Rect worldRect) {
-        if (mCurrentSpriteRect.isEmpty()) {
+        final Rect frame = mCurrentFrameInfo.frame;
+        if (frame.isEmpty()) {
             return;
         }
 
-        Rect bounds = getImageBounds();
+        final Rect bounds = getImageBounds();
         if (Rect.intersects(worldRect, bounds)) {
-            int viewportOffsetX = worldRect.left;
-            int viewportOffsetY = worldRect.top;
+            final int viewportOffsetX = worldRect.left;
+            final int viewportOffsetY = worldRect.top;
             bounds.offset(-viewportOffsetX, -viewportOffsetY);
-            canvas.drawBitmap(mCurrentBitmap, mCurrentSpriteRect, bounds, null);
+            canvas.drawBitmap(mCurrentBitmap, frame, bounds, null);
         }
     }
 
@@ -213,7 +218,7 @@ public class GameCharacter implements Figure {
     private void setCurrentMovingSprite(LevelState.Direction direction, float distance, Sprites sprites) {
         mCurrentBitmap = sprites.spriteBitmap;
 
-        Rect[] animationFrames = null;
+        Sprites.FrameInfo[] animationFrames = null;
         int animationLength = 0;
         switch(direction) {
             case DIRECTION_UP:
@@ -238,12 +243,12 @@ public class GameCharacter implements Figure {
 
         float frameDistance = distance % animationLength;
         int frameIndex = (int) (animationFrames.length * frameDistance / animationLength);
-        mCurrentSpriteRect = animationFrames[frameIndex];
+        mCurrentFrameInfo = animationFrames[frameIndex];
     }
 
     private void setCurrentStandingSprite(LevelState.Direction facing, long milliTime, Sprites sprites) {
         mCurrentBitmap = sprites.spriteBitmap;
-        Rect[] animationFrames = null;
+        Sprites.FrameInfo[] animationFrames = null;
         switch (facing) {
             case DIRECTION_UP:
                 animationFrames = sprites.standUpFrames;
@@ -264,13 +269,13 @@ public class GameCharacter implements Figure {
         long twoHour = milliTime % (2 * 60 * 60 * 1000); // Overflow prevention
         long totalFrames = (twoHour * sprites.standFramesPerSecond) / 1000;
         int offsetFrame = (int) (totalFrames % animationFrames.length);
-        mCurrentSpriteRect = animationFrames[offsetFrame];
+        mCurrentFrameInfo = animationFrames[offsetFrame];
     }
 
     private long mThisTime;
     private long mLastTime;
     private Bitmap mCurrentBitmap;
-    private Rect mCurrentSpriteRect;
+    private Sprites.FrameInfo mCurrentFrameInfo;
     private float mAnimationDistance;
 
     private final PointF mPosition;
@@ -278,7 +283,8 @@ public class GameCharacter implements Figure {
     private final Rect mCollisionBoundsRect;
     private final CharacterState mCharacterState;
 
-    private static final Rect EMPTY_RECT = new Rect(0, 0, 0, 0);
+    private static final Sprites.FrameInfo EMPTY_FRAME =
+            new Sprites.FrameInfo(new Rect(0, 0, 0, 0), new Rect(0, 0, 0, 0));
 
     @SuppressWarnings("unused")
     private static final String LOGTAG = "hallofpresidents.GameCharacter";

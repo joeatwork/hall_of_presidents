@@ -28,40 +28,60 @@
 		"stand_frames_per_second": 1,
 		"step_size": { "width": 128, "height": 128 },
 		"STAND_DOWN": [
-		    { "x": 0, "y": 0, "width": 128, "height": 128 }
+		    { "x": 0, "y": 0, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } }
 		],
 		"STAND_UP": [
-		    { "x": 128, "y": 0, "width": 128, "height": 128 }
+		    { "x": 128, "y": 0, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } }
 		],
 		"STAND_LEFT": [
-		    { "x": 256, "y": 0, "width": 128, "height": 128 }
+		    { "x": 256, "y": 0, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } }
 		],
 		"STAND_RIGHT": [
-		    { "x": 384, "y": 0, "width": 128, "height": 128 }
+		    { "x": 384, "y": 0, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } }
 		],
 		"MOVE_DOWN": [
-		    { "x": 0, "y":   0, "width": 128, "height": 128 },
-		    { "x": 0, "y": 128, "width": 128, "height": 128 },
-		    { "x": 0, "y": 256, "width": 128, "height": 128 },
-		    { "x": 0, "y": 384, "width": 128, "height": 128 }
+		    { "x": 0, "y":   0, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 0, "y": 128, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 0, "y": 256, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 0, "y": 384, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } }
 		],
 		"MOVE_UP": [
-		    { "x": 128, "y":   0, "width": 128, "height": 128 },
-		    { "x": 128, "y": 128, "width": 128, "height": 128 },
-		    { "x": 128, "y": 256, "width": 128, "height": 128 },
-		    { "x": 128, "y": 384, "width": 128, "height": 128 }
+		    { "x": 128, "y":   0, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 128, "y": 128, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 128, "y": 256, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 128, "y": 384, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } }
 		],
 		"MOVE_LEFT": [
-		    { "x": 256, "y":   0, "width": 128, "height": 128 },
-		    { "x": 256, "y": 128, "width": 128, "height": 128 },
-		    { "x": 256, "y": 256, "width": 128, "height": 128 },
-		    { "x": 256, "y": 384, "width": 128, "height": 128 }
+		    { "x": 256, "y":   0, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 256, "y": 128, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 256, "y": 256, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 256, "y": 384, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } }
 		],
 		"MOVE_RIGHT": [
-		    { "x": 384, "y":   0, "width": 128, "height": 128 },
-		    { "x": 384, "y": 128, "width": 128, "height": 128 },
-		    { "x": 384, "y": 256, "width": 128, "height": 128 },
-		    { "x": 384, "y": 384, "width": 128, "height": 128 }
+		    { "x": 384, "y":   0, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 384, "y": 128, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 384, "y": 256, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } },
+		    { "x": 384, "y": 384, "width": 128, "height": 128,
+		      "collision": { x: 32, y: 85, width: 64, height: 42 } }
 		]
 	    }
 	}
@@ -100,7 +120,8 @@
 			    "speed_px_per_second": 0,
 			    "stand_frames_per_second": 1,
 			    "STAND_DOWN": [
-				{ "x": 0, "y": 0, "width": 219, "height": 510 }
+				{ "x": 0, "y": 0, "width": 219, "height": 510,
+				    "collision": { "x": 23, "y": 430, "width": 170, "height": 82 } }
 			    ]
 			}
 		    },
@@ -126,7 +147,8 @@
 			    "speed_px_per_second": 0,
 			    "stand_frames_per_second": 1,
 			    "STAND_DOWN": [
-				{ "x": 0, "y": 0, "width": 219, "height": 510 }
+				{ "x": 0, "y": 0, "width": 219, "height": 510,
+				  "collision": { "x": 23, "y": 430, "width": 170, "height": 82 } }
 			    ]
 			}
 		    },
@@ -152,7 +174,8 @@
 			    "speed_px_per_second": 0,
 			    "stand_frames_per_second": 1,
 			    "STAND_DOWN": [
-				{ "x": 0, "y": 0, "width": 219, "height": 510 }
+				{ "x": 0, "y": 0, "width": 219, "height": 510,
+				  "collision": { "x": 23, "y": 430, "width": 170, "height": 82 } }
 			    ]
 			}
 		    },
@@ -178,7 +201,8 @@
 			    "speed_px_per_second": 0,
 			    "stand_frames_per_second": 1,
 			    "STAND_DOWN": [
-				{ "x": 0, "y": 0, "width": 219, "height": 510 }
+				{ "x": 0, "y": 0, "width": 219, "height": 510,
+				  "collision": { "x": 23, "y": 430, "width": 170, "height": 82 } }
 			    ]
 			}
 		    },

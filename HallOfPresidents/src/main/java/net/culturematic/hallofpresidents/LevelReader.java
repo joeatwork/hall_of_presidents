@@ -145,7 +145,7 @@ public class LevelReader {
         // This is a HACK to deal with giant characters who are taller
         // then the edge of the screen.
         if (characterDesc.has("dialogOffset")) {
-            int dialogOffset = characterDesc.getInt("dialogOffset");
+            int dialogOffset = mAssetLoader.scaleInt(characterDesc.getInt("dialogOffset"));
             characterState.setDialogOffset(dialogOffset);
         }
 
@@ -206,43 +206,56 @@ public class LevelReader {
 
         ret.spriteBitmap = mAssetLoader.loadBitmap(rootPath + "/" + bitmapPath, null);
         if (spriteDesc.has("STAND_DOWN")) {
-            ret.standDownFrames = readRects(spriteDesc.getJSONArray("STAND_DOWN"));
+            ret.standDownFrames = readFrames(spriteDesc.getJSONArray("STAND_DOWN"));
         }
         if (spriteDesc.has("STAND_UP")) {
-            ret.standUpFrames = readRects(spriteDesc.getJSONArray("STAND_UP"));
+            ret.standUpFrames = readFrames(spriteDesc.getJSONArray("STAND_UP"));
         }
         if (spriteDesc.has("STAND_RIGHT")) {
-            ret.standRightFrames = readRects(spriteDesc.getJSONArray("STAND_RIGHT"));
+            ret.standRightFrames = readFrames(spriteDesc.getJSONArray("STAND_RIGHT"));
         }
         if (spriteDesc.has("STAND_LEFT")) {
-            ret.standLeftFrames = readRects(spriteDesc.getJSONArray("STAND_LEFT"));
+            ret.standLeftFrames = readFrames(spriteDesc.getJSONArray("STAND_LEFT"));
         }
         if (spriteDesc.has("MOVE_DOWN")) {
-            ret.moveDownFrames = readRects(spriteDesc.getJSONArray("MOVE_DOWN"));
+            ret.moveDownFrames = readFrames(spriteDesc.getJSONArray("MOVE_DOWN"));
         }
         if (spriteDesc.has("MOVE_UP")) {
-            ret.moveUpFrames = readRects(spriteDesc.getJSONArray("MOVE_UP"));
+            ret.moveUpFrames = readFrames(spriteDesc.getJSONArray("MOVE_UP"));
         }
         if (spriteDesc.has("MOVE_LEFT")) {
-            ret.moveLeftFrames = readRects(spriteDesc.getJSONArray("MOVE_LEFT"));
+            ret.moveLeftFrames = readFrames(spriteDesc.getJSONArray("MOVE_LEFT"));
         }
         if (spriteDesc.has("MOVE_RIGHT")) {
-            ret.moveRightFrames = readRects(spriteDesc.getJSONArray("MOVE_RIGHT"));
+            ret.moveRightFrames = readFrames(spriteDesc.getJSONArray("MOVE_RIGHT"));
         }
 
         return ret;
     }
 
-    private Rect[] readRects(final JSONArray rectsArray)
+    private Sprites.FrameInfo[] readFrames(final JSONArray rectsArray)
         throws JSONException {
-        final Rect[] ret = new Rect[rectsArray.length()];
+        final Sprites.FrameInfo[] ret = new Sprites.FrameInfo[rectsArray.length()];
         for (int i = 0; i < rectsArray.length(); i++) {
-            final JSONObject rect = rectsArray.getJSONObject(i);
-            int x = mAssetLoader.scaleInt(rect.getInt("x"));
-            int y = mAssetLoader.scaleInt(rect.getInt("y"));
-            int width = mAssetLoader.scaleInt(rect.getInt("width"));
-            int height = mAssetLoader.scaleInt(rect.getInt("height"));
-            ret[i] = new Rect(x, y, x + width, y + height);
+            final JSONObject rectDesc = rectsArray.getJSONObject(i);
+            final int x = mAssetLoader.scaleInt(rectDesc.getInt("x"));
+            final int y = mAssetLoader.scaleInt(rectDesc.getInt("y"));
+            final int width = mAssetLoader.scaleInt(rectDesc.getInt("width"));
+            final int height = mAssetLoader.scaleInt(rectDesc.getInt("height"));
+            final Sprites.FrameInfo info = new Sprites.FrameInfo();
+            info.frame = new Rect(x, y, x + width, y + height);
+            if (rectDesc.has("collision")) {
+                final JSONObject collisionDesc = rectDesc.getJSONObject("collision");
+                final int left = mAssetLoader.scaleInt(collisionDesc.getInt("x"));
+                final int top = mAssetLoader.scaleInt(collisionDesc.getInt("y"));
+                final int right = left + mAssetLoader.scaleInt(collisionDesc.getInt("width"));
+                final int bottom = top + mAssetLoader.scaleInt(collisionDesc.getInt("height"));
+                info.collision = new Rect(left, top, right, bottom);
+            } else {
+                int top = height - (height / 3);
+                info.collision = new Rect(0, top, width, height);
+            }
+            ret[i] = info;
         }
         return ret;
     }

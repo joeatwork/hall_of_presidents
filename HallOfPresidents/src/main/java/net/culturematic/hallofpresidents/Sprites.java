@@ -4,17 +4,28 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 public class Sprites {
+    public static class FrameInfo {
+        public FrameInfo() {}
+        public FrameInfo(Rect frame, Rect collision) {
+            this.frame = frame;
+            this.collision = collision;
+        }
+
+        public Rect frame;
+        public Rect collision;
+    }
+
     public Bitmap spriteBitmap;
     public int speedPxPerSecond;
     public int stepWidth;
     public int stepHeight;
     public int standFramesPerSecond;
-    public Rect[] standDownFrames = null;
-    public Rect[] standUpFrames = null;
-    public Rect[] standLeftFrames = null;
-    public Rect[] standRightFrames = null;
-    public Rect[] moveUpFrames = null;
-    public Rect[] moveDownFrames = null;
-    public Rect[] moveLeftFrames = null;
-    public Rect[] moveRightFrames = null;
+    public FrameInfo[] standDownFrames = null;
+    public FrameInfo[] standUpFrames = null;
+    public FrameInfo[] standLeftFrames = null;
+    public FrameInfo[] standRightFrames = null;
+    public FrameInfo[] moveUpFrames = null;
+    public FrameInfo[] moveDownFrames = null;
+    public FrameInfo[] moveLeftFrames = null;
+    public FrameInfo[] moveRightFrames = null;
 }
