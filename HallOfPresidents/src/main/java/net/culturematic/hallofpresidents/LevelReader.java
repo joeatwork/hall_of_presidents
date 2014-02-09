@@ -195,13 +195,13 @@ public class LevelReader {
         ret.speedPxPerSecond = spriteDesc.getInt("speed_px_per_second");
         ret.standFramesPerSecond = spriteDesc.getInt("stand_frames_per_second");
 
-        if (spriteDesc.has("bounds")) {
-            final JSONObject boundsDesc = spriteDesc.getJSONObject("bounds");
-            ret.boundsWidth = mAssetLoader.scaleInt(boundsDesc.getInt("width"));
-            ret.boundsHeight = mAssetLoader.scaleInt(boundsDesc.getInt("height"));
+        if (spriteDesc.has("step_size")) {
+            final JSONObject boundsDesc = spriteDesc.getJSONObject("step_size");
+            ret.stepWidth = mAssetLoader.scaleInt(boundsDesc.getInt("width"));
+            ret.stepHeight = mAssetLoader.scaleInt(boundsDesc.getInt("height"));
         } else {
-            ret.boundsWidth = -1;
-            ret.boundsHeight = -1;
+            ret.stepWidth = -1;
+            ret.stepHeight = -1;
         }
 
         ret.spriteBitmap = mAssetLoader.loadBitmap(rootPath + "/" + bitmapPath, null);

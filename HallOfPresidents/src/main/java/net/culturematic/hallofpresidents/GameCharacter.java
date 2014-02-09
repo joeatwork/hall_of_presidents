@@ -2,8 +2,6 @@ package net.culturematic.hallofpresidents;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
@@ -220,19 +218,19 @@ public class GameCharacter implements Figure {
         switch(direction) {
             case DIRECTION_UP:
                 animationFrames = sprites.moveUpFrames;
-                animationLength = sprites.boundsHeight;
+                animationLength = sprites.stepHeight;
                 break;
             case DIRECTION_DOWN:
                 animationFrames = sprites.moveDownFrames;
-                animationLength = sprites.boundsHeight;
+                animationLength = sprites.stepHeight;
                 break;
             case DIRECTION_LEFT:
                 animationFrames = sprites.moveLeftFrames;
-                animationLength = sprites.boundsWidth;
+                animationLength = sprites.stepWidth;
                 break;
             case DIRECTION_RIGHT:
                 animationFrames = sprites.moveRightFrames;
-                animationLength = sprites.boundsWidth;
+                animationLength = sprites.stepWidth;
                 break;
             case DIRECTION_NONE:
                 throw new RuntimeException("Can't move in DIRECTION_NONE");

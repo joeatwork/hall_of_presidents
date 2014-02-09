@@ -6,8 +6,8 @@ import android.graphics.Rect;
 public class Sprites {
     public Bitmap spriteBitmap;
     public int speedPxPerSecond;
-    public int boundsWidth;
-    public int boundsHeight;
+    public int stepWidth;
+    public int stepHeight;
     public int standFramesPerSecond;
     public Rect[] standDownFrames = null;
     public Rect[] standUpFrames = null;
